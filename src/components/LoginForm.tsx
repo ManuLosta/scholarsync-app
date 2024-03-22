@@ -1,4 +1,4 @@
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input, Link } from '@nextui-org/react';
 import { z } from 'zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,12 +23,13 @@ export default function LoginForm() {
 
   const onSubmit: SubmitHandler<InputType> = (data) => {
     console.log(data);
+    alert('Email: ' + data.email + '\nPassword: ' + data.password);
   };
 
   return (
     <>
       <form
-        className="flex flex-col gap-5 w-full max-w-[320px]"
+        className="flex flex-col gap-7 w-full max-w-[320px]"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Controller
@@ -60,6 +61,9 @@ export default function LoginForm() {
           Iniciar Sesión
         </Button>
       </form>
+      <p className="font-bold mt-5">
+        ¿No tienes una cuenta? <Link href="/register">Regístrate</Link>
+      </p>
     </>
   );
 }

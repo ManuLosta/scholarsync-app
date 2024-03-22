@@ -6,7 +6,7 @@ export default function Login() {
     <>
       <AuthLayout
         title="Iniciar sesión"
-        description="Ingresar los datos para ingresar sesión"
+        description="Ingresar los datos para iniciar sesión"
       >
         <LoginForm />
       </AuthLayout>
