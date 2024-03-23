@@ -2,6 +2,8 @@ import { Button, Input, Link } from '@nextui-org/react';
 import { z } from 'zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -13,6 +15,7 @@ const formSchema = z.object({
 type InputType = z.infer<typeof formSchema>;
 
 export default function LoginForm() {
+  const [isVisible, setIsVisible] = useState(false);
   const {
     handleSubmit,
     control,
@@ -21,9 +24,17 @@ export default function LoginForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit: SubmitHandler<InputType> = (data) => {
-    console.log(data);
-    alert('Email: ' + data.email + '\nPassword: ' + data.password);
+  const onSubmit: SubmitHandler<InputType> = async (data) => {
+    const res = await fetch('http://localhost:8080/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    console.log(json);
+
   };
 
   return (
@@ -51,9 +62,18 @@ export default function LoginForm() {
             <Input
               {...field}
               label="Contraseña"
-              type="password"
+              type={isVisible ? 'text' : 'password'}
               errorMessage={errors.password?.message?.toString()}
               isInvalid={!!errors.password}
+              endContent={
+                <Button
+                  isIconOnly
+                  className="bg-transparent"
+                  onClick={() => setIsVisible(!isVisible)}
+                >
+                  {isVisible ? <EyeOff /> : <Eye />}
+                </Button>
+              }
             />
           )}
         />

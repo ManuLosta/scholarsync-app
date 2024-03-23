@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const formSchema = z
   .object({
@@ -40,6 +41,7 @@ const steps = [
 export default function RegisterForm() {
   const [page, setPage] = useState(0);
   const [prevPage, setPrevPage] = useState(0);
+  const [visible, setVisible] = useState(false);
 
   const {
     handleSubmit,
@@ -83,7 +85,7 @@ export default function RegisterForm() {
       }),
     });
 
-    console.log(res.status);
+    console.log(res);
   };
 
   return (
@@ -126,9 +128,18 @@ export default function RegisterForm() {
                 <Input
                   {...field}
                   label="Contraseña"
-                  type="password"
+                  type={visible ? 'text' : 'password'}
                   errorMessage={errors.password?.message?.toString()}
                   isInvalid={!!errors.password}
+                  endContent={
+                    <Button
+                      isIconOnly
+                      className="bg-transparent"
+                      onClick={() => setVisible(!visible)}
+                    >
+                      {visible ? <EyeOff /> : <Eye />}
+                    </Button>
+                  }
                 />
               )}
             />
@@ -139,9 +150,18 @@ export default function RegisterForm() {
                 <Input
                   {...field}
                   label="Repetir Contraseña"
-                  type="password"
+                  type={visible ? 'text' : 'password'}
                   errorMessage={errors.repeatPassword?.message?.toString()}
                   isInvalid={!!errors.repeatPassword}
+                  endContent={
+                    <Button
+                      isIconOnly
+                      className="bg-transparent"
+                      onClick={() => setVisible(!visible)}
+                    >
+                      {visible ? <EyeOff /> : <Eye />}
+                    </Button>
+                  }
                 />
               )}
             />
