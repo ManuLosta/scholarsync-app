@@ -29,10 +29,12 @@ type InputType = z.infer<typeof formSchema>;
 
 const steps = [
   {
+    id: 0,
     title: 'Información de Cuenta',
     fields: ['email', 'username', 'password', 'repeatPassword'],
   },
   {
+    id: 1,
     title: 'Información Personal',
     fields: ['firstName', 'lastName', 'birthDate'],
   },

@@ -1,5 +1,5 @@
-import AuthLayout from '../components/AuthLayout.tsx';
-import RegisterForm from '../components/RegisterForm.tsx';
+import AuthLayout from '../components/auth/AuthLayout.tsx';
+import RegisterForm from '../components/auth/RegisterForm.tsx';
 
 export default function Register() {
   return (
