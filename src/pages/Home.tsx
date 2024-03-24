@@ -1,10 +1,15 @@
+import { useAuth } from '../hooks/useAuth.ts';
 import { Button } from '@nextui-org/react';
 
 export default function Home() {
+  const auth = useAuth();
+
   return (
     <div className="container">
-      <h1 className="font-bold text-3xl">Home</h1>
-      <Button color="primary">Hola</Button>
+      <p>sessionId: {auth?.sessionId}</p>
+      <p>username: {auth?.user?.username}</p>
+      <p>userId: {auth?.user?.id}</p>
+      <Button onClick={() => auth.logOut()}>Log Out</Button>
     </div>
   );
 }

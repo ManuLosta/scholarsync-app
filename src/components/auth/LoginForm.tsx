@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth.ts';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -26,6 +27,7 @@ export default function LoginForm() {
     resolver: zodResolver(formSchema),
   });
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     const res = await fetch('http://localhost:8080/api/v1/auth/login', {
@@ -39,6 +41,7 @@ export default function LoginForm() {
     if (res.ok) {
       const sessionId = await res.text();
       localStorage.setItem('sessionId', sessionId);
+      auth.setSessionId(sessionId);
       navigate('/');
     } else {
       const error = await res.text();
