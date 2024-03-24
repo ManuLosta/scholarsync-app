@@ -4,6 +4,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -20,21 +21,41 @@ export default function LoginForm() {
     handleSubmit,
     control,
     formState: { errors },
+    setError,
   } = useForm<InputType>({
     resolver: zodResolver(formSchema),
   });
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
-    const res = await fetch('http://localhost:8080/login', {
+    const res = await fetch('http://localhost:8080/api/v1/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
-    const json = await res.json();
-    console.log(json);
 
+    if (res.ok) {
+      const sessionId = await res.text();
+      localStorage.setItem('sessionId', sessionId);
+      navigate('/');
+    } else {
+      const error = await res.text();
+      handleError(error);
+    }
+  };
+
+  const handleError = (error: string) => {
+    console.log(error);
+    if (error === 'auth/wrong-password') {
+      setError('password', {
+        type: 'custom',
+        message: 'Contraseña incorrecta',
+      });
+    } else if (error === 'auth/user-not-found') {
+      setError('email', { type: 'custom', message: 'Usuario no encontrado' });
+    }
   };
 
   return (

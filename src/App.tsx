@@ -5,7 +5,7 @@ import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
 
 export default function App() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <NextUIProvider navigate={navigate}>
@@ -15,5 +15,5 @@ export default function App() {
         <Route path="/register" element={<Register />} />
       </Routes>
     </NextUIProvider>
-  )
+  );
 }

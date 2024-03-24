@@ -50,6 +50,7 @@ export default function RegisterForm() {
     control,
     trigger,
     formState: { errors },
+    setError,
   } = useForm<InputType>({
     resolver: zodResolver(formSchema),
   });
@@ -72,7 +73,7 @@ export default function RegisterForm() {
   };
 
   const onSubmit = async (data: InputType) => {
-    const res = await fetch('http://localhost:8080/register', {
+    const res = await fetch('http://localhost:8080/api/v1/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -87,7 +88,32 @@ export default function RegisterForm() {
       }),
     });
 
-    console.log(res);
+    if (!res.ok) {
+      const error = await res.text();
+      handleError(error);
+    } else {
+      const message = await res.text();
+      console.log(message);
+    }
+  };
+
+  const handleError = (error: string) => {
+    console.log(error);
+    if (error === 'auth/email-already-in-use') {
+      setError('email', { type: 'custom', message: 'El email ya está en uso' });
+    } else if (error === 'auth/username-already-in-use') {
+      setError('username', {
+        type: 'custom',
+        message: 'El nombre de usuario ya está en uso',
+      });
+    } else if (error === 'auth/email-username-already-in-use') {
+      setError('email', { type: 'custom', message: 'El email ya está en uso' });
+      setError('username', {
+        type: 'custom',
+        message: 'El nombre de usuario ya está en uso',
+      });
+    }
+    setPage(0);
   };
 
   return (

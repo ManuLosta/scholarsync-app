@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Cantarell', 'sans-serif'],
-      }
+      },
     },
   },
   plugins: [nextui()],
