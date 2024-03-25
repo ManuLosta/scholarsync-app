@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const formSchema = z
   .object({
@@ -19,10 +20,6 @@ const formSchema = z
       .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }),
     repeatPassword: z.string(), // add a validation here
     birthDate: z.string(),
-  })
-  .refine((data) => data.password === data.repeatPassword, {
-    path: ['repeatPassword'],
-    message: 'Las contraseñas no coinciden',
   });
 
 type InputType = z.infer<typeof formSchema>;
@@ -51,15 +48,26 @@ export default function RegisterForm() {
     trigger,
     formState: { errors },
     setError,
+    getValues
   } = useForm<InputType>({
     resolver: zodResolver(formSchema),
   });
+  const navigate = useNavigate();
+
 
   type FieldName = keyof InputType;
 
   const next = async () => {
     const fields = steps[page].fields;
     const result = await trigger(fields as FieldName[], { shouldFocus: true });
+
+    if (getValues('password') !== getValues('repeatPassword')) {
+      setError('repeatPassword', {
+        type: 'custom',
+        message: 'Las contraseñas no coinciden',
+      });
+      return;
+    }
 
     if (!result) return;
 
@@ -94,6 +102,7 @@ export default function RegisterForm() {
     } else {
       const message = await res.text();
       console.log(message);
+      navigate("/login");
     }
   };
 
