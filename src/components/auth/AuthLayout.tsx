@@ -12,8 +12,8 @@ export default function AuthLayout({
   description: string;
 }) {
   return (
-    <div className="md:grid md:grid-cols-5 h-screen">
-      <div className="md:w-full h-screen bg-gradient-to-r from-secondary-500 to-primary-500 flex items-center justify-center col-span-2"></div>
+    <div className="md:grid md:grid-cols-5 flex items-center justify-center h-screen">
+      <div className="md:w-full md:h-screen bg-gradient-to-r from-secondary-500 to-primary-500 flex items-center justify-center md:col-span-2"></div>
       <div className="flex items-center justify-center flex-col col-span-3">
         <div className="mb-12 flex gap-3 items-center">
           <Image src={Icon} width={60} height={60} />

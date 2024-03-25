@@ -171,7 +171,7 @@ export default function RegisterForm() {
                   endContent={
                     <Button
                       isIconOnly
-                      className="bg-transparent"
+                      className="bg-transparent text-foreground-700"
                       onClick={() => setVisible(!visible)}
                     >
                       {visible ? <EyeOff /> : <Eye />}
@@ -193,7 +193,7 @@ export default function RegisterForm() {
                   endContent={
                     <Button
                       isIconOnly
-                      className="bg-transparent"
+                      className="bg-transparent text-foreground-700"
                       onClick={() => setVisible(!visible)}
                     >
                       {visible ? <EyeOff /> : <Eye />}

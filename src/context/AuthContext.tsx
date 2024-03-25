@@ -12,7 +12,7 @@ type UserInfo = {
   firstName: string;
   lastName: string;
   id: number;
-}
+};
 
 const defaultContext: AuthContextType = {
   sessionId: null,
@@ -21,13 +21,11 @@ const defaultContext: AuthContextType = {
   logOut: () => {},
 };
 
-export const AuthContext = createContext<AuthContextType>(
- defaultContext
-);
+export const AuthContext = createContext<AuthContextType>(defaultContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [sessionId, setSessionId] = useState<string | null>(
-    localStorage.getItem('sessionId') ||  null
+    localStorage.getItem('sessionId') || null,
   );
   const [user, setUser] = useState<UserInfo | null>(null);
 
@@ -67,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setSessionId(null);
     setUser(null);
     localStorage.removeItem('sessionId');
-  }
+  };
 
   return (
     <AuthContext.Provider value={{ sessionId, setSessionId, user, logOut }}>

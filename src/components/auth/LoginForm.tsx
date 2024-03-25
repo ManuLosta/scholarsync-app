@@ -92,10 +92,10 @@ export default function LoginForm() {
               endContent={
                 <Button
                   isIconOnly
-                  className="bg-transparent"
+                  className="bg-transparent text-foreground-700"
                   onClick={() => setIsVisible(!isVisible)}
                 >
-                  {isVisible ? <EyeOff /> : <Eye />}
+                  {isVisible ? <EyeOff  /> : <Eye />}
                 </Button>
               }
             />
