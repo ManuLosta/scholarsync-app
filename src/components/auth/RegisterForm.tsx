@@ -7,20 +7,19 @@ import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const formSchema = z
-  .object({
-    email: z.string().email({ message: 'Email inválido' }),
-    firstName: z.string(),
-    lastName: z.string(),
-    username: z.string().min(4, {
-      message: 'El nombre de usuario debe tener al menos 4 caracteres',
-    }),
-    password: z
-      .string()
-      .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }),
-    repeatPassword: z.string(), // add a validation here
-    birthDate: z.string(),
-  });
+const formSchema = z.object({
+  email: z.string().email({ message: 'Email inválido' }),
+  firstName: z.string(),
+  lastName: z.string(),
+  username: z.string().min(4, {
+    message: 'El nombre de usuario debe tener al menos 4 caracteres',
+  }),
+  password: z
+    .string()
+    .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }),
+  repeatPassword: z.string(), // add a validation here
+  birthDate: z.string(),
+});
 
 type InputType = z.infer<typeof formSchema>;
 
@@ -41,6 +40,7 @@ export default function RegisterForm() {
   const [page, setPage] = useState(0);
   const [prevPage, setPrevPage] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     handleSubmit,
@@ -48,12 +48,11 @@ export default function RegisterForm() {
     trigger,
     formState: { errors },
     setError,
-    getValues
+    getValues,
   } = useForm<InputType>({
     resolver: zodResolver(formSchema),
   });
   const navigate = useNavigate();
-
 
   type FieldName = keyof InputType;
 
@@ -81,6 +80,7 @@ export default function RegisterForm() {
   };
 
   const onSubmit = async (data: InputType) => {
+    setLoading(true);
     const res = await fetch('http://localhost:8080/api/v1/auth/register', {
       method: 'POST',
       headers: {
@@ -96,13 +96,15 @@ export default function RegisterForm() {
       }),
     });
 
+    setLoading(false);
+
     if (!res.ok) {
       const error = await res.text();
       handleError(error);
     } else {
       const message = await res.text();
       console.log(message);
-      navigate("/login");
+      navigate('/login');
     }
   };
 
@@ -223,6 +225,7 @@ export default function RegisterForm() {
                   label="Nombre"
                   errorMessage={errors.firstName?.message?.toString()}
                   isInvalid={!!errors.firstName}
+                  isDisabled={loading}
                 />
               )}
             />
@@ -235,6 +238,7 @@ export default function RegisterForm() {
                   label="Apellido"
                   errorMessage={errors.lastName?.message?.toString()}
                   isInvalid={!!errors.lastName}
+                  isDisabled={loading}
                 />
               )}
             />
@@ -248,6 +252,7 @@ export default function RegisterForm() {
                   type="date"
                   errorMessage={errors.birthDate?.message?.toString()}
                   isInvalid={!!errors.birthDate}
+                  isDisabled={loading}
                 />
               )}
             />
@@ -256,7 +261,12 @@ export default function RegisterForm() {
               <Button onClick={() => prev()} className="w-1/2">
                 Atras
               </Button>
-              <Button color="primary" type="submit" className="w-1/2">
+              <Button
+                isLoading={loading}
+                color="primary"
+                type="submit"
+                className="w-1/2"
+              >
                 Registrarse
               </Button>
             </div>

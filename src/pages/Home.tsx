@@ -1,15 +1,15 @@
 import { useAuth } from '../hooks/useAuth.ts';
-import { Button } from '@nextui-org/react';
+import Navbar from '../components/Appbar.tsx';
 
 export default function Home() {
   const auth = useAuth();
 
   return (
-    <div className="container">
-      <p>sessionId: {auth?.sessionId}</p>
-      <p>username: {auth?.user?.username}</p>
-      <p>userId: {auth?.user?.id}</p>
-      <Button onClick={() => auth.logOut()}>Log Out</Button>
-    </div>
+    <>
+      <Navbar />
+      <h1>Home</h1>
+      <p>Session: {auth?.sessionId}</p>
+      <p>UserId: {auth?.user?.id}</p>
+    </>
   );
 }

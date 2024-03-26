@@ -18,6 +18,7 @@ type InputType = z.infer<typeof formSchema>;
 
 export default function LoginForm() {
   const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
     control,
@@ -30,6 +31,7 @@ export default function LoginForm() {
   const auth = useAuth();
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
+    setLoading(true);
     const res = await fetch('http://localhost:8080/api/v1/auth/login', {
       method: 'POST',
       headers: {
@@ -37,6 +39,8 @@ export default function LoginForm() {
       },
       body: JSON.stringify(data),
     });
+
+    setLoading(false);
 
     if (res.ok) {
       const sessionId = await res.text();
@@ -76,6 +80,7 @@ export default function LoginForm() {
               label="Email"
               errorMessage={errors.email?.message?.toString()}
               isInvalid={!!errors.email}
+              isDisabled={loading}
             />
           )}
         />
@@ -89,19 +94,20 @@ export default function LoginForm() {
               type={isVisible ? 'text' : 'password'}
               errorMessage={errors.password?.message?.toString()}
               isInvalid={!!errors.password}
+              isDisabled={loading}
               endContent={
                 <Button
                   isIconOnly
                   className="bg-transparent text-foreground-700"
                   onClick={() => setIsVisible(!isVisible)}
                 >
-                  {isVisible ? <EyeOff  /> : <Eye />}
+                  {isVisible ? <EyeOff /> : <Eye />}
                 </Button>
               }
             />
           )}
         />
-        <Button color="primary" type="submit">
+        <Button isLoading={loading} color="primary" type="submit">
           Iniciar Sesión
         </Button>
       </form>
