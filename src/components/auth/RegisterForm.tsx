@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -81,30 +81,35 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: InputType) => {
     setLoading(true);
-    const res = await fetch('http://localhost:8080/api/v1/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: data.email,
-        username: data.username,
-        password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        birthDate: data.birthDate,
-      }),
-    });
 
-    setLoading(false);
+    try {
+      const res = await fetch('http://localhost:8080/api/v1/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          username: data.username,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          birthDate: data.birthDate,
+        }),
+      });
 
-    if (!res.ok) {
-      const error = await res.text();
-      handleError(error);
-    } else {
-      const message = await res.text();
-      console.log(message);
-      navigate('/login');
+      setLoading(false);
+
+      if (!res.ok) {
+        const error = await res.text();
+        handleError(error);
+      } else {
+        const message = await res.text();
+        console.log(message);
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -176,7 +181,7 @@ export default function RegisterForm() {
                       className="bg-transparent text-foreground-700"
                       onClick={() => setVisible(!visible)}
                     >
-                      {visible ? <EyeOff /> : <Eye />}
+                      {visible ? <LuEyeOff size={25} /> : <LuEye size={25} />}
                     </Button>
                   }
                 />
@@ -198,7 +203,7 @@ export default function RegisterForm() {
                       className="bg-transparent text-foreground-700"
                       onClick={() => setVisible(!visible)}
                     >
-                      {visible ? <EyeOff /> : <Eye />}
+                      {visible ? <LuEyeOff size={25} /> : <LuEye size={25} />}
                     </Button>
                   }
                 />

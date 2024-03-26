@@ -11,7 +11,7 @@ import {
 } from '@nextui-org/react';
 import SSIcon from '../assets/scholarsync.svg';
 import { useAuth } from '../hooks/useAuth.ts';
-import { SearchIcon } from 'lucide-react';
+import { LuSearch } from 'react-icons/lu';
 
 export default function Appbar() {
   const auth = useAuth();
@@ -24,7 +24,7 @@ export default function Appbar() {
       </NavbarBrand>
       <NavbarContent className="min-w-[400px]" justify="center">
         <Input
-          startContent={<SearchIcon className="text-foreground-700" />}
+          startContent={<LuSearch className="text-foreground-700" />}
           placeholder="Buscar en ScholarSync"
         />
       </NavbarContent>

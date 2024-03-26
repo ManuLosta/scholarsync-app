@@ -3,9 +3,9 @@ import { z } from 'zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.ts';
+import { LuCheck, LuEye, LuEyeOff } from 'react-icons/lu';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -19,6 +19,7 @@ type InputType = z.infer<typeof formSchema>;
 export default function LoginForm() {
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [complete, setComplete] = useState(false);
   const {
     handleSubmit,
     control,
@@ -32,24 +33,32 @@ export default function LoginForm() {
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     setLoading(true);
-    const res = await fetch('http://localhost:8080/api/v1/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
 
-    setLoading(false);
+    try {
+      const res = await fetch('http://localhost:8080/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (res.ok) {
-      const sessionId = await res.text();
-      localStorage.setItem('sessionId', sessionId);
-      auth.setSessionId(sessionId);
-      navigate('/');
-    } else {
-      const error = await res.text();
-      handleError(error);
+      setLoading(false);
+
+      if (res.ok) {
+        const sessionId = await res.text();
+        localStorage.setItem('sessionId', sessionId);
+        auth.setSessionId(sessionId);
+        setComplete(true);
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        const error = await res.text();
+        handleError(error);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -101,13 +110,18 @@ export default function LoginForm() {
                   className="bg-transparent text-foreground-700"
                   onClick={() => setIsVisible(!isVisible)}
                 >
-                  {isVisible ? <EyeOff /> : <Eye />}
+                  {isVisible ? <LuEyeOff size={25} /> : <LuEye size={25} />}
                 </Button>
               }
             />
           )}
         />
-        <Button isLoading={loading} color="primary" type="submit">
+        <Button
+          isLoading={loading}
+          color={!complete ? 'primary' : 'success'}
+          type="submit"
+        >
+          {complete && <LuCheck />}
           Iniciar Sesión
         </Button>
       </form>

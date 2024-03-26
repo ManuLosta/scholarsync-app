@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const validateSession = async () => {
       try {
-        const res = await fetch('http://localhost:8080/api/v1/auth/validate', {
+        const res = await fetch('http://localhost:8080/api/v1/auth/refresh', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
