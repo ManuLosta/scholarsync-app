@@ -1,15 +1,12 @@
 import { useAuth } from '../hooks/useAuth.ts';
-import Navbar from '../components/Appbar.tsx';
 
 export default function Home() {
   const auth = useAuth();
 
   return (
-    <>
-      <Navbar />
+    <div className="container">
       <h1>Home</h1>
-      <p>Session: {auth?.sessionId}</p>
-      <p>UserId: {auth?.user?.id}</p>
-    </>
+      <p>¡Hola, {auth?.user?.firstName}!</p>
+    </div>
   );
 }

@@ -9,8 +9,8 @@ import {
   NavbarBrand,
   NavbarContent,
 } from '@nextui-org/react';
-import SSIcon from '../assets/scholarsync.svg';
-import { useAuth } from '../hooks/useAuth.ts';
+import SSIcon from '../../assets/scholarsync.svg';
+import { useAuth } from '../../hooks/useAuth.ts';
 import { LuSearch } from 'react-icons/lu';
 
 export default function Appbar() {
