@@ -1,6 +1,6 @@
-import { LuCalendar, LuHome, LuPlus } from 'react-icons/lu';
+import { LuCalendar, LuHome } from 'react-icons/lu';
 import NavItem from './NavItem.tsx';
-import { Button } from '@nextui-org/react';
+import CreateGroupModal from '../CreateGroupModal.tsx';
 
 const navItems = [
   {
@@ -28,9 +28,7 @@ export default function Sidebar() {
       ))}
       <div className="mt-2 flex gap-3 flex-col items-start">
         <h2 className="text">Mis grupos</h2>
-        <Button variant="light" startContent={<LuPlus size={25} />}>
-          Crear grupo
-        </Button>
+        <CreateGroupModal />
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import {
   Navbar,
   NavbarBrand,
   NavbarContent,
+  User,
 } from '@nextui-org/react';
 import SSIcon from '../../assets/scholarsync.svg';
 import { useAuth } from '../../hooks/useAuth.ts';
@@ -31,15 +32,14 @@ export default function Appbar() {
       <NavbarContent justify="end">
         <Dropdown placement="bottom">
           <DropdownTrigger>
-            <div className="flex flex-col justify-end">
-              <p className="font-bold">
-                {auth?.user?.firstName} {auth?.user?.lastName}
-              </p>
-              <p className="font-light">@{auth?.user?.username}</p>
-            </div>
+            <User
+              name={`${auth?.user?.firstName} ${auth?.user?.lastName}`}
+              description={`@${auth?.user?.username}`}
+            />
           </DropdownTrigger>
-          <DropdownMenu>
+          <DropdownMenu aria-label="Static Actions">
             <DropdownItem
+              key="logout"
               className="text-danger"
               color="danger"
               onClick={() => auth.logOut()}
