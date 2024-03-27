@@ -11,7 +11,7 @@ type UserInfo = {
   username: string;
   firstName: string;
   lastName: string;
-  id: number;
+  id: string;
 };
 
 const defaultContext: AuthContextType = {
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             username: user.username,
             firstName: user.firstName,
             lastName: user.lastName,
-            id: user.id,
+            id: user.id.toString(),
           });
         } else {
           localStorage.removeItem('sessionId');
