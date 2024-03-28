@@ -18,7 +18,7 @@ export default function Appbar() {
   const auth = useAuth();
 
   return (
-    <Navbar maxWidth="full" isBordered isBlurred>
+    <Navbar maxWidth="full" isBlurred>
       <NavbarBrand>
         <Image src={SSIcon} width={40} height={40} />
         <h1 className="font-bold text-2xl">ScholarSync</h1>
