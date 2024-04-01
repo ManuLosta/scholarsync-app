@@ -1,4 +1,5 @@
 import {
+  Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -7,7 +8,7 @@ import {
   Input,
   Navbar,
   NavbarBrand,
-  NavbarContent,
+  NavbarContent, Tooltip,
   User,
 } from '@nextui-org/react';
 import SSIcon from '../../assets/scholarsync.svg';
@@ -30,6 +31,13 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
         />
       </NavbarContent>
       <NavbarContent justify="end">
+        <Tooltip content="Notificaciones" closeDelay={200}>
+          <Button className="text-foreground border-none" onPress={handleOpen} isIconOnly variant="ghost">
+            <LuBell
+              size={25}
+            />
+          </Button>
+        </Tooltip>
         <Dropdown placement="bottom">
           <DropdownTrigger>
             <User
@@ -42,20 +50,12 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
               key="logout"
               className="text-danger"
               color="danger"
-              onClick={() => auth.logOut()}
+              onPress={() => auth.logOut()}
             >
               Cerrar sesión
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-        <button onClick={() => console.log('openNotifications')}>
-          <LuBell
-            onClick={handleOpen}
-            className="border-2  rounded-md border-black p-1 bg-gray-800 ml-5 "
-            size={30}
-            color={'white'}
-          />
-        </button>
       </NavbarContent>
     </Navbar>
   );

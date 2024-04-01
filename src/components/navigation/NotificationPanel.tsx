@@ -49,20 +49,16 @@ export default function NotificationPanel({
   return (
     <div
       className={`${!isOpen && 'translate-x-full'}
-      transition min-w-[512px] duration-1000 right-0 border-opacity-10 border-black border-2 rounded-l-xl fixed flex flex-row  h-full drop-shadow-2xl bg-foreground-50 z-10 pt-5 pr-5 pb-5 pl-0`
-      }
+      transition min-w-[512px] duration-1000 right-0 border-opacity-10 border-black border-2 rounded-l-xl fixed flex flex-row  h-full drop-shadow-2xl bg-foreground-50 z-10 pt-5 pr-5 pb-5 pl-0`}
     >
       <IoIosArrowForward
         size={40}
         onClick={handleOpen}
         className={`${!isOpen && 'rotate-180 translate-x-5'}
-          transition delay-150 duration-[5000ms] cursor-pointer relative top-1/2 h-min w-min -left-5 rounded-full bg-white border-black border-opacity-20 border-2`
-        }
+          transition delay-150 duration-[5000ms] cursor-pointer relative top-1/2 h-min w-min -left-5 rounded-full bg-white border-black border-opacity-20 border-2`}
       />
       <section className="m-0 flex-col gap-0 items-start absolute right-0 w-full justify-center">
-        <h2 className="pl-10 text text-2xl font-semibold">
-          Notificaciones
-        </h2>
+        <h2 className="pl-10 text text-2xl font-semibold">Notificaciones</h2>
         <div className="border-b-1.5 border-opacity-30 border-black flex mt-10 gap-0 flex-col items-start justify-center">
           {notifications.map((notification) => (
             <NotificationItem
@@ -75,5 +71,5 @@ export default function NotificationPanel({
         </div>
       </section>
     </div>
-  )
+  );
 }

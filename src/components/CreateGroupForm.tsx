@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { LuLock, LuUsers } from 'react-icons/lu';
 import { useAuth } from '../hooks/useAuth.ts';
 import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const formSchema = z.object({
   name: z
@@ -18,7 +19,14 @@ const formSchema = z.object({
 type InputType = z.infer<typeof formSchema>;
 
 export default function CreateGroupForm({ onClose }: { onClose: () => void }) {
-  const { handleSubmit, control } = useForm<InputType>();
+  const {
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+  } = useForm<InputType>({
+    resolver: zodResolver(formSchema),
+  });
   const auth = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -43,12 +51,18 @@ export default function CreateGroupForm({ onClose }: { onClose: () => void }) {
         onClose();
       } else {
         const error = await res.text();
-        console.error(error);
+        handleError(error);
       }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleError = (error: string) => {
+    if (error == 'group/title-already-in-use') {
+      setError('name', { message: 'El nombre del grupo ya está en uso' });
     }
   };
 
@@ -58,21 +72,38 @@ export default function CreateGroupForm({ onClose }: { onClose: () => void }) {
         name="name"
         control={control}
         render={({ field }) => (
-          <Input {...field} label="Nombre del grupo" type="text" />
+          <Input
+            {...field}
+            label="Nombre del grupo"
+            type="text"
+            errorMessage={errors?.name?.message?.toString()}
+            isInvalid={!!errors?.name}
+          />
         )}
       />
       <Controller
         name="description"
         control={control}
         render={({ field }) => (
-          <Textarea {...field} label="Descripción" type="text" />
+          <Textarea
+            {...field}
+            label="Descripción"
+            type="text"
+            errorMessage={errors?.description?.message?.toString()}
+            isInvalid={!!errors?.description}
+          />
         )}
       />
       <Controller
         name="private"
         control={control}
         render={({ field: { onChange } }) => (
-          <Select label="Privacidad" onChange={onChange}>
+          <Select
+            label="Privacidad"
+            onChange={onChange}
+            isInvalid={!!errors?.private}
+            errorMessage={errors?.private?.message?.toString()}
+          >
             <SelectItem value="public" key="public" textValue="Público">
               <div className="flex items-center gap-3">
                 <LuUsers size={25} />
