@@ -18,7 +18,7 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
   const auth = useAuth();
 
   return (
-    <Navbar maxWidth="full" isBlurred className={"z-0"}>
+    <Navbar maxWidth="full" isBlurred className={'z-0'}>
       <NavbarBrand>
         <Image src={SSIcon} width={40} height={40} />
         <h1 className="font-bold text-2xl">ScholarSync</h1>
@@ -48,8 +48,13 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-        <button onClick={() => (console.log("openNotifications"))}>
-          <LuBell onClick={handleOpen} className="border-2  rounded-md border-black p-1 bg-gray-800 ml-5 " size={30} color={'white'} />
+        <button onClick={() => console.log('openNotifications')}>
+          <LuBell
+            onClick={handleOpen}
+            className="border-2  rounded-md border-black p-1 bg-gray-800 ml-5 "
+            size={30}
+            color={'white'}
+          />
         </button>
       </NavbarContent>
     </Navbar>

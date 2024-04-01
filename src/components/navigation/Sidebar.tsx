@@ -24,7 +24,7 @@ type Group = {
   title: string;
   description: string;
   isPrivate: boolean;
-}
+};
 
 export default function Sidebar() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -33,7 +33,9 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/v1/groups/getGroups?user_id=${user?.id}`);
+        const res = await fetch(
+          `http://localhost:8080/api/v1/groups/getGroups?user_id=${user?.id}`,
+        );
 
         if (res.ok) {
           const data = await res.json();
@@ -42,7 +44,7 @@ export default function Sidebar() {
       } catch (error) {
         console.error('Error fetching groups:', error);
       }
-    }
+    };
 
     fetchGroups();
   }, [user?.id]);
@@ -60,8 +62,12 @@ export default function Sidebar() {
       <div className="mt-2 flex gap-3 flex-col items-start justify-center">
         <h2 className="text">Mis grupos</h2>
         {groups.map((group) => (
-          <Link className="hover:bg-foreground-200 w-full rounded-xl p-2 flex" to={`/group/${group.id}`} key={group.id}>
-            <User avatarProps={{color: 'primary'}} name={group.title}/>
+          <Link
+            className="hover:bg-foreground-200 w-full rounded-xl p-2 flex"
+            to={`/group/${group.id}`}
+            key={group.id}
+          >
+            <User avatarProps={{ color: 'primary' }} name={group.title} />
           </Link>
         ))}
         <CreateGroupModal />

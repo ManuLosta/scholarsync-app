@@ -6,18 +6,20 @@ import NotificationPanel from './navigation/NotificationPanel.tsx';
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
-  const handleOpen = () => {setIsOpen(!isOpen)}
+  const handleOpen = () => {
+    setIsOpen(!isOpen);
+  };
   return (
     <>
       <div className="flex flex-row">
         <div className="flex flex-col w-full">
-          <Appbar handleOpen={handleOpen}/>
+          <Appbar handleOpen={handleOpen} />
           <div className="flex flex-row">
-            <Sidebar  />
+            <Sidebar />
             {children}
           </div>
         </div>
-        <NotificationPanel isOpen={isOpen} handleOpen={handleOpen}/>
+        <NotificationPanel isOpen={isOpen} handleOpen={handleOpen} />
       </div>
     </>
   );
