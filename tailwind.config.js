@@ -11,6 +11,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Space Grotesk', 'sans-serif'],
+        lato: ['Lato', 'sans-serif'],
       },
     },
   },
