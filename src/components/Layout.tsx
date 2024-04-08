@@ -1,14 +1,15 @@
 import Appbar from './navigation/Appbar.tsx';
 import Sidebar from './navigation/Sidebar.tsx';
-import React from 'react';
+import React, { useState } from 'react';
 import NotificationPanel from './navigation/NotificationPanel.tsx';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleOpen = () => {
     setIsOpen(!isOpen);
   };
+
   return (
     <>
       <div className="flex flex-row">

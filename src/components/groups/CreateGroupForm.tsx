@@ -2,7 +2,7 @@ import { Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { LuLock, LuUsers } from 'react-icons/lu';
-import { useAuth } from '../hooks/useAuth.ts';
+import { useAuth } from '../../hooks/useAuth.ts';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 

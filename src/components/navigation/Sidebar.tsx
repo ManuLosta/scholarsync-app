@@ -1,6 +1,6 @@
 import { LuCalendar, LuHome } from 'react-icons/lu';
 import NavItem from './NavItem.tsx';
-import CreateGroupModal from '../CreateGroupModal.tsx';
+import CreateGroupModal from '../groups/CreateGroupModal.tsx';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { User } from '@nextui-org/react';
@@ -50,7 +50,7 @@ export default function Sidebar() {
   }, [user?.id]);
 
   return (
-    <div className="min-w-[280px] border-foreground-200 flex flex-col p-5 gap-3 rounded-xl bg-foreground-50 m-6">
+    <div className="min-w-[280px] border-foreground-200 flex flex-col p-5 gap-3 rounded-xl m-6">
       {navItems.map((item, index) => (
         <NavItem
           key={index}
