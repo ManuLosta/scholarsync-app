@@ -30,14 +30,18 @@ export default function NotificationPanel({
           <h2 className="mt-1 text-2xl font-semibold">Notificaciones</h2>
         </div>
         <div className="flex mt-6 gap-0 flex-col items-start justify-center">
-          {notifications.map((notification) => (
+          {notifications.length > 0 ? notifications.map((notification) => (
             <NotificationItem
               key={notification.id}
               id={notification.id}
               from={notification.from}
               created_at={notification.created_at}
             />
-          ))}
+          )) : (
+            <div className="flex items-center justify-center mt-10 w-full">
+              <p>No hay notificaciones</p>
+            </div>
+          )}
         </div>
       </section>
     </aside>
