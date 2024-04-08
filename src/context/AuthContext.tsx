@@ -5,6 +5,7 @@ interface AuthContextType {
   setSessionId: React.Dispatch<React.SetStateAction<string | null>>;
   user: UserInfo | null;
   logOut: () => void;
+  loading: boolean;
 }
 
 type UserInfo = {
@@ -19,6 +20,7 @@ const defaultContext: AuthContextType = {
   setSessionId: () => {},
   user: null,
   logOut: () => {},
+  loading: true,
 };
 
 export const AuthContext = createContext<AuthContextType>(defaultContext);
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.getItem('sessionId') || null,
   );
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const validateSession = async () => {
@@ -58,7 +61,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSessionId(null);
       }
     };
-    validateSession().then(() => console.log('Session validated'));
+    setLoading(true);
+    validateSession().then(() => setLoading(false));
   }, [sessionId]);
 
   const logOut = () => {
@@ -68,7 +72,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ sessionId, setSessionId, user, logOut }}>
+    <AuthContext.Provider
+      value={{ sessionId, setSessionId, user, logOut, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );
