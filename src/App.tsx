@@ -5,6 +5,7 @@ import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import ProtectedRoutes from './routes/ProtectedRoutes.tsx';
+import User from './pages/User.tsx'
 
 export default function App() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function App() {
         <Routes>
           <Route element={<ProtectedRoutes />}>
             <Route path="/" element={<Home />} />
+            <Route path="/user/:id" element={<User />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
