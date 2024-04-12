@@ -17,7 +17,7 @@ export default function NotificationItem({
   created_at: string;
 }) {
   const notifications = useNotifications();
-  const [isVisible, setIsVisible] = useState<boolean>(true)
+  const [isVisible, setIsVisible] = useState<boolean>(true);
 
   const date: Date = new Date(created_at);
 
@@ -29,8 +29,8 @@ export default function NotificationItem({
     setIsVisible(false);
     setTimeout(() => {
       action(id);
-    }, 300)
-  }
+    }, 300);
+  };
 
   return (
     <AnimatePresence>
@@ -38,21 +38,26 @@ export default function NotificationItem({
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ x: 50, opacity: 0 }}
-          className="flex flex-col gap-4 items-center border-b p-3">
+          className="flex flex-col gap-4 items-center border-b p-3"
+        >
           <div className="flex gap-4">
             <div className="rounded-full bg-primary p-2 text-white">
               <LuUserPlus size={32} />
             </div>
             <div>
               <p>
-                <span className="font-bold">@{from}</span> ha enviado una solicitud
-                de amistad.
+                <span className="font-bold">@{from}</span> ha enviado una
+                solicitud de amistad.
               </p>
               <p className="text-foreground-600">{createdAt}</p>
             </div>
           </div>
           <div className="w-full flex gap-3 justify-end">
-            <Button onPress={() => handleChange(notifications.rejectFriendRequest)}>Rechazar</Button>
+            <Button
+              onPress={() => handleChange(notifications.rejectFriendRequest)}
+            >
+              Rechazar
+            </Button>
             <Button
               color="primary"
               onPress={() => handleChange(notifications.acceptFriendRequest)}

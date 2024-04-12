@@ -13,6 +13,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@nextui-org/react": "^2.2.10",
+    "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "framer-motion": "^11.0.22",
     "localforage": "^1.10.0",

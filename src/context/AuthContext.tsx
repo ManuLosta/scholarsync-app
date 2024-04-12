@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
+import api from '../api.ts';
 
 interface AuthContextType {
   sessionId: string | null;
@@ -33,36 +34,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const validateSession = async () => {
-      try {
-        const res = await fetch('http://localhost:8080/api/v1/auth/refresh', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ sessionId }),
-        });
-
-        if (res.ok) {
-          const user = await res.json();
-          setUser({
-            username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            id: user.id.toString(),
-          });
-        } else {
-          localStorage.removeItem('sessionId');
-          setSessionId(null);
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Error validating session:', error);
-        setSessionId(null);
-      }
-    };
     setLoading(true);
-    validateSession().then(() => setLoading(false));
+    api
+      .post('auth/refresh', {
+        sessionId,
+      })
+      .then((res) => {
+        const fetchUser = res.data;
+        setUser(fetchUser);
+      })
+      .catch((err) => {
+        localStorage.removeItem('sessionId');
+        setSessionId(null);
+        setUser(null);
+        console.error(err);
+      })
+      .finally(() => setLoading(false));
   }, [sessionId]);
 
   const logOut = () => {

@@ -5,7 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { LuCheck, LuEye, LuEyeOff } from 'react-icons/lu';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
+import api from '../../api.ts';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -19,7 +20,6 @@ type InputType = z.infer<typeof formSchema>;
 export default function LoginForm() {
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [complete, setComplete] = useState(false);
   const {
     handleSubmit,
     control,
@@ -34,32 +34,19 @@ export default function LoginForm() {
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     setLoading(true);
 
-    try {
-      const res = await fetch('http://localhost:8080/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      setLoading(false);
-
-      if (res.ok) {
-        const sessionId = await res.text();
+    api
+      .post('auth/login', data)
+      .then((res) => {
+        const sessionId = res.data;
         localStorage.setItem('sessionId', sessionId);
         auth.setSessionId(sessionId);
-        setComplete(true);
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
-      } else {
-        const error = await res.text();
+        navigate('/');
+      })
+      .catch((err) => {
+        const error = err.data;
         handleError(error);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleError = (error: string) => {
@@ -116,12 +103,7 @@ export default function LoginForm() {
             />
           )}
         />
-        <Button
-          isLoading={loading}
-          color={!complete ? 'primary' : 'success'}
-          type="submit"
-        >
-          {complete && <LuCheck />}
+        <Button isLoading={loading} color="primary" type="submit">
           Iniciar Sesión
         </Button>
       </form>

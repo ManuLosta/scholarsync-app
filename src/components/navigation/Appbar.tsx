@@ -31,7 +31,11 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="me-3">
-          <Badge isInvisible={notifications.length == 0} color="danger" content={notifications.length}>
+          <Badge
+            isInvisible={notifications.length == 0}
+            color="danger"
+            content={notifications.length}
+          >
             <Tooltip content="Notificaciones" closeDelay={200}>
               <Button
                 className="text-foreground border-none"

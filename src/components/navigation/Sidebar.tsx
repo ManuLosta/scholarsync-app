@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { User } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
+import api from '../../api.ts';
 
 const navItems = [
   {
@@ -31,22 +32,15 @@ export default function Sidebar() {
   const { user } = useAuth();
 
   useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8080/api/v1/groups/getGroups?user_id=${user?.id}`,
-        );
-
-        if (res.ok) {
-          const data = await res.json();
-          setGroups(data);
-        }
-      } catch (error) {
-        console.error('Error fetching groups:', error);
-      }
-    };
-
-    fetchGroups();
+    api
+      .get(`groups/getGroups?user_id=${user?.id}`)
+      .then((res) => {
+        const data = res.data;
+        setGroups(data);
+      })
+      .catch((err) => {
+        console.error('Error fetching groups', err);
+      });
   }, [user?.id]);
 
   return (

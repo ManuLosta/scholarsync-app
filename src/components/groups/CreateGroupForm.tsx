@@ -5,6 +5,7 @@ import { LuLock, LuUsers } from 'react-icons/lu';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import api from '../../api.ts';
 
 const formSchema = z.object({
   name: z
@@ -32,32 +33,22 @@ export default function CreateGroupForm({ onClose }: { onClose: () => void }) {
 
   const onSubmit = async (data: InputType) => {
     setLoading(true);
-    const body = JSON.stringify({
+
+    const body = {
       title: data.name,
       description: data.description,
       isPrivate: data.private === 'private',
       userId: auth.user?.id,
-    });
-    try {
-      const res = await fetch('http://localhost:8080/api/v1/groups/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: body,
-      });
+    };
 
-      if (res.ok) {
-        onClose();
-      } else {
-        const error = await res.text();
+    api
+      .post('groups/create', body)
+      .then(() => onClose())
+      .catch((err) => {
+        const error = err.data;
         handleError(error);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleError = (error: string) => {

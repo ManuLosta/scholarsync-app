@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
+import api from '../../api.ts';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -82,35 +83,18 @@ export default function RegisterForm() {
   const onSubmit = async (data: InputType) => {
     setLoading(true);
 
-    try {
-      const res = await fetch('http://localhost:8080/api/v1/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          username: data.username,
-          password: data.password,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          birthDate: data.birthDate,
-        }),
-      });
-
-      setLoading(false);
-
-      if (!res.ok) {
-        const error = await res.text();
-        handleError(error);
-      } else {
-        const message = await res.text();
-        console.log(message);
+    api
+      .post('auth/register', data)
+      .then((res) => {
+        const text = res.data;
+        console.log(text);
         navigate('/login');
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      })
+      .catch((err) => {
+        const error = err.text;
+        handleError(error);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleError = (error: string) => {
