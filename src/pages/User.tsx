@@ -1,32 +1,39 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { UserProfileProps, emptyUser } from './../context/ProfileContext';
-import {getUserProfile} from './../context/ProfileContext'
+import api from '../api.ts';
+import { Button } from '@nextui-org/react';
 
-
-
+type User = {
+  id: string
+  firstName: string;
+  lastName: string;
+  username: string;
+}
 
 export default function User() {
   const { id } = useParams();
-
-
-  const userId: UserProfileProps = {
-    id: `${id}`
-  }
-
-
-  const [data, setData] = useState(emptyUser);
+  const [user, setUser] = useState<User>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      setData(await getUserProfile(userId));
-    }
-    fetchData()  
-  
-    }, [id]);
+    api.get(`users/${id}`)
+      .then(res => {
+        const user: User = res.data;
+        setUser(user);
+      }).finally(() => setLoading(false))
 
+  }, [id]);
 
-
-
-  return <div>{data.firstName}</div>;
+ return loading ? (
+   <div>
+     Loading
+   </div>
+ ) : (
+    <div>
+      <h1>{user?.firstName} {user?.lastName}</h1>
+      <p>{user?.username}</p>
+      <Button>Agregar amigo</Button>
+      <Button>Invitar a grupo</Button>
+    </div>
+ )
 }
