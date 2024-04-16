@@ -10,7 +10,7 @@ import { LuPlus } from 'react-icons/lu';
 import CreateGroupForm from './CreateGroupForm.tsx';
 import { FaUsers } from 'react-icons/fa6';
 
-export default function CreateGroupModal() {
+export default function CreateGroupModal({ fetchGroups }: {fetchGroups: () => void}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -36,7 +36,7 @@ export default function CreateGroupModal() {
                 </div>
               </ModalHeader>
               <ModalBody>
-                <CreateGroupForm onClose={onClose} />
+                <CreateGroupForm onClose={onClose} onCreate={fetchGroups} />
               </ModalBody>
             </>
           )}
