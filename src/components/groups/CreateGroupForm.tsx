@@ -53,7 +53,8 @@ export default function CreateGroupForm({ onClose, onCreate }: PropsType) {
         onClose();
       })
       .catch((err) => {
-        const error = err.data;
+        const error = err.response.data;
+        console.error(err);
         handleError(error);
       })
       .finally(() => {

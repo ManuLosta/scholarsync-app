@@ -43,7 +43,7 @@ export default function LoginForm() {
         navigate('/');
       })
       .catch((err) => {
-        const error = err.data;
+        const error = err.response.data;
         handleError(error);
       })
       .finally(() => setLoading(false));
