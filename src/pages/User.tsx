@@ -5,18 +5,140 @@ import { Button } from '@nextui-org/react';
 import { useAuth } from '../hooks/useAuth.ts';
 
 
+type receivedFriendRequests = {
+  from_id: String
+  to_id: String
+}
 
 type User = {
-  userName: String;
-  firstName: String;
-  lastName: String;
-  friends: string[];
-  credits: Number;
-  questions: Number;
-  answer: Number;
-  groups: string[];
-  receivedFriendsRequest: string[] // Ids of who had send to the person a friend request. We need to check if we are there
+  firstName: String
+  lastName: String
+  userName: String
+  credits: Number
+  email: String
+  friends: User[]
+  id: String
+  receivedFriendRequests: receivedFriendRequests[]
+
 }
+
+
+function alreadyFriends(user: User, id: String) {
+
+  return user.friends.some((friend) => friend.id === id);
+   
+}
+
+function sendFriendRequest(settextForButton: CallableFunction, user: User | undefined, currentId: String | undefined){
+  
+  if(user == undefined || currentId == undefined){
+    return;
+  }
+
+  const data = {
+    from_id: currentId,
+    to_id: user?.id
+  }
+  
+  api
+  .post("friend-requests/send-friend-request", data)
+  .then(() => {
+
+    settextForButton("Pendiente")
+
+  })
+
+}
+
+function friendRequestAlreadySend(user: User, id: String){
+
+
+  const [friendRequest, setFriendRequest] = useState<receivedFriendRequests[]>();
+
+  function makerequest(setFriendRequest: CallableFunction){
+
+    api.get(`friend-requests/${id}/friend-requests`)
+
+    .then(res => {
+      
+      setFriendRequest(res.data);
+  
+    }).finally(() => {
+      
+    })
+
+
+  }
+
+  makerequest(setFriendRequest);
+
+  return friendRequest?.some((request) => request.from_id === id)
+
+}
+
+
+function aceptFriendRequest(user: User | undefined, id: String | undefined){
+
+}
+
+function userAlreadySendUsRequest(user: User, id: String){
+    // Todo implement
+    return false
+
+  }
+
+
+
+function setUpState(user: User | undefined, currentId: String | undefined, settextForButton: CallableFunction){
+
+  if ((user != undefined) && (currentId != undefined)){
+
+    if (alreadyFriends(user, currentId)) {
+
+      settextForButton("Quitar Amigo")  
+
+    }
+    else if (friendRequestAlreadySend(user, currentId)){
+
+      settextForButton("Pendiente")
+
+      return
+
+    }
+    else if (userAlreadySendUsRequest(user, currentId)) {
+        
+      settextForButton("Aceptar solicitud")
+
+
+    } else {settextForButton("Agregar amigo")}
+
+  }
+
+}
+
+function DeleteFriends(user: User | undefined, currentId: String | undefined){}
+
+function buntonEngine(user: User | undefined, currentId: String | undefined, settextForButton: CallableFunction, textForButton: String){
+  switch(textForButton){
+    case "Quitar Amigo":
+      DeleteFriends(user, currentId)
+      break;
+    case "Agregar amigo":
+      sendFriendRequest(settextForButton, user, currentId)
+      break;
+    case "Pendiente":
+    break;
+    case "Aceptar solicitud":
+      aceptFriendRequest(user, currentId);
+    break;
+  }
+
+  setUpState(user, currentId, settextForButton)
+
+
+}
+
+
 
 export default function User() {
   const { id } = useParams();
@@ -24,80 +146,29 @@ export default function User() {
   const [loading, setLoading] = useState(true);
   const [textForButton, settextForButton] = useState("Agregar amigo");
   const auth = useAuth();
-  const currentId = auth?.user?.id
-
+  const currentId = auth?.user?.id;
+ 
 
 
   useEffect(() => {
-    api.get(`users/profile/${id}`)
+    api.get(`users/${id}`)
       .then(res => {
         
-        const user: User = res.data;
-        
-        setUser(user);
+        setUser(res.data);
+        setUpState(user, currentId, settextForButton)
 
       }).finally(() => setLoading(false))
 
   }, [id]);
 
-  
-
-  function setFriendStateInUseState(){
-
-    // Set the FriendState
-    // notFriends -> Its not a friend
-    // friends -> Are friends
-    // pending -> pending request
-
-    if (currentId != undefined){
-
-      if (user?.friends.includes(currentId)){ 
-        settextForButton("Quitar Amigo")
-      }
-
-      else if (user?.receivedFriendsRequest.includes(currentId)) {
-        settextForButton("Cancelar solicitud")
-      
-      }
-
-    }
-
-
-  }
-
-
-
-
-  function sendFriendRequest(){
-      // Hacer la llamada para hacer el friend request
-      const data = {
-        "from_id": currentId,
-        "to_id": id
-      }
-      api
-      .post("friend-requests/send-friend-request", data)
-      .then((res) => {
-        const sessionId = res.data;
-        console.log(sessionId);
-      })
-
-  }
-
-  useEffect(() => {
-
-    setFriendStateInUseState()
-
-  }, [user?.receivedFriendsRequest, user?.friends]);
-
-
-
 
   return loading ? (
+    
     <div>
       Loading
     </div>
   ) : (
-    <div className='flex-1 gap-5'>
+    <div className='flex gap-5 column'>
       
       
     <h1>{user?.firstName} {user?.lastName}</h1>
@@ -108,21 +179,17 @@ export default function User() {
       <p>Puntos: {user?.credits.toString()}</p>
 
       <div>
-      <p>Amigos: {user?.friends.length.toString()} Preguntas: {user?.questions.toString()} Respuestas: {user?.answer.toString()}</p>
-  
+      <p>Amigos: {user?.friends.length.toString()} </p>
+    
       </div>
       
       <div>
         <h3>
           Grupos:
         </h3>
-        <div>
-            {user?.groups.map((str, index) => (
-              <Button key={index}>{str}</Button>
-            ))}
-        </div>
+
       </div>
-      <Button onClick={() => sendFriendRequest()} color='primary'>{textForButton}</Button>
+      <Button onClick={() => buntonEngine(user, currentId, settextForButton, textForButton)} color='primary'>{textForButton}</Button>
       <Button color='secondary' >Invitar a grupo</Button>
       
     </div>
