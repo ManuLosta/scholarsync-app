@@ -11,23 +11,24 @@ type receivedFriendRequests = {
 }
 
 type User = {
-  firstName: String
-  lastName: String
-  userName: String
-  credits: Number
-  email: String
-  friends: User[]
-  id: String
-  receivedFriendRequests: receivedFriendRequests[]
-
+  firstName: String;
+  lastName: String;
+  userName: String;
+  credits: Number;
+  email: String;
+  birthDate: String;
+  createdAt: String;
+  id: String;
+  receivedFriendRequests: receivedFriendRequests[];
+  friends: { [key: string]: string }; 
+  groups: { [key: string]: string };
 }
 
+const cases = [
+  "user/not-found", "friend-request/person-already-send-us-friend-request", "friend-request/already-sent", "user/already-a-friend", "user/can-send-request"
+]
 
-function alreadyFriends(user: User, id: String) {
 
-  return user.friends.some((friend) => friend.id === id);
-   
-}
 
 function sendFriendRequest(settextForButton: CallableFunction, user: User | undefined, currentId: String | undefined){
   
@@ -50,75 +51,41 @@ function sendFriendRequest(settextForButton: CallableFunction, user: User | unde
 
 }
 
-function friendRequestAlreadySend(user: User, id: String){
-
-
-  const [friendRequest, setFriendRequest] = useState<receivedFriendRequests[]>();
-
-  function makerequest(setFriendRequest: CallableFunction){
-
-    api.get(`friend-requests/${id}/friend-requests`)
-
-    .then(res => {
-      
-      setFriendRequest(res.data);
+function setUpState(user: User | undefined, currentId: String | undefined, settextForButton: CallableFunction, state: String | undefined, cases: String[]){
   
-    }).finally(() => {
-      
-    })
+
+  if ((user != undefined) && (currentId != undefined) && (state != undefined)){
+  
+    
+    console.log(state)
 
 
-  }
-
-  makerequest(setFriendRequest);
-
-  return friendRequest?.some((request) => request.from_id === id)
-
-}
-
-
-function aceptFriendRequest(user: User | undefined, id: String | undefined){
-
-}
-
-function userAlreadySendUsRequest(user: User, id: String){
-    // Todo implement
-    return false
-
-  }
-
-
-
-function setUpState(user: User | undefined, currentId: String | undefined, settextForButton: CallableFunction){
-
-  if ((user != undefined) && (currentId != undefined)){
-
-    if (alreadyFriends(user, currentId)) {
-
-      settextForButton("Quitar Amigo")  
-
-    }
-    else if (friendRequestAlreadySend(user, currentId)){
-
-      settextForButton("Pendiente")
-
-      return
-
-    }
-    else if (userAlreadySendUsRequest(user, currentId)) {
-        
-      settextForButton("Aceptar solicitud")
-
-
-    } else {settextForButton("Agregar amigo")}
+     switch(state){
+      case cases[0]:
+        console.log("user-not-foud")
+        break;
+      case cases[1]:
+        settextForButton("aceptar-Solicitud")
+        break;
+      case cases[2]:
+        settextForButton("Pendiente")
+      break;
+      case cases[3]:
+        settextForButton("quitar amigo")
+        break;
+      default:
+        settextForButton("agregar amigo")
+     }
 
   }
 
-}
+} 
+
+//function sendFriendRequest(user: User | undefined, currentId: String | undefined){ console.log("solicitud enviada")}
 
 function DeleteFriends(user: User | undefined, currentId: String | undefined){}
 
-function buntonEngine(user: User | undefined, currentId: String | undefined, settextForButton: CallableFunction, textForButton: String){
+function buntonEngine(user: User | undefined, currentId: String | undefined, settextForButton: CallableFunction, textForButton: String, state: String | undefined, cases: String[]){
   switch(textForButton){
     case "Quitar Amigo":
       DeleteFriends(user, currentId)
@@ -129,11 +96,11 @@ function buntonEngine(user: User | undefined, currentId: String | undefined, set
     case "Pendiente":
     break;
     case "Aceptar solicitud":
-      aceptFriendRequest(user, currentId);
+      //aceptFriendRequest(user, currentId);
     break;
   }
 
-  setUpState(user, currentId, settextForButton)
+  setUpState(user, currentId, settextForButton, state, cases)
 
 
 }
@@ -142,34 +109,55 @@ function buntonEngine(user: User | undefined, currentId: String | undefined, set
 
 export default function User() {
   const { id } = useParams();
+  console.log(id)
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
   const [textForButton, settextForButton] = useState("Agregar amigo");
   const auth = useAuth();
   const currentId = auth?.user?.id;
- 
+  const [requestState, setRequestState] = useState<String>();  
+
+
 
 
   useEffect(() => {
-    api.get(`users/${id}`)
+    
+    console.log(currentId)
+    
+      api.get(`users/profile/${id}`)
       .then(res => {
         
-        setUser(res.data);
-        setUpState(user, currentId, settextForButton)
 
-      }).finally(() => setLoading(false))
+        setUser(res.data);
+        //setUpState(user, currentId, settextForButton, requestState, cases)
+        console.log(res.data)
+      })
+
+      api.get(`friend-requests/get-friendRequestState/${currentId}/${id}`)
+      .then(res => {
+        
+        setRequestState(res.data);
+        console.log(res.data)
+  
+      })
+      .finally(() => setLoading(false))
+
 
   }, [id]);
 
 
+  
+
+
   return loading ? (
-    
+
     <div>
       Loading
     </div>
   ) : (
+    
     <div className='flex gap-5 column'>
-      
+     
       
     <h1>{user?.firstName} {user?.lastName}</h1>
       
@@ -179,7 +167,7 @@ export default function User() {
       <p>Puntos: {user?.credits.toString()}</p>
 
       <div>
-      <p>Amigos: {user?.friends.length.toString()} </p>
+      <p>Amigos: {user?.friends.length.toString()}</p>
     
       </div>
       
@@ -189,7 +177,7 @@ export default function User() {
         </h3>
 
       </div>
-      <Button onClick={() => buntonEngine(user, currentId, settextForButton, textForButton)} color='primary'>{textForButton}</Button>
+      <Button onClick={() => buntonEngine(user, currentId, settextForButton, textForButton, requestState, cases)} color='primary'>{textForButton}</Button>
       <Button color='secondary' >Invitar a grupo</Button>
       
     </div>
