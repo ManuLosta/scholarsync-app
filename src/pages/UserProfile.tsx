@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api.ts';
-import { Button, CircularProgress } from '@nextui-org/react';
+import { CircularProgress } from '@nextui-org/react';
+import { User } from '@nextui-org/react';
 import { useAuth } from '../hooks/useAuth.ts';
 import FriendStatusButton from '../components/FriendStatusButton.tsx';
 
@@ -18,10 +19,10 @@ interface Group {
   [key: string]: unknown;
 }
 
-export type User = {
+export type UserProfile = {
   firstName: string;
   lastName: string;
-  userName: string;
+  username: string;
   credits: number;
   email: string;
   birthDate: string;
@@ -32,9 +33,9 @@ export type User = {
   groups: Group[];
 }
 
-export default function User() {
+export default function UserProfile() {
   const { id } = useParams();
-  const [user, setUser] = useState<User>();
+  const [UserProfile, setUserProfile] = useState<UserProfile>();
   const [loading, setLoading] = useState(true);
   const auth = useAuth();
   const currentId = auth?.user?.id;
@@ -46,17 +47,18 @@ export default function User() {
   useEffect(() => {
     api.get(`users/profile/${id}`)
       .then(res => {
-        setUser(res.data);
+        setUserProfile(res.data);
       })
       .catch((err) => {
         console.log(err);
       }
-    ).finally(()=> setLoading(false))
+    ).finally(()=> {setLoading(false)})
 
 
+    
 }, [id]);
 
-
+  console.log(UserProfile)
 
   return loading ? (
 
@@ -64,23 +66,29 @@ export default function User() {
       <CircularProgress />
     </div>
   ) : (
-    <div className="flex gap-5 flex-col">
-      <h1>{user?.firstName} {user?.lastName}</h1>
-      <p>{user?.userName}</p>
+    <div className="flex gap-8 flex-col justify-center align-center ml-20 mt-9">
       <div>
-        <p>Puntos: {user?.credits?.toString()}</p>
-        <p>Amigos: {user?.friends?.length?.toString()}</p>
+      <User
+          
+          name={`${UserProfile?.firstName} ${UserProfile?.lastName}`}
+          description={`@${UserProfile?.username}`}
+        />
+      </div>
+
+
+      <div className="flex gap-9 align-center">
+        
+        <p  className="text-2xl" >Puntos:  {UserProfile?.credits?.toString()}</p>
+        <p className="text-2xl">Amigos:  {UserProfile?.friends?.length?.toString()}</p>
       </div>
       <div>
-        <h3>
+        <p className="text-2xl">
           Grupos:
-          {user?.groups.map(group => (
-            <Button key={group.id}>{group.name}</Button>
-          ))}
-        </h3>
+
+        </p>
       </div>
       
-      <FriendStatusButton userId={user?.id} myId={currentId} />
+      <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
     </div>
   );
 }

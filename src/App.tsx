@@ -5,7 +5,7 @@ import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import ProtectedRoutes from './routes/ProtectedRoutes.tsx';
-import User from './pages/User.tsx';
+import User from './pages/UserProfile.tsx';
 
 export default function App() {
   const navigate = useNavigate();
