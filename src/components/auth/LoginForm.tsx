@@ -2,7 +2,7 @@ import { Button, Input, Link } from '@nextui-org/react';
 import { z } from 'zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
@@ -28,8 +28,15 @@ export default function LoginForm() {
   } = useForm<InputType>({
     resolver: zodResolver(formSchema),
   });
-  const navigate = useNavigate();
   const auth = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+   if (auth?.loading) {
+     setLoading(false);
+     navigate('/');
+   }
+  }, [auth?.loading] );
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     setLoading(true);
@@ -40,13 +47,11 @@ export default function LoginForm() {
         const sessionId = res.data;
         localStorage.setItem('sessionId', sessionId);
         auth.setSessionId(sessionId);
-        navigate('/');
       })
       .catch((err) => {
         const error = err.response.data;
         handleError(error);
       })
-      .finally(() => setLoading(false));
   };
 
   const handleError = (error: string) => {
