@@ -11,12 +11,13 @@ export default function FriendStatusButton({ userId, myId }: { userId: string | 
   const [loading, setLoading] = useState(true);
   const [requestState, setRequestState] = useState<string>("");
   const [notificationId, setNotificationId] = useState("");
+ 
 
   const handleChange = (action: (notificationId: string) => void) => {
     
-    setTimeout(() => {
+    
       action(notificationId);
-    }, 300);
+    
   };
 
 
@@ -34,16 +35,20 @@ export default function FriendStatusButton({ userId, myId }: { userId: string | 
         // Quizas en el futuro, eliminar solicitud
         break;
       case "friend-request/received":
-        if (acept) aceptFriendRequest()
+        if (acept) {
+          aceptFriendRequest()
+        }
         else {
         rejectFriendRequest()
-        setRequestState("friend-request/not-sent")
       }
+      setRequestState("friend-request/not-sent")
         break;
     }
-    if(acept){
+    setTimeout(() => {
       makerequesState();
-    }
+    }, 400);
+      
+    
     
   }
 
