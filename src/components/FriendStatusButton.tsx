@@ -3,20 +3,25 @@ import { useEffect, useState } from 'react';
 import api from '../api.ts';
 import { Button, CircularProgress } from '@nextui-org/react';
 
-
+import { useNotifications } from "./../hooks/useNotifications.ts";
 
 export default function FriendStatusButton({ userId, myId }: { userId: string | undefined, myId: string | undefined}) {
   
-  
+  const notifications = useNotifications();
   const [loading, setLoading] = useState(true);
   const [requestState, setRequestState] = useState<string>("");
+  const [notificationId, setNotificationId] = useState("");
+
+  const handleChange = (action: (notificationId: string) => void) => {
+    
+    setTimeout(() => {
+      action(notificationId);
+    }, 300);
+  };
+
 
   
-
-  
-
-  
-  function buttonEngine() {
+  function buttonEngine(acept?: boolean) {
     switch (requestState) {
       case "friend-request/not-sent":
         sendFriendRequest();
@@ -29,13 +34,21 @@ export default function FriendStatusButton({ userId, myId }: { userId: string | 
         // Quizas en el futuro, eliminar solicitud
         break;
       case "friend-request/received":
+        if (acept) aceptFriendRequest()
+        else {
+        rejectFriendRequest()
+        setRequestState("friend-request/not-sent")
+      }
         break;
     }
-    makerequesState();
+    if(acept){
+      makerequesState();
+    }
+    
   }
 
   function getButtonText(id: string): string {
-    console.log("requestState:", requestState)
+    
     switch (id) {
       case "friend-request/sent":
         return "Pendiente"
@@ -64,6 +77,20 @@ export default function FriendStatusButton({ userId, myId }: { userId: string | 
       .catch(err => console.error(err));
   }
 
+  
+  function aceptFriendRequest(){
+    
+    handleChange(notifications.acceptFriendRequest)
+    setRequestState("friend-request/already-friends")
+  }
+
+  function rejectFriendRequest(){
+    
+    handleChange(notifications.rejectFriendRequest)
+    
+  }
+
+
 
   function makerequesState() {
 
@@ -86,11 +113,15 @@ export default function FriendStatusButton({ userId, myId }: { userId: string | 
         .post('friend-requests/get-request-status', data)
         .then((res) => {
           setRequestState(res.data.status)
+          if (res.data.status == "friend-request/received"){
+            setNotificationId(res.data.notification_id)
+          }
+          
           
         })
         .catch(err => console.error(err));
     }
-    
+    console.log(requestState)
 
 
   }
@@ -108,12 +139,21 @@ export default function FriendStatusButton({ userId, myId }: { userId: string | 
   
   
   
-  return loading ? (<CircularProgress />) : 
-  ( <div>
-        <Button onClick={() => buttonEngine()} color="primary">{getButtonText(requestState)}</Button>
-    </div>
-  
-  );
+return (
+  loading ? 
+    (<CircularProgress />) 
+  : 
+    (
+      <div>
+        <Button onClick={() => buttonEngine(true)} color="primary">{getButtonText(requestState)}</Button>
+        {requestState === "friend-request/received" ? 
+          (<Button color='danger' onClick={() => buttonEngine(false)} className='ml-5'> Rechazar solicitud</Button>) 
+        : 
+          null
+        }
+      </div>
+    )
+);
 
 
 
