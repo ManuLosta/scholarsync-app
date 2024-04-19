@@ -11,11 +11,11 @@ type receivedFriendRequests = {
 }
 
 interface Friend {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface Group {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 type User = {
@@ -40,10 +40,6 @@ export default function User() {
   const currentId = auth?.user?.id;
   const [requestState, setRequestState] = useState<string>("");
 
-  const cases = [
-    'user/not-found', 'friend-request/person-already-send-us-friend-request', 'friend-request/already-sent', 'user/already-a-friend', 'user/can-send-request',
-  ];
-
 
   function sendFriendRequest() {
     const data = {
@@ -54,7 +50,7 @@ export default function User() {
     api
       .post('friend-requests/send-friend-request', data)
       .then(() => {
-        setRequestState(cases[2])
+        setRequestState("friend-request/sent")
       })
       .catch(err => console.error(err));
   }
@@ -67,72 +63,55 @@ export default function User() {
     // El me envio una request a mi
     // la request esta pendiente
     // no son amigos
-
-    // Son amigos:
-
-    if (user?.friends.some(friend => friend.id === currentId)) {
-      setRequestState(cases[3]);
-      return;
+    
+    
+    if (currentId == undefined || id == undefined){
+      return
+    }else {
+      const data = {
+        from_id: currentId,
+        to_id: id,
+      };
+      console.log(data)
+      api
+        .post('friend-requests/get-request-status', data)
+        .then((res) => {
+          setRequestState(res.data.status)
+          
+        })
+        .catch(err => console.error(err));
     }
+    
 
-    // El me envio una request a mi
-    api.get(`friend-requests/${currentId}/friend-requests`)
-      .then(res => {
-        const requests = res.data;
-        for (const request of requests) {
-          if (request.from == user?.id) {
-            setRequestState(cases[1]);
-            break;
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
 
-    // la request esta pendiente
-    api.get(`friend-requests/${id}/friend-requests`)
-      .then(res => {
-        const data = res.data;
-        for (const objeto of data) {
-          if (objeto.from == currentId) {
-            setRequestState(cases[2]);
-            break;
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    setRequestState(cases[4]);
   }
 
   function buttonEngine() {
     switch (requestState) {
-      case cases[4]:
+      case "friend-request/not-sent":
         sendFriendRequest();
         break;
-      case cases[3]:
+      case "friend-request/already-friends":
         // Eliminar amigo Implementar en el futuro
         break;
-      case cases[2]:
+      case "friend-request/sent":
         // Pendiente, no hace nada, 
         // Quizas en el futuro, eliminar solicitud
         break;
-      case cases[1]:
+      case "friend-request/received":
         break;
     }
     makerequesState();
   }
 
   function getButtonText(id: string): string {
+    console.log("requestState:", requestState)
     switch (id) {
-      case "friend-request/already-sent":
+      case "friend-request/sent":
         return "Pendiente"
-      case "friend-request/person-already-send-us-friend-request":
+      case "friend-request/received":
         return "Aceptar solicitud"
-      case "user/already-a-friend":
+      case "friend-request/already-friends":
         return "Quitar amigo"
       default:
         return "Agregar amigo"
@@ -146,13 +125,17 @@ export default function User() {
       })
       .catch((err) => {
         console.log(err);
-      })
-  }, [id]);
+      }
+  )}, [id]);
 
 
   useEffect(() => {
-    makerequesState()
-    setLoading(false)
+    
+      
+      makerequesState()
+      setLoading(false)
+    
+
   }, [user]);
 
 
