@@ -32,11 +32,11 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
-   if (auth?.loading) {
-     setLoading(false);
-     navigate('/');
-   }
-  }, [auth?.loading] );
+    if (auth?.loading) {
+      setLoading(false);
+      navigate('/');
+    }
+  }, [auth?.loading]);
 
   const onSubmit: SubmitHandler<InputType> = async (data) => {
     setLoading(true);
@@ -50,8 +50,9 @@ export default function LoginForm() {
       })
       .catch((err) => {
         const error = err.response.data;
+        setLoading(false);
         handleError(error);
-      })
+      });
   };
 
   const handleError = (error: string) => {

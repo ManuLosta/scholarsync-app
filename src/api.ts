@@ -8,6 +8,6 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('sessionId');
   config.headers.Authorization = `Bearer ${token}`;
   return config;
-})
+});
 
 export default api;

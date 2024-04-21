@@ -19,7 +19,6 @@ export default function UserDropdown() {
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
-        
         <DropdownItem
           key="logout"
           className="text-danger"
@@ -28,7 +27,6 @@ export default function UserDropdown() {
         >
           Cerrar sesión
         </DropdownItem>
-
       </DropdownMenu>
     </Dropdown>
   );

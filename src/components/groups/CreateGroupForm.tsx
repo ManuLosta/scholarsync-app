@@ -8,9 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import api from '../../api.ts';
 
 type PropsType = {
-  onClose: () => void
-  onCreate: () => void
-}
+  onClose: () => void;
+  onCreate: () => void;
+};
 
 const formSchema = z.object({
   name: z

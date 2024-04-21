@@ -18,7 +18,7 @@ export default function GroupList() {
   const auth = useAuth();
 
   useEffect(() => {
-    fetchGroups(auth?.user?.id)
+    fetchGroups(auth?.user?.id);
   }, [auth?.user?.id]);
 
   const fetchGroups = (userId: string | undefined) => {
@@ -31,27 +31,27 @@ export default function GroupList() {
       })
       .catch((err) => {
         console.error('Error fetching groups', err);
-      }).finally(() => setLoading(false));
-  }
+      })
+      .finally(() => setLoading(false));
+  };
 
   return (
     <div className="mt-2 flex gap-3 flex-col items-start justify-center">
       <h2 className="text">Mis grupos</h2>
       {loading ? (
-        <div>
-          Loading
-        </div>
-      ) : groups.map((group) => (
-        <Link
-          className="hover:bg-foreground-200 w-full rounded-xl p-2 flex"
-          to={`/group/${group.id}`}
-          key={group.id}
-        >
-          <User avatarProps={{ color: 'primary' }} name={group.title} />
-        </Link>
-      ))}
+        <div>Loading</div>
+      ) : (
+        groups.map((group) => (
+          <Link
+            className="hover:bg-foreground-200 w-full rounded-xl p-2 flex"
+            to={`/group/${group.id}`}
+            key={group.id}
+          >
+            <User avatarProps={{ color: 'primary' }} name={group.title} />
+          </Link>
+        ))
+      )}
       <CreateGroupModal fetchGroups={() => fetchGroups(auth?.user?.id)} />
     </div>
-
-  )
+  );
 }
