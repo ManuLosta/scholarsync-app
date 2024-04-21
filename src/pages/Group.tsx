@@ -4,13 +4,18 @@ import api from '../api.ts';
 import { Avatar, Button, Skeleton } from '@nextui-org/react';
 import MemberList from '../components/groups/MemberList.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
+import InviteToGroup from '../components/groups/InviteToGroup.tsx';
 
 type Group = {
   createdBy: string;
   title: string;
   description: string;
+  isPrivate: boolean;
+  invitations: {
+    user_id: string
+  }[],
   users: {
-    users: string;
+    id: string;
     username: string;
     firstName: string;
     lastName: string;
@@ -59,14 +64,12 @@ export default function Group() {
           </div>
         </div>
         <div>
-          {group?.createdBy == user?.id && (
-            <Button>Invitar</Button>
+          {(group?.createdBy == user?.id || !group?.isPrivate) && (
+            <InviteToGroup groupId={groupId || ""} members={group?.users || []} invitations={group?.invitations || []} />
           )}
-
-          {group?.users.some(u => u.users == user?.id && u.users != group?.createdBy) && (
+          {group?.users.some(u => u.id == user?.id && u.id != group?.createdBy) && (
             <Button>Dejar</Button>
-          )
-          }
+          )}
         </div>
       </div>
     </div>

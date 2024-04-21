@@ -5,7 +5,7 @@ import { LuUsers } from 'react-icons/lu';
 
 type propsType = {
   users: {
-    users: string;
+    id: string;
     username: string;
     firstName: string;
     lastName: string;
@@ -27,20 +27,19 @@ export default function MemberList({ users }: propsType) {
               <h1>Miembros</h1>
             </ModalHeader>
             <ModalBody>
-              <div>
+              <div className="flex gap-3">
                 {users?.map(user => (
-                  <Link to={`/user/${user.users == myId ? "me" : user.users}`}>
+                  <Link to={`/user/${user.id == myId ? "me" : user.id}`} key={user.id}>
                     <div className="flex gap-3 items-center">
                       <Avatar name={user.firstName} />
                       <div>
-                        <p className="font-bold text-lg">{user.firstName} {user.lastName}
-                          {myId == user.users && <Chip className="ml-2" variant="flat" color="primary">Tú</Chip>}
-                        </p>
+                        <div className="font-bold text-lg">{user.firstName} {user.lastName}
+                          <span>{myId == user.id && <Chip className="ml-2" variant="flat" color="primary">Tú</Chip>}</span>
+                        </div>
                         <p className="font-light">@{user.username}</p>
                       </div>
                     </div>
                   </Link>
-
                 ))}
               </div>
             </ModalBody>
