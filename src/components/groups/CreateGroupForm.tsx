@@ -7,6 +7,11 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import api from '../../api.ts';
 
+type PropsType = {
+  onClose: () => void
+  onCreate: () => void
+}
+
 const formSchema = z.object({
   name: z
     .string()
@@ -19,7 +24,7 @@ const formSchema = z.object({
 
 type InputType = z.infer<typeof formSchema>;
 
-export default function CreateGroupForm({ onClose }: { onClose: () => void }) {
+export default function CreateGroupForm({ onClose, onCreate }: PropsType) {
   const {
     handleSubmit,
     control,
@@ -43,12 +48,18 @@ export default function CreateGroupForm({ onClose }: { onClose: () => void }) {
 
     api
       .post('groups/create', body)
-      .then(() => onClose())
+      .then(() => {
+        onCreate();
+        onClose();
+      })
       .catch((err) => {
-        const error = err.data;
+        const error = err.response.data;
+        console.error(err);
         handleError(error);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleError = (error: string) => {

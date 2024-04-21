@@ -91,14 +91,13 @@ export default function RegisterForm() {
         navigate('/login');
       })
       .catch((err) => {
-        const error = err.text;
+        const error = err.response.data;
         handleError(error);
       })
       .finally(() => setLoading(false));
   };
 
   const handleError = (error: string) => {
-    console.log(error);
     if (error === 'auth/email-already-in-use') {
       setError('email', { type: 'custom', message: 'El email ya está en uso' });
     } else if (error === 'auth/username-already-in-use') {

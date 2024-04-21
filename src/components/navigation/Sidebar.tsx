@@ -1,11 +1,6 @@
 import { LuCalendar, LuHome } from 'react-icons/lu';
 import NavItem from './NavItem.tsx';
-import CreateGroupModal from '../groups/CreateGroupModal.tsx';
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth.ts';
-import { User } from '@nextui-org/react';
-import { Link } from 'react-router-dom';
-import api from '../../api.ts';
+import GroupList from '../groups/GroupList.tsx';
 
 const navItems = [
   {
@@ -20,29 +15,7 @@ const navItems = [
   },
 ];
 
-type Group = {
-  id: string;
-  title: string;
-  description: string;
-  isPrivate: boolean;
-};
-
 export default function Sidebar() {
-  const [groups, setGroups] = useState<Group[]>([]);
-  const { user } = useAuth();
-
-  useEffect(() => {
-    api
-      .get(`groups/getGroups?user_id=${user?.id}`)
-      .then((res) => {
-        const data = res.data;
-        setGroups(data);
-      })
-      .catch((err) => {
-        console.error('Error fetching groups', err);
-      });
-  }, [user?.id]);
-
   return (
     <div className="min-w-[280px] border-foreground-200 flex flex-col p-5 gap-3 rounded-xl m-6">
       {navItems.map((item, index) => (
@@ -53,19 +26,7 @@ export default function Sidebar() {
           icon={item.icon}
         />
       ))}
-      <div className="mt-2 flex gap-3 flex-col items-start justify-center">
-        <h2 className="text">Mis grupos</h2>
-        {groups.map((group) => (
-          <Link
-            className="hover:bg-foreground-200 w-full rounded-xl p-2 flex"
-            to={`/group/${group.id}`}
-            key={group.id}
-          >
-            <User avatarProps={{ color: 'primary' }} name={group.title} />
-          </Link>
-        ))}
-        <CreateGroupModal />
-      </div>
+      <GroupList />
     </div>
   );
 }
