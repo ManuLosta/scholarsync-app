@@ -5,6 +5,7 @@ import { Avatar, Button, Skeleton } from '@nextui-org/react';
 import MemberList from '../components/groups/MemberList.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
 import InviteToGroup from '../components/groups/InviteToGroup.tsx';
+import { LuLock } from 'react-icons/lu';
 
 type Group = {
   createdBy: string;
@@ -26,6 +27,7 @@ export default function Group() {
   const { groupId } = useParams();
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMember, setIsMember] = useState<boolean>(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -35,12 +37,32 @@ export default function Group() {
         const data = res.data;
         console.log(data);
         setGroup(data);
+        setIsMember(
+          data.users.some(
+            (u: { id: string | undefined }) =>
+              u.id == user?.id,
+          ),
+        );
       })
       .catch((err) => {
         console.error('Error fetching group info: ', err);
       })
       .finally(() => setLoading(false));
-  }, [groupId]);
+  }, [group?.createdBy, groupId, user?.id, isMember]);
+
+  const handleLeave = () => {
+    api
+      .post('groups/remove-user-from-group', {
+        group_id: groupId,
+        user_id: user?.id,
+      })
+      .then(() => setIsMember(false))
+      .catch((err) => console.error('Error leaving group: ', err));
+  };
+
+  const handleJoin = () => {
+
+  }
 
   return loading ? (
     <div className="container mt-8">
@@ -63,22 +85,34 @@ export default function Group() {
             color="primary"
           />
           <div className="max-w-[400px]">
-            <h1 className="font-bold text-3xl">{group?.title}</h1>
+            <h1 className="font-bold text-3xl flex items-center">{group?.title}
+              {group?.isPrivate && (
+                <span className="ms-2">
+                  <LuLock />
+                </span>
+              )}
+            </h1>
             <p className="text-xl font-light">{group?.description}</p>
             <MemberList users={group?.users} />
           </div>
         </div>
-        <div>
-          {(group?.createdBy == user?.id || !group?.isPrivate) && (
+        <div className="flex gap-2">
+          {(group?.createdBy == user?.id ||
+            (isMember && !group?.isPrivate)) && (
             <InviteToGroup
               groupId={groupId || ''}
               members={group?.users || []}
               invitations={group?.invitations || []}
             />
           )}
-          {group?.users.some(
-            (u) => u.id == user?.id && u.id != group?.createdBy,
-          ) && <Button>Dejar</Button>}
+          {isMember && group?.createdBy != user?.id  && (
+            <Button onPress={handleLeave} color="danger" variant="ghost">
+              Dejar
+            </Button>
+          )}
+          {(!isMember && !group?.isPrivate) && (
+            <Button onPress={() => {}} color="primary">Unirse</Button>
+          )}
         </div>
       </div>
     </div>

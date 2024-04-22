@@ -1,24 +1,22 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.ts';
 import api from '../api.ts';
+import { FriendRequest, GroupInvite } from '../types/types';
 
 interface NotificationContext {
-  notifications: Notification[];
+  notifications: (FriendRequest | GroupInvite)[];
   acceptFriendRequest: (id: string) => void;
   rejectFriendRequest: (id: string) => void;
+  acceptGroupInvite: (id: string) => void;
+  rejectGroupInvite: (id: string) => void;
 }
-
-type Notification = {
-  from: string;
-  to: string;
-  id: string;
-  created_at: string;
-};
 
 const defaultContext = {
   notifications: [],
   acceptFriendRequest: () => {},
   rejectFriendRequest: () => {},
+  acceptGroupInvite: () => {},
+  rejectGroupInvite: () => {},
 };
 
 export const NotificationContext =
@@ -30,13 +28,16 @@ export function NotificationProvider({
   children: React.ReactNode;
 }) {
   const { user } = useAuth();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<
+    (GroupInvite | FriendRequest)[]
+  >([]);
 
   useEffect(() => {
     api
-      .get(`friend-requests/${user?.id}/friend-requests`)
+      .get(`notification/get-notifications/${user?.id}`)
       .then((res) => {
         const data = res.data;
+        console.log(data);
         setNotifications(data);
       })
       .catch((err) => console.error('Error fetching notifications: ', err));
@@ -64,6 +65,32 @@ export function NotificationProvider({
       });
   };
 
+  const acceptGroupInvite = (id: string) => {
+    api
+      .post('group-invitations/accept-invitation', {
+        group_invitation_id: id,
+      })
+      .then(() => {
+        removeNotification(id);
+      })
+      .catch((err) => {
+        console.error('Error accepting invitation: ', err);
+      });
+  };
+
+  const rejectGroupInvite = (id: string) => {
+    api
+      .post('group-invitations/reject-invitation', {
+        group_invitation_id: id,
+      })
+      .then(() => {
+        removeNotification(id);
+      })
+      .catch((err) => {
+        console.error('Error accepting invitation: ', err);
+      });
+  };
+
   const removeNotification = (id: string) => {
     const filteredNotifications = notifications.filter(
       (notification) => notification.id != id,
@@ -74,7 +101,13 @@ export function NotificationProvider({
 
   return (
     <NotificationContext.Provider
-      value={{ notifications, acceptFriendRequest, rejectFriendRequest }}
+      value={{
+        notifications,
+        acceptFriendRequest,
+        rejectFriendRequest,
+        acceptGroupInvite,
+        rejectGroupInvite,
+      }}
     >
       {children}
     </NotificationContext.Provider>

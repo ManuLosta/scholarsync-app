@@ -73,7 +73,7 @@ export default function InviteToGroup({
                 <>
                   {friends
                     ?.filter((friend) => {
-                      return !members.includes(friend);
+                      return !members.some((member) => member.id === friend.id);
                     })
                     .map((friend) => (
                       <div key={friend.id} className="flex justify-between">
@@ -86,8 +86,7 @@ export default function InviteToGroup({
                             <p className="font-light">@{friend.username}</p>
                           </div>
                         </div>
-                        {
-                           sentInvites.includes(friend.id) ? (
+                        {sentInvites.includes(friend.id) ? (
                           <Button disabled>Pendiente</Button>
                         ) : (
                           <Button

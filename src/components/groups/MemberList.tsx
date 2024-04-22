@@ -42,7 +42,7 @@ export default function MemberList({ users }: propsType) {
             <h1>Miembros</h1>
           </ModalHeader>
           <ModalBody>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-col">
               {users?.map((user) => (
                 <Link
                   to={`/user/${user.id == myId ? 'me' : user.id}`}

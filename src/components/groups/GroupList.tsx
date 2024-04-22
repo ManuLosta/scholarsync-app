@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth.ts';
 import { Link } from 'react-router-dom';
 import { User } from '@nextui-org/react';
 import CreateGroupModal from './CreateGroupModal.tsx';
+import { useNotifications } from '../../hooks/useNotifications.ts';
 
 type Group = {
   id: string;
@@ -15,11 +16,12 @@ type Group = {
 export default function GroupList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
+  const { notifications } = useNotifications();
   const auth = useAuth();
 
   useEffect(() => {
     fetchGroups(auth?.user?.id);
-  }, [auth?.user?.id]);
+  }, [auth?.user?.id, notifications]);
 
   const fetchGroups = (userId: string | undefined) => {
     setLoading(true);

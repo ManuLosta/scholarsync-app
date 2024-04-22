@@ -1,7 +1,9 @@
-import NotificationItem from './NotificationItem.tsx';
+import FriendRequestNotification from './FriendRequestNotification.tsx';
 import { Button } from '@nextui-org/react';
 import { LuArrowRightFromLine } from 'react-icons/lu';
 import { useNotifications } from '../../hooks/useNotifications.ts';
+import { FriendRequest, GroupInvite } from '../../types/types';
+import GroupInviteNotification from './GroupInviteNotification.tsx';
 
 export default function NotificationPanel({
   isOpen,
@@ -15,7 +17,7 @@ export default function NotificationPanel({
   return (
     <aside
       className={`${!isOpen && 'translate-x-full opacity-70'}
-      transition opacity-100 min-w-[512px] duration-1000 right-0 border-l border-foreground-200 rounded-l-xl fixed flex flex-row h-screen drop-shadow-2xl bg-background p-4`}
+      transition opacity-100 w-[512px] duration-1000 right-0 border-l border-foreground-200 rounded-l-xl fixed flex flex-row h-screen drop-shadow-2xl bg-background p-4`}
     >
       <section className="flex flex-col w-full">
         <div className="flex align-center gap-3">
@@ -31,14 +33,23 @@ export default function NotificationPanel({
         </div>
         <div className="flex mt-6 gap-0 flex-col items-start justify-center">
           {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                id={notification.id}
-                from={notification.from}
-                created_at={notification.created_at}
-              />
-            ))
+            notifications.map((notification) => {
+              const type = notification.notificationType;
+              if (type == 'FRIEND_REQUEST')
+                return (
+                  <FriendRequestNotification
+                    key={notification.id}
+                    friendRequest={notification as FriendRequest}
+                  />
+                );
+              else if (type == 'GROUP_INVITE')
+                return (
+                  <GroupInviteNotification
+                    key={notification.id}
+                    groupInvite={notification as GroupInvite}
+                  />
+                );
+            })
           ) : (
             <div className="flex items-center justify-center mt-10 w-full">
               <p>No hay notificaciones</p>
