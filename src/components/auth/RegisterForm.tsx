@@ -20,7 +20,7 @@ const formSchema = z.object({
     .string()
     .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }),
   repeatPassword: z.string(), // add a validation here
-  birthDate: z.any()
+  birthDate: z.any(),
 });
 
 type InputType = z.infer<typeof formSchema>;
@@ -85,7 +85,7 @@ export default function RegisterForm() {
     setLoading(true);
 
     api
-      .post('auth/register', {...data, birthDate: data.birthDate.toString()})
+      .post('auth/register', { ...data, birthDate: data.birthDate.toString() })
       .then((res) => {
         const text = res.data;
         console.log(text);

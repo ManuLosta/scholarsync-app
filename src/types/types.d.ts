@@ -31,6 +31,6 @@ export type Profile = {
   }[];
   groups: {
     id: string;
-    title: string
+    title: string;
   };
 };

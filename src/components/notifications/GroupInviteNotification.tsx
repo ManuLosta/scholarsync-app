@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 export default function GroupInviteNotification({
   groupInvite,
-  handleOpen
+  handleOpen,
 }: {
   groupInvite: GroupInvite;
   handleOpen: () => void;
@@ -37,8 +37,15 @@ export default function GroupInviteNotification({
               <LuUsers size={32} />
             </div>
             <div>
-              <p>Te han invitado al grupo{' '}
-                <Link onClick={handleOpen} className="font-bold hover:text-primary" to={`/group/${group_id}`}>{title}</Link>
+              <p>
+                Te han invitado al grupo{' '}
+                <Link
+                  onClick={handleOpen}
+                  className="font-bold hover:text-primary"
+                  to={`/group/${group_id}`}
+                >
+                  {title}
+                </Link>
               </p>
             </div>
           </div>

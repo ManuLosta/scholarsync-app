@@ -31,12 +31,13 @@ export default function Group() {
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState<boolean>(false);
   const { user } = useAuth();
-  const { notifications, acceptGroupInvite, rejectGroupInvite } = useNotifications();
-  const notificationId = notifications.find(notification => {
-    if (notification.notificationType == "GROUP_INVITE") {
-      return (notification as GroupInvite).group_id == groupId
+  const { notifications, acceptGroupInvite, rejectGroupInvite } =
+    useNotifications();
+  const notificationId = notifications.find((notification) => {
+    if (notification.notificationType == 'GROUP_INVITE') {
+      return (notification as GroupInvite).group_id == groupId;
     }
-  })?.notification_id
+  })?.notification_id;
 
   useEffect(() => {
     api
@@ -45,10 +46,7 @@ export default function Group() {
         const data = res.data;
         setGroup(data);
         setIsMember(
-          data.users.some(
-            (u: { id: string | undefined }) =>
-              u.id == user?.id,
-          ),
+          data.users.some((u: { id: string | undefined }) => u.id == user?.id),
         );
       })
       .catch((err) => {
@@ -68,13 +66,14 @@ export default function Group() {
   };
 
   const handleJoin = () => {
-    api.post("groups/join-group", {
-      group_id: groupId,
-      user_id: user?.id
-    })
+    api
+      .post('groups/join-group', {
+        group_id: groupId,
+        user_id: user?.id,
+      })
       .then(() => setIsMember(true))
-      .catch(err => console.error(err))
-  }
+      .catch((err) => console.error(err));
+  };
 
   return loading ? (
     <div className="container mt-8">
@@ -97,7 +96,8 @@ export default function Group() {
             color="primary"
           />
           <div className="max-w-[400px]">
-            <h1 className="font-bold text-3xl flex items-center">{group?.title}
+            <h1 className="font-bold text-3xl flex items-center">
+              {group?.title}
               {group?.isPrivate && (
                 <span className="ms-2">
                   <LuLock />
@@ -117,21 +117,30 @@ export default function Group() {
               invitations={group?.invitations || []}
             />
           )}
-          {isMember && group?.createdBy != user?.id  && (
+          {isMember && group?.createdBy != user?.id && (
             <Button onPress={handleLeave} color="danger" variant="ghost">
               Dejar
             </Button>
           )}
-          {(!isMember && !group?.isPrivate && !notificationId) && (
-            <Button onPress={handleJoin} color="primary">Unirse</Button>
+          {!isMember && !group?.isPrivate && !notificationId && (
+            <Button onPress={handleJoin} color="primary">
+              Unirse
+            </Button>
           )}
           {notificationId && (
             <>
-              <Button onPress={() => rejectGroupInvite(notificationId)}>Rechazar</Button>
-              <Button onPress={() => {
-                acceptGroupInvite(notificationId);
-                setIsMember(true);
-              }} color="primary">Aceptar Invitación</Button>
+              <Button onPress={() => rejectGroupInvite(notificationId)}>
+                Rechazar
+              </Button>
+              <Button
+                onPress={() => {
+                  acceptGroupInvite(notificationId);
+                  setIsMember(true);
+                }}
+                color="primary"
+              >
+                Aceptar Invitación
+              </Button>
             </>
           )}
         </div>

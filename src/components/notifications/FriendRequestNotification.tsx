@@ -48,11 +48,15 @@ export default function FriendRequestNotification({
             <div>
               <p>
                 <span className="font-bold">
-                  <Link onClick={handleOpen} className="hover:text-primary" to={`/user/${from.id}`}>
+                  <Link
+                    onClick={handleOpen}
+                    className="hover:text-primary"
+                    to={`/user/${from.id}`}
+                  >
                     @{from.username}
                   </Link>
-                </span> ha enviado una
-                solicitud de amistad.
+                </span>{' '}
+                ha enviado una solicitud de amistad.
               </p>
               <p className="text-foreground-600">{createdAt}</p>
             </div>
