@@ -7,15 +7,18 @@ import { useNotifications } from '../../hooks/useNotifications.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { FriendRequest } from '../../types/types';
+import { Link } from 'react-router-dom';
 
 export default function FriendRequestNotification({
   friendRequest,
+  handleOpen,
 }: {
   friendRequest: FriendRequest;
+  handleOpen: () => void;
 }) {
   const notifications = useNotifications();
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const { id, created_at, from } = friendRequest;
+  const { notification_id, created_at, from } = friendRequest;
 
   const date: Date = new Date(created_at);
 
@@ -26,7 +29,7 @@ export default function FriendRequestNotification({
   const handleChange = (action: (id: string) => void) => {
     setIsVisible(false);
     setTimeout(() => {
-      action(id);
+      action(notification_id);
     }, 300);
   };
 
@@ -38,13 +41,17 @@ export default function FriendRequestNotification({
           exit={{ x: 50, opacity: 0 }}
           className="flex flex-col gap-4 items-center border-b p-3 w-full"
         >
-          <div className="flex gap-4 items-start">
+          <div className="flex gap-4 items-start w-full">
             <div className="rounded-full bg-primary p-2 text-white">
               <LuUserPlus size={32} />
             </div>
             <div>
               <p>
-                <span className="font-bold">@{from}</span> ha enviado una
+                <span className="font-bold">
+                  <Link onClick={handleOpen} className="hover:text-primary" to={`/user/${from.id}`}>
+                    @{from.username}
+                  </Link>
+                </span> ha enviado una
                 solicitud de amistad.
               </p>
               <p className="text-foreground-600">{createdAt}</p>

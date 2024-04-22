@@ -17,7 +17,7 @@ export default function NotificationPanel({
   return (
     <aside
       className={`${!isOpen && 'translate-x-full opacity-70'}
-      transition opacity-100 w-[512px] duration-1000 right-0 border-l border-foreground-200 rounded-l-xl fixed flex flex-row h-screen drop-shadow-2xl bg-background p-4`}
+      transition opacity-100 w-[512px] duration-300 right-0 border-l border-foreground-200 rounded-l-xl fixed flex flex-row h-screen drop-shadow-2xl bg-background p-4`}
     >
       <section className="flex flex-col w-full">
         <div className="flex align-center gap-3">
@@ -38,14 +38,16 @@ export default function NotificationPanel({
               if (type == 'FRIEND_REQUEST')
                 return (
                   <FriendRequestNotification
-                    key={notification.id}
+                    handleOpen={handleOpen}
+                    key={notification.notification_id}
                     friendRequest={notification as FriendRequest}
                   />
                 );
               else if (type == 'GROUP_INVITE')
                 return (
                   <GroupInviteNotification
-                    key={notification.id}
+                    handleOpen={handleOpen}
+                    key={notification.notification_id}
                     groupInvite={notification as GroupInvite}
                   />
                 );

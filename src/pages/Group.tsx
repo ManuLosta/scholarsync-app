@@ -6,6 +6,8 @@ import MemberList from '../components/groups/MemberList.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
 import InviteToGroup from '../components/groups/InviteToGroup.tsx';
 import { LuLock } from 'react-icons/lu';
+import { useNotifications } from '../hooks/useNotifications.ts';
+import { GroupInvite } from '../types/types';
 
 type Group = {
   createdBy: string;
@@ -29,13 +31,18 @@ export default function Group() {
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState<boolean>(false);
   const { user } = useAuth();
+  const { notifications, acceptGroupInvite, rejectGroupInvite } = useNotifications();
+  const notificationId = notifications.find(notification => {
+    if (notification.notificationType == "GROUP_INVITE") {
+      return (notification as GroupInvite).group_id == groupId
+    }
+  })?.notification_id
 
   useEffect(() => {
     api
       .get(`groups/getGroup?group_id=${groupId}`)
       .then((res) => {
         const data = res.data;
-        console.log(data);
         setGroup(data);
         setIsMember(
           data.users.some(
@@ -61,7 +68,12 @@ export default function Group() {
   };
 
   const handleJoin = () => {
-
+    api.post("groups/join-group", {
+      group_id: groupId,
+      user_id: user?.id
+    })
+      .then(() => setIsMember(true))
+      .catch(err => console.error(err))
   }
 
   return loading ? (
@@ -110,8 +122,14 @@ export default function Group() {
               Dejar
             </Button>
           )}
-          {(!isMember && !group?.isPrivate) && (
-            <Button onPress={() => {}} color="primary">Unirse</Button>
+          {(!isMember && !group?.isPrivate && !notificationId) && (
+            <Button onPress={handleJoin} color="primary">Unirse</Button>
+          )}
+          {notificationId && (
+            <>
+              <Button onPress={() => rejectGroupInvite(notificationId)}>Rechazar</Button>
+              <Button onPress={() => acceptGroupInvite(notificationId)} color="primary">Aceptar Invitación</Button>
+            </>
           )}
         </div>
       </div>

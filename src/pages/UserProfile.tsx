@@ -6,37 +6,11 @@ import { Button, CircularProgress } from '@nextui-org/react';
 import { useAuth } from '../hooks/useAuth.ts';
 import FriendStatusButton from '../components/FriendStatusButton.tsx';
 import { Avatar } from '@nextui-org/react';
-
-type receivedFriendRequests = {
-  from_id: string;
-  to_id: string;
-};
-
-interface Friend {
-  [key: string]: unknown;
-}
-
-interface Group {
-  [key: string]: unknown;
-}
-
-export type UserProfile = {
-  firstName: string;
-  lastName: string;
-  username: string;
-  credits: number;
-  email: string;
-  birthDate: string;
-  createdAt: string;
-  id: string;
-  receivedFriendRequests: receivedFriendRequests[];
-  friends: Friend[];
-  groups: Group[];
-};
+import { Profile } from '../types/types';
 
 export default function UserProfile() {
   const { id } = useParams();
-  const [UserProfile, setUserProfile] = useState<UserProfile>();
+  const [UserProfile, setUserProfile] = useState<Profile>();
   const [loading, setLoading] = useState(true);
   const auth = useAuth();
   const currentId = auth?.user?.id;
@@ -62,7 +36,7 @@ export default function UserProfile() {
       <CircularProgress />
     </div>
   ) : (
-    <div className="flex gap-8 flex-col justify-center align-center ml-20 mt-9">
+    <div className="flex gap-8 flex-col justify-start align-center ml-20 mt-9">
       <div className="flex gap-8 align-center">
         <Avatar
           name={`${UserProfile?.firstName}`}

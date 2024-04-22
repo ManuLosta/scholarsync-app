@@ -4,20 +4,23 @@ import { LuUsers } from 'react-icons/lu';
 import { Button } from '@nextui-org/react';
 import { useNotifications } from '../../hooks/useNotifications.ts';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function GroupInviteNotification({
   groupInvite,
+  handleOpen
 }: {
   groupInvite: GroupInvite;
+  handleOpen: () => void;
 }) {
   const notifications = useNotifications();
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const { id, name } = groupInvite;
+  const { notification_id, title, group_id } = groupInvite;
 
   const handleChange = (action: (id: string) => void) => {
     setIsVisible(false);
     setTimeout(() => {
-      action(id);
+      action(notification_id);
     }, 300);
   };
 
@@ -34,7 +37,9 @@ export default function GroupInviteNotification({
               <LuUsers size={32} />
             </div>
             <div>
-              <p>Te han invitado al grupo {name}</p>
+              <p>Te han invitado al grupo{' '}
+                <Link onClick={handleOpen} className="font-bold hover:text-primary" to={`/group/${group_id}`}>{title}</Link>
+              </p>
             </div>
           </div>
           <div className="w-full flex gap-3 justify-end">

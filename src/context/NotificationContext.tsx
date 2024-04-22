@@ -93,7 +93,7 @@ export function NotificationProvider({
 
   const removeNotification = (id: string) => {
     const filteredNotifications = notifications.filter(
-      (notification) => notification.id != id,
+      (notification) => notification.notification_id != id,
     );
     console.log(filteredNotifications);
     setNotifications(filteredNotifications);
