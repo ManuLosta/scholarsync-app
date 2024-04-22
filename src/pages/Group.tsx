@@ -128,7 +128,10 @@ export default function Group() {
           {notificationId && (
             <>
               <Button onPress={() => rejectGroupInvite(notificationId)}>Rechazar</Button>
-              <Button onPress={() => acceptGroupInvite(notificationId)} color="primary">Aceptar Invitación</Button>
+              <Button onPress={() => {
+                acceptGroupInvite(notificationId);
+                setIsMember(true);
+              }} color="primary">Aceptar Invitación</Button>
             </>
           )}
         </div>
