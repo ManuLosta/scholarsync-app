@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Button, Input, Link } from '@nextui-org/react';
+import { Button, DatePicker, Input, Link } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
 import api from '../../api.ts';
+import { I18nProvider } from '@react-aria/i18n';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -19,7 +20,7 @@ const formSchema = z.object({
     .string()
     .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }),
   repeatPassword: z.string(), // add a validation here
-  birthDate: z.string(),
+  birthDate: z.any()
 });
 
 type InputType = z.infer<typeof formSchema>;
@@ -84,7 +85,7 @@ export default function RegisterForm() {
     setLoading(true);
 
     api
-      .post('auth/register', data)
+      .post('auth/register', {...data, birthDate: data.birthDate.toString()})
       .then((res) => {
         const text = res.data;
         console.log(text);
@@ -233,15 +234,17 @@ export default function RegisterForm() {
             <Controller
               name="birthDate"
               control={control}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  label="Fecha de Nacimiento"
-                  type="date"
-                  errorMessage={errors.birthDate?.message?.toString()}
-                  isInvalid={!!errors.birthDate}
-                  isDisabled={loading}
-                />
+              render={({ field: { onChange } }) => (
+                <I18nProvider locale="es-ES">
+                  <DatePicker
+                    showMonthAndYearPickers={true}
+                    onChange={onChange}
+                    label="Fecha de Nacimiento"
+                    errorMessage={errors.birthDate?.message?.toString()}
+                    isInvalid={!!errors.birthDate}
+                    isDisabled={loading}
+                  />
+                </I18nProvider>
               )}
             />
 
