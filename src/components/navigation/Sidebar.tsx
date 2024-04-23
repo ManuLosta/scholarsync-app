@@ -18,7 +18,7 @@ const navItems = [
 export default function Sidebar() {
   return (
     <div className="col-span-3 block relative overflow-visible">
-      <div className="overflow-scroll fixed flex flex-col gap-4 px-8 pt-2 pb-8 h-[calc(100vh-64px)]">
+      <div className="overflow-auto fixed flex flex-col gap-4 px-8 pt-2 pb-8 h-[calc(100vh-64px)]">
         {navItems.map((item, index) => (
           <NavItem
             key={index}
