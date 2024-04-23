@@ -11,13 +11,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex flex-row">
-      <div className="flex flex-col w-full">
+    <div className="flex flex-col relative">
         <Appbar handleOpen={handleOpen} />
-        <div className="flex flex-row">
+        <div className="grid grid-cols-12">
           <Sidebar />
           {children}
-        </div>
       </div>
       <NotificationPanel isOpen={isOpen} handleOpen={handleOpen} />
     </div>

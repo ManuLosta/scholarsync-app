@@ -76,7 +76,7 @@ export default function Group() {
   };
 
   return loading ? (
-    <div className="container mt-8">
+    <div className="container mt-8 col-span-9">
       <div className="flex gap-4 items-center">
         <Skeleton className="w-[80px] h-[80px] rounded-full" />
         <div>
@@ -87,7 +87,7 @@ export default function Group() {
       </div>
     </div>
   ) : (
-    <div className="container mt-8 px-8">
+    <div className="container mt-8 px-8 col-span-9">
       <div className="flex gap-4 items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar

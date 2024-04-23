@@ -17,16 +17,18 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <div className="min-w-[280px] border-foreground-200 flex flex-col p-5 gap-3 rounded-xl m-6">
-      {navItems.map((item, index) => (
-        <NavItem
-          key={index}
-          name={item.name}
-          path={item.path}
-          icon={item.icon}
-        />
-      ))}
-      <GroupList />
+    <div className="col-span-3 block relative overflow-visible">
+      <div className="overflow-scroll fixed flex flex-col gap-4 px-8 pt-2 pb-8 h-[calc(100vh-64px)]">
+        {navItems.map((item, index) => (
+          <NavItem
+            key={index}
+            name={item.name}
+            path={item.path}
+            icon={item.icon}
+          />
+        ))}
+        <GroupList />
+      </div>
     </div>
   );
 }
