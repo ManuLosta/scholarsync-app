@@ -53,9 +53,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [sessionId]);
 
   const logOut = () => {
-    setSessionId(null);
-    setUser(null);
-    localStorage.removeItem('sessionId');
+    api.post("auth/logout", {sessionId})
+      .then(() => {
+        setSessionId(null);
+        setUser(null);
+        localStorage.removeItem('sessionId');
+      })
+      .catch(err => console.error(err))
   };
 
   return (
