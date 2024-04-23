@@ -11,9 +11,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex flex-col relative">
+    <div className="container mx-auto flex flex-col relative">
       <Appbar handleOpen={handleOpen} />
-      <div className="grid grid-cols-12">
+      <div className="container mx-auto grid grid-cols-12 mt-6">
         <Sidebar />
         {children}
       </div>
