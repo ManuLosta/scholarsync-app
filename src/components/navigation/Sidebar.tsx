@@ -17,8 +17,7 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <div className="lg:col-span-3 sm:col-span-5 block relative overflow-visible">
-      <div className="overflow-auto fixed flex flex-col gap-4 px-8 pt-2 pb-8 h-[calc(100vh-64px)]">
+      <div className="overflow-auto col-span-3 flex flex-col gap-4 px-8 pt-2 pb-8 h-[calc(100vh - 64px - 24px)] min-w-[250px]">
         {navItems.map((item, index) => (
           <NavItem
             key={index}
@@ -29,6 +28,5 @@ export default function Sidebar() {
         ))}
         <GroupList />
       </div>
-    </div>
   );
 }

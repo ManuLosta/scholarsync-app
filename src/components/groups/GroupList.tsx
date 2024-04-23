@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { User } from '@nextui-org/react';
 import CreateGroupModal from './CreateGroupModal.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
@@ -18,6 +18,7 @@ export default function GroupList() {
   const [loading, setLoading] = useState(true);
   const { notifications } = useNotifications();
   const auth = useAuth();
+  const { groupId } = useParams();
 
   useEffect(() => {
     fetchGroups(auth?.user?.id);
@@ -45,7 +46,7 @@ export default function GroupList() {
       ) : (
         groups.map((group) => (
           <Link
-            className="hover:bg-foreground-200 w-full rounded-xl p-2 flex"
+            className={`hover:bg-foreground-200 w-full rounded-xl p-2 flex ${groupId == group.id && "bg-foreground-200"}`}
             to={`/group/${group.id}`}
             key={group.id}
           >

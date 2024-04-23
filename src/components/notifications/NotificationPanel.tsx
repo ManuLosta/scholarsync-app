@@ -17,7 +17,7 @@ export default function NotificationPanel({
   return (
     <aside
       className={`${!isOpen && 'translate-x-full opacity-70'}
-      transition opacity-100 w-[512px] duration-300 right-0 border-l border-foreground-200 rounded-l-xl fixed flex flex-row h-screen drop-shadow-2xl bg-background p-4 mt-[64px]`}
+      transition opacity-100 w-[512px] duration-300 right-0 border-l border-foreground-200 rounded-l-xl drop-shadow-2xl fixed flex flex-row h-screen bg-background p-4 z-50`}
     >
       <section className="flex flex-col w-full">
         <div className="flex align-center gap-3">
