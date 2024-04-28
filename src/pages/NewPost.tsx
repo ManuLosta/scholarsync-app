@@ -1,4 +1,5 @@
-import { Input, Textarea } from '@nextui-org/react';
+import { Input } from '@nextui-org/react';
+import Editor from '../components/post/Editor.tsx';
 
 export default function NewPost() {
   return (
@@ -13,7 +14,8 @@ export default function NewPost() {
         placeholder="¿Cuál es tu pregunta?"
         label="Título de la pregunta"
       />
-      <Textarea label="Pregunta" />
+      <p className="font-bold">Pregunta</p>
+      <Editor />
     </div>
   );
 }
