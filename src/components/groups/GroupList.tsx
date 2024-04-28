@@ -46,7 +46,7 @@ export default function GroupList() {
       ) : (
         groups.map((group) => (
           <Link
-            className={`hover:bg-foreground-200 w-full rounded-xl p-2 flex ${groupId == group.id && "bg-foreground-200"}`}
+            className={`hover:bg-foreground-200 w-full rounded-xl p-2 flex ${groupId == group.id && 'bg-foreground-200'}`}
             to={`/group/${group.id}`}
             key={group.id}
           >

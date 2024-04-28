@@ -1,5 +1,5 @@
 import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit'
+import StarterKit from '@tiptap/starter-kit';
 import EditorMenu from './EditorMenu.tsx';
 import { Underline } from '@tiptap/extension-underline';
 import { Divider } from '@nextui-org/react';
@@ -10,18 +10,18 @@ export default function Editor() {
       StarterKit.configure({
         bulletList: {
           keepMarks: false,
-          keepAttributes: false
-        }
+          keepAttributes: false,
+        },
       }),
-      Underline
+      Underline,
     ],
     editorProps: {
       attributes: {
-        class: "prose outline-none p-3 rounded-xl w-full min-h-[30vh]"
-      }
+        class: 'prose outline-none p-3 rounded-xl w-full min-h-[30vh]',
+      },
     },
-    onUpdate: ({ editor }) => console.log(editor.getHTML())
-  })
+    onUpdate: ({ editor }) => console.log(editor.getHTML()),
+  });
 
   return (
     <div className="border flex flex-col gap-3 p-4 rounded-xl focus:border-primary">
@@ -29,5 +29,5 @@ export default function Editor() {
       <Divider />
       <EditorContent placeholder="Escribe tu pregunta aquí" editor={editor} />
     </div>
-  )
+  );
 }

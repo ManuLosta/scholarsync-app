@@ -5,7 +5,8 @@ import {
   LuCode,
   LuItalic,
   LuList,
-  LuListOrdered, LuSquareCode,
+  LuListOrdered,
+  LuSquareCode,
   LuUnderline,
 } from 'react-icons/lu';
 
@@ -18,7 +19,7 @@ export default function EditorMenu({ editor }: { editor: Editor | null }) {
     <div className="flex gap-2">
       <Button
         onPress={() => editor.chain().focus().toggleBold().run()}
-        color={editor.isActive("bold") ? "primary" : "default"}
+        color={editor.isActive('bold') ? 'primary' : 'default'}
         isIconOnly
         size="sm"
         tabIndex={-1}
@@ -27,16 +28,16 @@ export default function EditorMenu({ editor }: { editor: Editor | null }) {
       </Button>
       <Button
         onPress={() => editor.chain().focus().toggleItalic().run()}
-        color={editor.isActive("italic") ? "primary" : "default"}
+        color={editor.isActive('italic') ? 'primary' : 'default'}
         isIconOnly
         size="sm"
         tabIndex={-1}
       >
-       <LuItalic />
+        <LuItalic />
       </Button>
       <Button
         onPress={() => editor.chain().focus().toggleUnderline().run()}
-        color={editor.isActive("underline") ? "primary" : "default"}
+        color={editor.isActive('underline') ? 'primary' : 'default'}
         isIconOnly
         size="sm"
         tabIndex={-1}
@@ -45,17 +46,17 @@ export default function EditorMenu({ editor }: { editor: Editor | null }) {
       </Button>
       <Button
         onPress={() => editor.chain().focus().toggleCode().run()}
-        color={editor.isActive("code") ? "primary" : "default"}
+        color={editor.isActive('code') ? 'primary' : 'default'}
         isIconOnly
         size="sm"
         tabIndex={-1}
       >
-       <LuCode />
+        <LuCode />
       </Button>
       <Divider orientation="vertical" />
       <Button
         onPress={() => editor.chain().focus().toggleOrderedList().run()}
-        color={editor.isActive("orderedList") ? "primary" : "default"}
+        color={editor.isActive('orderedList') ? 'primary' : 'default'}
         isIconOnly
         size="sm"
         tabIndex={-1}
@@ -64,7 +65,7 @@ export default function EditorMenu({ editor }: { editor: Editor | null }) {
       </Button>
       <Button
         onPress={() => editor.chain().focus().toggleBulletList().run()}
-        color={editor.isActive("bulletList") ? "primary" : "default"}
+        color={editor.isActive('bulletList') ? 'primary' : 'default'}
         isIconOnly
         size="sm"
         tabIndex={-1}
@@ -73,7 +74,7 @@ export default function EditorMenu({ editor }: { editor: Editor | null }) {
       </Button>
       <Button
         onPress={() => editor.chain().focus().toggleCodeBlock().run()}
-        color={editor.isActive("codeBlock") ? "primary" : "default"}
+        color={editor.isActive('codeBlock') ? 'primary' : 'default'}
         isIconOnly
         size="sm"
         tabIndex={-1}
@@ -81,5 +82,5 @@ export default function EditorMenu({ editor }: { editor: Editor | null }) {
         <LuSquareCode />
       </Button>
     </div>
-  )
+  );
 }

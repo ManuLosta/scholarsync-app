@@ -17,14 +17,11 @@ export default {
         DEFAULT: {
           css: {
             maxWidth: '100ch', // add required value here
-          }
-        }
-      }
+          },
+        },
+      },
     },
   },
-  plugins: [
-    nextui(),
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [nextui(), require('@tailwindcss/typography')],
   darkMode: 'class',
 };
