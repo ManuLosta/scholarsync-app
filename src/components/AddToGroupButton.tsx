@@ -12,9 +12,13 @@ import {Group} from "./groups/GroupList";
 
 
   export default function AddToGroupButton() {
+    const [groups, setGroups] = useState<Group[]>([]);
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-
+    // Que sea un grupo publico 
+    // Que vos seas el owner
+    // Mostrar los grupos publicos y de los que sos el owner
+    //
     
 
     return (

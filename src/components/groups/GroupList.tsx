@@ -5,9 +5,8 @@ import { Link } from 'react-router-dom';
 import { User } from '@nextui-org/react';
 import CreateGroupModal from './CreateGroupModal.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
-import Group from '../../pages/Group.tsx';
 
-export type Group = {
+type Group = {
   id: string;
   title: string;
   description: string;
@@ -58,4 +57,3 @@ export default function GroupList() {
     </div>
   );
 }
-
