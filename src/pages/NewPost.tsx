@@ -1,5 +1,4 @@
-import { Input } from '@nextui-org/react';
-import Editor from '../components/post/Editor.tsx';
+import NewPostForm from '../components/post/NewPostForm.tsx';
 
 export default function NewPost() {
   return (
@@ -7,15 +6,7 @@ export default function NewPost() {
       <div>
         <h1 className="font-bold text-2xl">Pregunta nueva</h1>
       </div>
-      <Input
-        size="lg"
-        className="font-bold"
-        labelPlacement="outside"
-        placeholder="¿Cuál es tu pregunta?"
-        label="Título de la pregunta"
-      />
-      <p className="font-bold">Pregunta</p>
-      <Editor />
+      <NewPostForm />
     </div>
   );
 }
