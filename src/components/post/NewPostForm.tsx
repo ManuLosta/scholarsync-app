@@ -10,35 +10,33 @@ export default function NewPostForm() {
   const { user } = useAuth();
 
   const onSubmit: SubmitHandler<any> = (data) => {
-
-    console.log(data)
+    console.log(data);
     const bodyFormData = new FormData();
-    bodyFormData.append("title", data.title)
-    bodyFormData.append("content", data.body)
-    bodyFormData.append("groupId", "05fffa08-6479-47c6-a363-39e66dd0fb56")
-    bodyFormData.append("authorId", user?.id || "")
+    bodyFormData.append('title', data.title);
+    bodyFormData.append('content', data.body);
+    bodyFormData.append('groupId', '05fffa08-6479-47c6-a363-39e66dd0fb56');
+    bodyFormData.append('authorId', user?.id || '');
     //bodyFormData.append("files", data.files[0])
 
-    console.log(typeof data.files[0])
+    console.log(typeof data.files[0]);
 
-   data.files.forEach((file: File) => {
-      bodyFormData.append(`files`, file as File)
-    })
+    data.files.forEach((file: File) => {
+      bodyFormData.append(`files`, file as File);
+    });
 
-
-    api.post(
-      'questions/publish-question',
-      bodyFormData,
-      {
+    api
+      .post('questions/publish-question', bodyFormData, {
         headers: { 'Content-Type': `multipart/form-data` },
-      },
-    )
-      .then(res => console.log(res.data))
-      .catch(err => console.error(err));
+      })
+      .then((res) => console.log(res.data))
+      .catch((err) => console.error(err));
   };
 
   return (
-    <form className="flex flex-col gap-4 mt-2" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-4 mt-2"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <Controller
         name="title"
         control={control}
@@ -50,14 +48,13 @@ export default function NewPostForm() {
             labelPlacement="outside"
             placeholder="Título de la nueva pregunta"
           />
-        )} />
+        )}
+      />
       <p className="font-bold text-lg">Pregunta</p>
       <Controller
         name="body"
         control={control}
-        render={({ field: { onChange } }) => (
-          <Editor onChange={onChange} />
-        )}
+        render={({ field: { onChange } }) => <Editor onChange={onChange} />}
       />
       <Controller
         name="files"
