@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api.ts';
-import {CircularProgress } from '@nextui-org/react';
+import { CircularProgress } from '@nextui-org/react';
 
 import { useAuth } from '../hooks/useAuth.ts';
 import FriendStatusButton from '../components/FriendStatusButton.tsx';
@@ -30,7 +30,7 @@ export default function UserProfile() {
       });
   }, [id]);
 
-  console.log(UserProfile);
+
 
   return loading ? (
     <div>
@@ -65,7 +65,7 @@ export default function UserProfile() {
       </div>
       <div className="flex gap-4">
         <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
-        <AddToGroupButton />
+        <AddToGroupButton hisId={UserProfile?.id}/>
       </div>
     </div>
   );
