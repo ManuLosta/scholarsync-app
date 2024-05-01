@@ -20,6 +20,9 @@ import { useAuth } from '../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import React from 'react';
 
+interface Invitation {
+  group_id: string;
+}
 
 interface Group {
   createdBy: string;
@@ -30,18 +33,19 @@ interface Group {
 }
 
 export default function AddToGroupButton({
-  hisId
-}:{
+  hisId,
+}: {
   hisId: string | undefined;
-}) {   
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set(["2"]));
+}) {
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set(['2']));
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const [hisgroups, setHisGroups] = useState<Group[]>([]);
-  
+  const [hisInvitations, setHisInvitations] = useState<Invitation[]>();
   const [groupsCanSendInvitation, SetGroupsCanSendInvitation] = useState<
     Group[]
   >([]);
   const [needFetch, setNeedFetch] = useState(false);
+  const [disabledItems, setDisabledItems] = useState<string[]>([]);
   const auth = useAuth();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -49,26 +53,37 @@ export default function AddToGroupButton({
   // Que vos seas el owner
   // Mostrar los grupos publicos y de los que sos el owner
 
-  const fetchGropsInfo = (groupId: string | undefined) => {
-    api
-      .get(`groups/getGroup?group_id=${groupId}`)
-      .then((res) => {
+  const getUserInvitations = (userId: string | undefined) => {
+    api.get(`group-invitations/get-invitations/${userId}`).then((res) => {
+      const data = res.data;
 
-        console.log(res.data)
-
-      })
-
-      .catch((err) => {
-        console.error('Error fetching groups', err);
-      })
-      
-
+      setHisInvitations(data);
+    });
   };
 
-
-  console.log()
-
-
+  function getDisabledItems() {
+    if (hisInvitations != undefined && hisInvitations != null) {
+      const disabledItems: string[] = [];
+      hisInvitations.forEach((element) => {
+        disabledItems.push(element.group_id);
+      });
+      setDisabledItems(disabledItems);
+    }
+  }
+  const sendInvitations = (id: string, groupId: string) => {
+    api
+      .post('group-invitations/send-invitation', {
+        user_id: id,
+        group_id: groupId,
+      })
+      .then((res) => {
+        const data = res.data;
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   const fetchGroups = (userId: string | undefined, set: CallableFunction) => {
     api
@@ -76,61 +91,62 @@ export default function AddToGroupButton({
       .then((res) => {
         const data = res.data;
         set(data);
-        
       })
 
       .catch((err) => {
         console.error('Error fetching groups', err);
-      })
-      
-
+      });
   };
-
 
   function setGroupsWhoCanSendInvitation() {
     // Si es publico,
     // Si vos lo creaste
     // Si la persona no esta en el grupo ya
-    if(myGroups != undefined){
-      
+    if (myGroups != undefined) {
       const fetchGroups = myGroups.filter((grup) => {
-        fetchGropsInfo(grup.id)
-        return (grup.createdBy === auth?.user?.id || !grup.isPrivate);
+        return grup.createdBy === auth?.user?.id || !grup.isPrivate;
       });
       const gropswhoCanSendInvitation = fetchGroups.filter((grup) => {
-        return ! hisgroups.some((hisG) => hisG.id === grup.id)
+        return !hisgroups.some((hisG) => hisG.id === grup.id);
       });
-
 
       SetGroupsCanSendInvitation(gropswhoCanSendInvitation);
     }
-
   }
 
   useEffect(() => {
     fetchGroups(auth?.user?.id, setMyGroups);
     fetchGroups(hisId, setHisGroups);
-
+    getUserInvitations(hisId);
     setGroupsWhoCanSendInvitation();
+    getDisabledItems();
   }, [auth?.user?.id, needFetch]);
 
   function handleClick() {
     setNeedFetch(!needFetch);
-    
+
     onOpen();
   }
 
-  function handleInvitations(){
-    console.log(selectedKeys)
-  }
+  function handleInvitations() {
+    if (hisId != undefined && hisId != null) {
+      for (const element of selectedKeys) {
+        if (element == '2') {
+          continue;
+        }
+        sendInvitations(hisId, element);
 
+        setDisabledItems([...disabledItems, element]);
+      }
+    }
+  }
+  console.log(disabledItems);
 
   const rows = groupsCanSendInvitation.map((grupo) => ({
     key: grupo.id,
     title: grupo.title,
     privacidad: grupo.isPrivate ? 'Privado' : 'Público',
   }));
-
 
   const columns = [
     {
@@ -145,7 +161,6 @@ export default function AddToGroupButton({
 
   return (
     <>
-      
       <Button onPress={() => handleClick()} color="secondary">
         Invitar a grupo
       </Button>
@@ -163,6 +178,7 @@ export default function AddToGroupButton({
                   selectionMode="multiple"
                   selectedKeys={selectedKeys}
                   onSelectionChange={setSelectedKeys}
+                  disabledKeys={disabledItems}
                 >
                   <TableHeader columns={columns}>
                     {(column) => (
@@ -185,7 +201,11 @@ export default function AddToGroupButton({
                 <Button color="danger" variant="light" onPress={onClose}>
                   Cancelar
                 </Button>
-                <Button color="primary" onPress={()=> handleInvitations()}>
+                <Button
+                  color="primary"
+                  onPress={onClose}
+                  onClick={() => handleInvitations()}
+                >
                   Invitar
                 </Button>
               </ModalFooter>

@@ -30,8 +30,6 @@ export default function UserProfile() {
       });
   }, [id]);
 
-
-
   return loading ? (
     <div>
       <CircularProgress />
@@ -65,7 +63,7 @@ export default function UserProfile() {
       </div>
       <div className="flex gap-4">
         <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
-        <AddToGroupButton hisId={UserProfile?.id}/>
+        <AddToGroupButton hisId={UserProfile?.id} />
       </div>
     </div>
   );
