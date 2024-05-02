@@ -8,8 +8,8 @@ interface Image extends File {
 }
 
 export default function FileUploader({
-                                       onChange,
-                                     }: {
+  onChange,
+}: {
   onChange: (files: File[]) => void;
 }) {
   const [images, setImages] = useState<Image[]>([]);
@@ -60,18 +60,31 @@ export default function FileUploader({
         <input {...getInputProps()} />
         <div className="flex flex-col items-center justify-center gap-1">
           <LuFileUp size={60} />
-          <p>Arrastra archivos o <span className="font-bold hover:cursor-pointer text-primary"
-                                       onClick={open}>subir</span></p>
+          <p>
+            Arrastra archivos o{' '}
+            <span
+              className="font-bold hover:cursor-pointer text-primary"
+              onClick={open}
+            >
+              subir
+            </span>
+          </p>
         </div>
       </div>
       <div className="flex p-3 gap-4 max-h-[200px]">
         {images.map((image) => (
           <div className="relative">
-            <span onClick={() => handleDeleteImage(image)}
-                  className="z-50 transition-all hover:cursor-pointer hover:scale-110 absolute bg-danger rounded-full top-2 right-2">
+            <span
+              onClick={() => handleDeleteImage(image)}
+              className="z-50 transition-all hover:cursor-pointer hover:scale-110 absolute bg-danger rounded-full top-2 right-2"
+            >
               <LuX size={20} />
             </span>
-            <Image className="h-[150px] w-[150px] rounded object-cover" src={image.preview} alt={image.name} />
+            <Image
+              className="h-[150px] w-[150px] rounded object-cover"
+              src={image.preview}
+              alt={image.name}
+            />
           </div>
         ))}
       </div>
@@ -79,8 +92,10 @@ export default function FileUploader({
         {files.map((file) => (
           <div className="border p-2 rounded-md flex items-center gap-4">
             <p>{file.name}</p>
-            <span onClick={() => handleDeleteFile(file)}
-                  className="transition-all text-danger hover:cursor-pointer hover:scale-105">
+            <span
+              onClick={() => handleDeleteFile(file)}
+              className="transition-all text-danger hover:cursor-pointer hover:scale-105"
+            >
               <LuX />
             </span>
           </div>

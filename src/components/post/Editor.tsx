@@ -31,7 +31,9 @@ export default function Editor({
 
   return (
     <>
-      <div className={`border flex flex-col gap-3 p-4 rounded-xl focus:border-primary ${error && "bg-danger-50"}`}>
+      <div
+        className={`border flex flex-col gap-3 p-4 rounded-xl focus:border-primary ${error && 'bg-danger-50'}`}
+      >
         <EditorMenu editor={editor} />
         <Divider />
         <EditorContent placeholder="Escribe tu pregunta aquí" editor={editor} />
