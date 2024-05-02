@@ -37,10 +37,10 @@ export default function AddToGroupButton({
 }: {
   hisId: string | undefined;
 }) {
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set(['2']));
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const [hisgroups, setHisGroups] = useState<Group[]>([]);
-  const [hisInvitations, setHisInvitations] = useState<Invitation[]>();
+
   const [groupsCanSendInvitation, SetGroupsCanSendInvitation] = useState<
     Group[]
   >([]);
@@ -57,11 +57,11 @@ export default function AddToGroupButton({
     api.get(`group-invitations/get-invitations/${userId}`).then((res) => {
       const data = res.data;
 
-      setHisInvitations(data);
+      getDisabledItems(data);
     });
   };
 
-  function getDisabledItems() {
+  function getDisabledItems(hisInvitations: Invitation[]) {
     if (hisInvitations != undefined && hisInvitations != null) {
       const disabledItems: string[] = [];
       hisInvitations.forEach((element) => {
@@ -104,7 +104,10 @@ export default function AddToGroupButton({
     // Si la persona no esta en el grupo ya
     if (myGroups != undefined) {
       const fetchGroups = myGroups.filter((grup) => {
-        return grup.createdBy === auth?.user?.id || !grup.isPrivate;
+        return (
+          (grup.createdBy === auth?.user?.id || !grup.isPrivate) &&
+          !(grup.id in disabledItems)
+        );
       });
       const gropswhoCanSendInvitation = fetchGroups.filter((grup) => {
         return !hisgroups.some((hisG) => hisG.id === grup.id);
@@ -119,28 +122,33 @@ export default function AddToGroupButton({
     fetchGroups(hisId, setHisGroups);
     getUserInvitations(hisId);
     setGroupsWhoCanSendInvitation();
-    getDisabledItems();
   }, [auth?.user?.id, needFetch]);
 
   function handleClick() {
     setNeedFetch(!needFetch);
-
     onOpen();
   }
 
   function handleInvitations() {
     if (hisId != undefined && hisId != null) {
       for (const element of selectedKeys) {
-        if (element == '2') {
-          continue;
-        }
         sendInvitations(hisId, element);
-
+        setSelectedKeys(new Set([]));
         setDisabledItems([...disabledItems, element]);
       }
     }
   }
-  console.log(disabledItems);
+
+  function handleClose() {
+    setSelectedKeys(new Set([]));
+  }
+
+  console.log(
+    'selected:',
+    selectedKeys,
+    disabledItems,
+    groupsCanSendInvitation,
+  );
 
   const rows = groupsCanSendInvitation.map((grupo) => ({
     key: grupo.id,
@@ -198,7 +206,12 @@ export default function AddToGroupButton({
               </ModalBody>
 
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={onClose}
+                  onClick={() => handleClose()}
+                >
                   Cancelar
                 </Button>
                 <Button
