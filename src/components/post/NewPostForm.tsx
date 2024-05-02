@@ -4,7 +4,7 @@ import Editor from './Editor.tsx';
 import FileUploader from './FIleUploader.tsx';
 import api from '../../api.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -53,7 +53,7 @@ export default function NewPostForm() {
       });
   }, [user?.id]);
 
-  const handleGroupChange = (event) => {
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setGroupError(null);
     if (event.target.value) navigate(`/${event.target.value}/new-post`);
     else navigate('/new-post');
