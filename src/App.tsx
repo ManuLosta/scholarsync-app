@@ -20,6 +20,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/user/:id" element={<User />} />
             <Route path="/group/:groupId" element={<Group />} />
+            <Route path="/:groupId/new-post" element={<NewPost />} />
             <Route path="/new-post" element={<NewPost />} />
           </Route>
           <Route path="/login" element={<Login />} />

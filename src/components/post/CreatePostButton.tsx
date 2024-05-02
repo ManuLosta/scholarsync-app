@@ -8,9 +8,10 @@ export default function CreatePostButton() {
 
   const handleCreatePost = () => {
     if (groupId) {
-      navigate(`/new-post?groupId=${groupId}`);
+      navigate(`/${groupId}/new-post`);
+    } else {
+      navigate('/new-post');
     }
-    navigate('/new-post');
   };
 
   return (

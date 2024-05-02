@@ -6,8 +6,10 @@ import { Divider } from '@nextui-org/react';
 
 export default function Editor({
   onChange,
+  error,
 }: {
   onChange: (text: string) => void;
+  error: string | undefined;
 }) {
   const editor = useEditor({
     extensions: [
@@ -28,10 +30,13 @@ export default function Editor({
   });
 
   return (
-    <div className="border flex flex-col gap-3 p-4 rounded-xl focus:border-primary">
-      <EditorMenu editor={editor} />
-      <Divider />
-      <EditorContent placeholder="Escribe tu pregunta aquí" editor={editor} />
-    </div>
+    <>
+      <div className={`border flex flex-col gap-3 p-4 rounded-xl focus:border-primary ${error && "bg-danger-50"}`}>
+        <EditorMenu editor={editor} />
+        <Divider />
+        <EditorContent placeholder="Escribe tu pregunta aquí" editor={editor} />
+      </div>
+      {error && <p className="text-danger text-tiny">{error}</p>}
+    </>
   );
 }
