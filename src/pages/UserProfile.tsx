@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api.ts';
-import { Button, CircularProgress } from '@nextui-org/react';
+import { CircularProgress } from '@nextui-org/react';
 
 import { useAuth } from '../hooks/useAuth.ts';
 import FriendStatusButton from '../components/FriendStatusButton.tsx';
 import { Avatar } from '@nextui-org/react';
 import { Profile } from '../types/types';
+import AddToGroupButton from '../components/AddToGroupButton.tsx';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -28,8 +29,6 @@ export default function UserProfile() {
         setLoading(false);
       });
   }, [id]);
-
-  console.log(UserProfile);
 
   return loading ? (
     <div>
@@ -64,7 +63,7 @@ export default function UserProfile() {
       </div>
       <div className="flex gap-4">
         <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
-        <Button color="secondary">Invitar a grupo</Button>
+        <AddToGroupButton hisId={UserProfile?.id} />
       </div>
     </div>
   );
