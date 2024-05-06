@@ -4,20 +4,31 @@ import api from '../api.ts';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Group, Profile, Question as QuestionType } from '../types/types';
-import { Avatar, Link } from '@nextui-org/react';
+import { Avatar, Image, Link } from '@nextui-org/react';
+
+type Image = {
+  base64Encoding: string;
+  fileType: string
+}
 
 export default function Question() {
   const { id } = useParams();
   const [ question, setQuestion ] = useState<QuestionType>();
   const [ author, setAuthor ] = useState<Profile>()
   const [ group, setGroup ] = useState<Group>()
+  const [ images, setImages ] = useState<Image[]>([])
   const [ loading, setLoading ] = useState<boolean>(true)
 
   const editor = useEditor({
     extensions: [
       StarterKit
     ],
-    editable: false
+    editable: false,
+    editorProps: {
+      attributes: {
+        class: 'prose',
+      },
+    },
   })
 
   useEffect(() => {
@@ -28,6 +39,13 @@ export default function Question() {
         setQuestion(data.body)
       })
       .catch(err => console.error(err))
+    
+      api.get(`questions/get-images?id=${id}`)
+      .then(res => {
+        const data = res.data;
+        console.log(data.body)
+        setImages(data.body);
+      })
   }, [id]);
 
   useEffect(() => {
@@ -50,13 +68,12 @@ export default function Question() {
       setGroup(data)
     })
     .catch(err => console.error(err))
-
     .finally(() => setLoading(false))
   }, [editor, question]);
 
   return !loading && (
     <div className="col-span-9">
-      <div className="p-4 flex gap-3 flex-col">
+      <div className="p-4 flex gap-3 flex-col border rounded-lg">
         <div className='flex gap-2 items-center'>
           <Avatar name={group?.title} color='primary' />
           <div className='flex flex-col'>
@@ -70,6 +87,11 @@ export default function Question() {
         </div>
         <h1 className="text-2xl font-bold">{question?.title}</h1>
         <EditorContent editor={editor} />
+        <div>
+          {images.map(image => (
+            <Image src={`data:${image.fileType};base64,${image.base64Encoding}`} />
+          ))}
+        </div>
       </div>
     </div>
   )
