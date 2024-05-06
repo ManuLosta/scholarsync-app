@@ -8,6 +8,7 @@ import ProtectedRoutes from './routes/ProtectedRoutes.tsx';
 import User from './pages/UserProfile.tsx';
 import Group from './pages/Group.tsx';
 import NewPost from './pages/NewPost.tsx';
+import Question from './pages/Question.tsx';
 
 export default function App() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/group/:groupId" element={<Group />} />
             <Route path="/:groupId/new-post" element={<NewPost />} />
             <Route path="/new-post" element={<NewPost />} />
+            <Route path="/question/:id" element={<Question />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
