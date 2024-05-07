@@ -17,16 +17,16 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-      <div className="overflow-auto col-span-3 flex flex-col gap-4 px-8 pt-2 pb-8 h-[calc(100vh - 64px - 24px)] min-w-[250px]">
-        {navItems.map((item, index) => (
-          <NavItem
-            key={index}
-            name={item.name}
-            path={item.path}
-            icon={item.icon}
-          />
-        ))}
-        <GroupList />
-      </div>
+    <div className="overflow-auto col-span-3 flex flex-col gap-4 px-8 pt-2 pb-8 h-[calc(100vh - 64px - 24px)] min-w-[250px]">
+      {navItems.map((item, index) => (
+        <NavItem
+          key={index}
+          name={item.name}
+          path={item.path}
+          icon={item.icon}
+        />
+      ))}
+      <GroupList />
+    </div>
   );
 }

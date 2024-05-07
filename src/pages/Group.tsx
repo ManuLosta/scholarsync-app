@@ -8,6 +8,7 @@ import InviteToGroup from '../components/groups/InviteToGroup.tsx';
 import { LuLock } from 'react-icons/lu';
 import { useNotifications } from '../hooks/useNotifications.ts';
 import { GroupInvite } from '../types/types';
+import CreatePostButton from '../components/post/CreatePostButton.tsx';
 
 type Group = {
   createdBy: string;
@@ -145,6 +146,7 @@ export default function Group() {
           )}
         </div>
       </div>
+      <CreatePostButton />
     </div>
   );
 }

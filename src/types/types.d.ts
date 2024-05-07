@@ -34,3 +34,29 @@ export type Profile = {
     title: string;
   };
 };
+
+export type Group = {
+  createdBy: string
+  invitations: Array<{
+    user_id: string
+  }>
+  description: string
+  id: string
+  isPrivate: boolean
+  title: string
+  users: Array<{
+    firstName: string
+    lastName: string
+    id: string
+    username: string
+  }>
+}
+
+export type Question = {
+  id: string;
+  authorId: string;
+  content: string;
+  createdAt: Date;
+  groupId: string;
+  title: string;
+}

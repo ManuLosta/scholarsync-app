@@ -13,8 +13,15 @@ export default {
         sans: ['Space Grotesk', 'sans-serif'],
         lato: ['Lato', 'sans-serif'],
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '100ch', // add required value here
+          },
+        },
+      },
     },
   },
-  plugins: [nextui()],
+  plugins: [nextui(), require('@tailwindcss/typography')],
   darkMode: 'class',
 };

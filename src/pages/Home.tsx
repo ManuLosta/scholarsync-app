@@ -1,12 +1,9 @@
-import { useAuth } from '../hooks/useAuth.ts';
+import CreatePostButton from '../components/post/CreatePostButton';
 
 export default function Home() {
-  const auth = useAuth();
-
   return (
-    <div className="container">
-      <h1>Home</h1>
-      <p>¡Hola, {auth?.user?.firstName}!</p>
+    <div className="container col-span-9 p-6">
+      <CreatePostButton />
     </div>
   );
 }
