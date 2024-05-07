@@ -13,12 +13,12 @@ import SSIcon from '../../assets/scholarsync.svg';
 import { LuBell, LuSearch } from 'react-icons/lu';
 import UserDropdown from '../auth/UserDropdown.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
-import { useAuth } from '../../hooks/useAuth.ts';
 import { RiCopperCoinFill } from 'react-icons/ri';
+import { useCredit } from '../../hooks/useCredit.ts';
 
 export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
   const { notifications } = useNotifications();
-  const { user } = useAuth();
+  const { credits } = useCredit();
 
   return (
     <Navbar maxWidth="full" isBlurred>
@@ -35,7 +35,7 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
       <NavbarContent justify="end">
         <NavbarItem>
           <div className='flex gap-2 items-center'>
-            <p>{user?.credits}</p>
+            <p>{credits}</p>
             <RiCopperCoinFill className='text-yellow-500' />
           </div>
         </NavbarItem>

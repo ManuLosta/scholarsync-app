@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ConfirmModal from './ConfirmModal.tsx';
+import { useCredit } from '../../hooks/useCredit.ts';
 
 type Group = {
   id: string;
@@ -41,6 +42,7 @@ export default function NewPostForm() {
   const navigate = useNavigate();
   const { groupId } = useParams();
   const { user } = useAuth();
+  const { removeCredits } = useCredit();
 
   useEffect(() => {
     api
@@ -100,6 +102,7 @@ export default function NewPostForm() {
         })
         .catch((err) => console.error(err));
     }
+    removeCredits(20);
   };
 
   const handleNavigate = (questionId: string) => {
