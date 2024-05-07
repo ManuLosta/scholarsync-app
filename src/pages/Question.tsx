@@ -5,6 +5,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Group, Profile, Question as QuestionType } from '../types/types';
 import { Avatar, Image, Link } from '@nextui-org/react';
+import Carousel from '../components/Carousel.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -87,11 +88,7 @@ export default function Question() {
         </div>
         <h1 className="text-2xl font-bold">{question?.title}</h1>
         <EditorContent editor={editor} />
-        <div>
-          {images.map(image => (
-            <Image src={`data:${image.fileType};base64,${image.base64Encoding}`} />
-          ))}
-        </div>
+        <Carousel images={images.map(image => `data:${image.fileType};base64,${image.base64Encoding}`)} />
       </div>
     </div>
   )
