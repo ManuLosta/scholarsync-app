@@ -20,6 +20,8 @@ export type Profile = {
   lastName: string;
   username: string;
   credits: number;
+  level: string;
+  xp: number;
   email: string;
   birthDate: string;
   createdAt: string;

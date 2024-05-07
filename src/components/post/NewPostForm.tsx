@@ -1,5 +1,5 @@
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Button, Input, Select, SelectItem, User } from '@nextui-org/react';
+import { Input, Select, SelectItem, User } from '@nextui-org/react';
 import Editor from './Editor.tsx';
 import FileUploader from './FIleUploader.tsx';
 import api from '../../api.ts';
@@ -8,6 +8,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import ConfirmModal from './ConfirmModal.tsx';
+import { useCredit } from '../../hooks/useCredit.ts';
 
 type Group = {
   id: string;
@@ -40,6 +42,7 @@ export default function NewPostForm() {
   const navigate = useNavigate();
   const { groupId } = useParams();
   const { user } = useAuth();
+  const { removeCredits } = useCredit();
 
   useEffect(() => {
     api
@@ -80,7 +83,10 @@ export default function NewPostForm() {
         .post('questions/publish-question', bodyFormData, {
           headers: { 'Content-Type': `multipart/form-data` },
         })
-        .then((res) => console.log(res.data))
+        .then((res) => {
+          const id = res.data.body.id;
+          handleNavigate(id);
+        })
         .catch((err) => console.error(err));
     } else {
       api
@@ -90,10 +96,18 @@ export default function NewPostForm() {
           groupId: groupId,
           authorId: user?.id,
         })
-        .then((res) => console.log(res.data))
+        .then((res) => {
+          const id = res.data.body.id;
+          handleNavigate(id)
+        })
         .catch((err) => console.error(err));
     }
+    removeCredits(20);
   };
+
+  const handleNavigate = (questionId: string) => {
+      navigate(`/question/${questionId}`)
+  }
 
   return (
     groups && (
@@ -167,7 +181,7 @@ export default function NewPostForm() {
             <FileUploader onChange={onChange} />
           )}
         />
-        <Button type="submit">Subir</Button>
+        <ConfirmModal onSubmit={handleSubmit(onSubmit)} />
       </form>
     )
   );

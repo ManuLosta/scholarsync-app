@@ -1,20 +1,15 @@
 import React, { createContext, useEffect, useState } from 'react';
 import api from '../api.ts';
+import { Profile } from '../types/types';
 
 interface AuthContextType {
   sessionId: string | null;
   setSessionId: React.Dispatch<React.SetStateAction<string | null>>;
-  user: UserInfo | null;
+  user: Profile | null;
   logOut: () => void;
   loading: boolean;
 }
 
-type UserInfo = {
-  username: string;
-  firstName: string;
-  lastName: string;
-  id: string;
-};
 
 const defaultContext: AuthContextType = {
   sessionId: null,
@@ -30,7 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [sessionId, setSessionId] = useState<string | null>(
     localStorage.getItem('sessionId') || null,
   );
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<Profile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
