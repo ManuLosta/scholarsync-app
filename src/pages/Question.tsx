@@ -133,12 +133,14 @@ export default function Question() {
           </div>
           <h1 className="text-2xl font-bold">{question?.title}</h1>
           <EditorContent editor={editor} />
-          <Carousel
-            images={images.map(
-              (image) =>
-                `data:${image.fileType};base64,${image.base64Encoding}`,
-            )}
-          />
+          {images.length > 0 && (
+            <Carousel
+              images={images.map(
+                (image) =>
+                  `data:${image.fileType};base64,${image.base64Encoding}`,
+              )}
+            />
+          )}
           {files.length > 0 && (
           <div className="flex gap-2">
             {files.map(file => (
