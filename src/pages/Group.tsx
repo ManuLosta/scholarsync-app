@@ -77,7 +77,7 @@ export default function Group() {
   };
 
   return loading ? (
-    <div className="container mt-8 col-span-9">
+    <div className="container mt-8 mx-auto">
       <div className="flex gap-4 items-center">
         <Skeleton className="w-[80px] h-[80px] rounded-full" />
         <div>

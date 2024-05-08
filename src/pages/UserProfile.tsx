@@ -35,7 +35,7 @@ export default function UserProfile() {
       <CircularProgress />
     </div>
   ) : (
-    <div className="flex gap-8 flex-col justify-start align-center ml-20 mt-9 col-span-9">
+    <div className="flex gap-8 flex-col justify-start align-center ml-20 mt-9">
       <div className="flex gap-8 align-center">
         <Avatar
           name={`${UserProfile?.firstName}`}

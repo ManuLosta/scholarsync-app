@@ -113,7 +113,7 @@ export default function Question() {
 
   return (
     !loading && (
-      <div className="col-span-9">
+      <div className="container p-4">
         <div className="p-4 flex gap-3 flex-col border rounded-lg">
           <div className="flex gap-2 items-center">
             <Avatar name={group?.title} color="primary" />

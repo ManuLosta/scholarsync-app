@@ -13,8 +13,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="lg:container mx-auto flex flex-col relative">
       <Appbar handleOpen={handleOpen} />
-      <div className="w-full lg:container lg:mx-auto lg:grid lg:grid-cols-12 flex flex-row mt-6">
-        <Sidebar />
+      <Sidebar />
+      <div className="ms-[20rem]">
         {children}
       </div>
       <NotificationPanel isOpen={isOpen} handleOpen={handleOpen} />

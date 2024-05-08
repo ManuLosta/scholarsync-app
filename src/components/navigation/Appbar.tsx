@@ -39,7 +39,7 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
             <RiCopperCoinFill className='text-yellow-500' />
           </div>
         </NavbarItem>
-        <NavbarItem className="me-3">
+        <NavbarItem>
           <Badge
             isInvisible={notifications.length == 0}
             color="danger"
