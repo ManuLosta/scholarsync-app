@@ -7,6 +7,7 @@ import { Group, Profile, Question as QuestionType } from '../types/types';
 import { Avatar, Button, Image, Link } from '@nextui-org/react';
 import Carousel from '../components/Carousel.tsx';
 import { LuDownload } from 'react-icons/lu';
+import MathExtension from '@aarkue/tiptap-math-extension';
 
 type Image = {
   base64Encoding: string;
@@ -29,7 +30,7 @@ export default function Question() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, MathExtension.configure({ evaluation: true })],
     editable: false,
     editorProps: {
       attributes: {

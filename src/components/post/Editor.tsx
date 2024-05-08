@@ -3,6 +3,8 @@ import StarterKit from '@tiptap/starter-kit';
 import EditorMenu from './EditorMenu.tsx';
 import { Underline } from '@tiptap/extension-underline';
 import { Divider } from '@nextui-org/react';
+import "katex/dist/katex.min.css"
+import MathExtension from '@aarkue/tiptap-math-extension';
 
 export default function Editor({
   onChange,
@@ -20,6 +22,7 @@ export default function Editor({
         },
       }),
       Underline,
+      MathExtension.configure({ evaluation: true })
     ],
     editorProps: {
       attributes: {
