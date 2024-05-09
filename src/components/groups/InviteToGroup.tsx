@@ -64,7 +64,7 @@ export default function InviteToGroup({
   return (
     <>
       <Button onPress={onOpen}>Invitar</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside">
         <ModalContent>
           <ModalHeader>Invitar amigo</ModalHeader>
           <ModalBody>

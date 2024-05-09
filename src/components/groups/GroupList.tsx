@@ -40,7 +40,8 @@ export default function GroupList() {
 
   return (
     <div className="mt-2 flex gap-3 flex-col items-start justify-center">
-      <h2 className="text">Mis grupos</h2>
+      <h2 className="font-bold text-lg">Grupos</h2>
+      <CreateGroupModal fetchGroups={() => fetchGroups(auth?.user?.id)} />
       {loading ? (
         <div>Loading</div>
       ) : (
@@ -54,7 +55,6 @@ export default function GroupList() {
           </Link>
         ))
       )}
-      <CreateGroupModal fetchGroups={() => fetchGroups(auth?.user?.id)} />
     </div>
   );
 }

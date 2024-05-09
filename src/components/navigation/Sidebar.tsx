@@ -17,7 +17,7 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <div className="overflow-auto h-[calc(100vh-120px)] p-6 min-w-[20rem] mt-[5rem] fixed bg-foreground-50 rounded-2xl">
+    <div className="overflow-auto h-[calc(100vh-120px)] p-6 min-w-[20rem] mt-[5rem] fixed bg-foreground-50 rounded-2xl scrollbar-hide hover:scrollbar-default">
       <div className="flex flex-col gap-3">
         {navItems.map((item, index) => (
           <NavItem

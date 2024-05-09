@@ -35,7 +35,7 @@ export default function MemberList({ users }: propsType) {
       >
         {users?.length} miembros
       </p>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside" >
         <ModalContent>
           <ModalHeader className="flex gap-3 items-center">
             <LuUsers size={30} />
