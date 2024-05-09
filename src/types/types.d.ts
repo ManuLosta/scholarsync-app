@@ -64,8 +64,10 @@ export type Question = {
 }
 
 export type Answer = {
+  answerId: string;
   questionId: string;
   content: string;
   userId: string;
   groupId: string;
+  createdAt: Date;
 }

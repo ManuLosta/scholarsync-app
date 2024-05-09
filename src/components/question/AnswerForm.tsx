@@ -28,25 +28,24 @@ export default function AnswerForm({ question, onPublish }: {
   const { user } = useAuth();
 
   const onSubmit: SubmitHandler<InputType> = (data) => {
-      console.log(data);
-      const bodyFormData = new FormData();
-      bodyFormData.append('questionId', question?.id || '');
-      bodyFormData.append('content', data.content);
-      bodyFormData.append('userId', user?.id || '');
-      bodyFormData.append('groupId', question?.groupId || '');
+    console.log(data);
+    const bodyFormData = new FormData();
+    bodyFormData.append('questionId', question?.id || '');
+    bodyFormData.append('content', data.content);
+    bodyFormData.append('userId', user?.id || '');
+    bodyFormData.append('groupId', question?.groupId || '');
 
-      data.files && data.files.forEach((file: File) => {
-        bodyFormData.append(`files`, file);
-      });
+    data.files && data.files.forEach((file: File) => {
+      bodyFormData.append(`files`, file);
+    });
 
-      api.post('answers/answer-question', bodyFormData)
-        .then(res => {
-          setEdit(false);
-          onPublish(res.data)
-        })
-        .catch(err => console.error(err));
-    }
-  ;
+    api.post('answers/answer-question', bodyFormData)
+      .then(res => {
+        setEdit(false);
+        onPublish(res.data);
+      })
+      .catch(err => console.error(err));
+  };
 
   return edit ? (
     <>
