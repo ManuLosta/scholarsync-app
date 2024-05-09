@@ -25,7 +25,7 @@ const variants = {
 
 export default function Carousel({ images }: { images: string[] }) {
   const [[page, direction], setPage] = useState([0, 0]);
-  const imageIndex = ((page - 1) % images.length + images.length) % images.length;
+  const imageIndex = (page % images.length + images.length) % images.length;
 
   const paginate = (newDirection: number) => {
     setPage([page + newDirection, newDirection]);
