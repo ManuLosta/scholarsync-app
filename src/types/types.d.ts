@@ -62,3 +62,10 @@ export type Question = {
   groupId: string;
   title: string;
 }
+
+export type Answer = {
+  questionId: string;
+  content: string;
+  userId: string;
+  groupId: string;
+}

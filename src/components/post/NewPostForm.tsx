@@ -80,9 +80,7 @@ export default function NewPostForm() {
       });
 
       api
-        .post('questions/publish-question', bodyFormData, {
-          headers: { 'Content-Type': `multipart/form-data` },
-        })
+        .post('questions/publish-question', bodyFormData)
         .then((res) => {
           const id = res.data.body.id;
           handleNavigate(id);
@@ -97,8 +95,8 @@ export default function NewPostForm() {
           authorId: user?.id,
         })
         .then((res) => {
-          const id = res.data.body.id;
-          handleNavigate(id)
+          const id = res.data.id;
+          handleNavigate(id);
         })
         .catch((err) => console.error(err));
     }
@@ -106,8 +104,8 @@ export default function NewPostForm() {
   };
 
   const handleNavigate = (questionId: string) => {
-      navigate(`/question/${questionId}`)
-  }
+    navigate(`/question/${questionId}`);
+  };
 
   return (
     groups && (
@@ -170,7 +168,7 @@ export default function NewPostForm() {
           name="body"
           control={control}
           render={({ field: { onChange } }) => (
-            <Editor error={errors.body?.message} onChange={onChange} />
+            <Editor autoFocus={false} error={errors.body?.message} onChange={onChange} />
           )}
         />
         <p className="font-bold text-lg">Archivos</p>

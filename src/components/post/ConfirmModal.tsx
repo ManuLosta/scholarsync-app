@@ -6,7 +6,7 @@ export default function ConfirmModal({onSubmit} : {onSubmit: () => void}) {
 
   return (
     <>
-      <Button color="primary" onPress={onOpen}>Publicar</Button>
+      <Button className="ms-auto" variant="shadow" color="primary" onPress={onOpen}>Publicar</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (

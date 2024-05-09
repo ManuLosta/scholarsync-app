@@ -8,8 +8,8 @@ interface Image extends File {
 }
 
 export default function FileUploader({
-  onChange,
-}: {
+                                       onChange,
+                                     }: {
   onChange: (files: File[]) => void;
 }) {
   const [images, setImages] = useState<Image[]>([]);
@@ -71,36 +71,40 @@ export default function FileUploader({
           </p>
         </div>
       </div>
-      <div className="flex p-3 gap-4 max-h-[200px]">
-        {images.map((image) => (
-          <div className="relative">
+      {images.length > 0 && (
+        <div className="flex p-3 gap-4 max-h-[200px]">
+          {images.map((image) => (
+            <div className="relative">
             <span
               onClick={() => handleDeleteImage(image)}
               className="z-50 transition-all hover:cursor-pointer hover:scale-110 absolute bg-danger rounded-full top-2 right-2"
             >
               <LuX size={20} />
             </span>
-            <Image
-              className="h-[150px] w-[150px] rounded object-cover"
-              src={image.preview}
-              alt={image.name}
-            />
-          </div>
-        ))}
-      </div>
-      <div className="flex p-3 basis-1/2 gap-2">
-        {files.map((file) => (
-          <div className="border p-2 rounded-md flex items-center gap-4">
-            <p>{file.name}</p>
-            <span
-              onClick={() => handleDeleteFile(file)}
-              className="transition-all text-danger hover:cursor-pointer hover:scale-105"
-            >
+              <Image
+                className="h-[150px] w-[150px] rounded object-cover"
+                src={image.preview}
+                alt={image.name}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+      {files.length > 0 && (
+        <div className="flex p-3 basis-1/2 gap-2">
+          {files.map((file) => (
+            <div className="border p-2 rounded-md flex items-center gap-4">
+              <p>{file.name}</p>
+              <span
+                onClick={() => handleDeleteFile(file)}
+                className="transition-all text-danger hover:cursor-pointer hover:scale-105"
+              >
               <LuX />
             </span>
-          </div>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

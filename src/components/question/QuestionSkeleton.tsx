@@ -2,7 +2,7 @@ import { Skeleton } from '@nextui-org/react';
 
 export default function QuestionSkeleton() {
   return (
-    <div className="border border-lg flex flex-col p-4 gap-4 rounded-lg">
+    <div className="flex flex-col p-4 gap-4">
       <div className="flex gap-3">
         <Skeleton className="w-[40px] h-[40px] rounded-full" />
         <div className="flex flex-col gap-2">

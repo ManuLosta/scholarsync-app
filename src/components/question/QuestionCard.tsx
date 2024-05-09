@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 import api from '../../api.ts';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Group, Profile, Question as QuestionType } from '../../types/types';
+import { Group, Profile, Question } from '../../types/types';
 import { Avatar, Button, Image, Link } from '@nextui-org/react';
 import Carousel from './Carousel.tsx';
 import { LuDownload } from 'react-icons/lu';
 import MathExtension from '@aarkue/tiptap-math-extension';
 import QuestionSkeleton from './QuestionSkeleton.tsx';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 type Image = {
   base64Encoding: string;
@@ -21,14 +23,16 @@ type FileType = {
   name: string;
 }
 
-export default function QuestionCard() {
+export default function QuestionCard({ question }: { question: Question | undefined }) {
   const { id } = useParams();
-  const [question, setQuestion] = useState<QuestionType>();
   const [author, setAuthor] = useState<Profile>();
   const [group, setGroup] = useState<Group>();
   const [images, setImages] = useState<Image[]>([]);
   const [files, setFiles] = useState<FileType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  dayjs.extend(relativeTime);
+  dayjs.locale('es-us');
 
   const editor = useEditor({
     extensions: [StarterKit, MathExtension.configure({ evaluation: true })],
@@ -41,15 +45,6 @@ export default function QuestionCard() {
   });
 
   useEffect(() => {
-    api
-      .get(`questions/get-question?id=${id}`)
-      .then((res) => {
-        const data = res.data;
-        console.log(data.body);
-        setQuestion(data.body);
-      })
-      .catch((err) => console.error(err));
-
     // fetch question images
     api
       .get(`questions/get-images?id=${id}`)
@@ -72,6 +67,8 @@ export default function QuestionCard() {
   }, [id]);
 
   useEffect(() => {
+    if (!question) return;
+
     // Set editor content
     if (question?.content) {
       editor?.commands.setContent(question.content);
@@ -114,23 +111,26 @@ export default function QuestionCard() {
 
   return (
     !loading && author && group ? (
-      <div className="p-4 flex gap-3 flex-col border rounded-lg">
-        <div className="flex gap-2 items-center">
-          <Avatar name={group?.title} color="primary" />
-          <div className="flex flex-col">
-            <Link
-              href={`/group/${group?.id}`}
-              className="font-bold hover:cursour-pointer text-foregorund"
-            >
-              {group?.title}
-            </Link>
-            <Link
-              href={`/user/${author?.id}`}
-              className="hover:cursour-pointer text-foregorund"
-            >
-              @{author?.username}
-            </Link>
+      <div className="p-4 flex gap-3 flex-col">
+        <div className="flex items-center justify-between">
+          <div className="flex gap-2 items-center">
+            <Avatar name={group?.title} color="primary" />
+            <div className="flex flex-col">
+              <Link
+                href={`/group/${group?.id}`}
+                className="font-bold hover:cursour-pointer text-foregorund"
+              >
+                {group?.title}
+              </Link>
+              <Link
+                href={`/user/${author?.id}`}
+                className="hover:cursour-pointer text-foregorund"
+              >
+                @{author?.username}
+              </Link>
+            </div>
           </div>
+          <p className="font-light">{dayjs(new Date(question?.createdAt || '')).fromNow()}</p>
         </div>
         <h1 className="text-2xl font-bold">{question?.title}</h1>
         <EditorContent editor={editor} />

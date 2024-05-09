@@ -5,13 +5,16 @@ import { Underline } from '@tiptap/extension-underline';
 import { Divider } from '@nextui-org/react';
 import "katex/dist/katex.min.css"
 import MathExtension from '@aarkue/tiptap-math-extension';
+import { useEffect } from 'react';
 
 export default function Editor({
   onChange,
   error,
+  autoFocus,
 }: {
   onChange: (text: string) => void;
   error: string | undefined;
+  autoFocus: boolean
 }) {
   const editor = useEditor({
     extensions: [
@@ -26,11 +29,15 @@ export default function Editor({
     ],
     editorProps: {
       attributes: {
-        class: 'prose outline-none p-3 rounded-xl w-full min-h-[30vh]',
+        class: "prose outline-none p-3 rounded-xl w-full",
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
+
+  useEffect(() => {
+    if (autoFocus) editor?.commands.focus()
+  }, [editor]);
 
   return (
     <>
