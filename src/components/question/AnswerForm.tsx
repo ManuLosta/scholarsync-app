@@ -42,7 +42,10 @@ export default function AnswerForm({ question, onPublish }: {
     api.post('answers/answer-question', bodyFormData)
       .then(res => {
         setEdit(false);
-        onPublish(res.data);
+        onPublish({
+          ...res.data,
+          ratings: []
+        });
       })
       .catch(err => console.error(err));
   };

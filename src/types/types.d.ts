@@ -70,4 +70,9 @@ export type Answer = {
   userId: string;
   groupId: string;
   createdAt: Date;
+  ratings: {
+    id: string;
+    rating: number;
+    userId: string;
+  }[];
 }

@@ -10,7 +10,7 @@ import AnswerCard from '../components/question/AnswerCard.tsx';
 
 export default function Question() {
   const [question, setQuestion] = useState<QuestionType>();
-  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [answers, setAnswers] = useState<Answer[] | null>(null);
   const [myAnswer, setMyAnswer] = useState<Answer | undefined>()
   const { id } = useParams();
   const { user } = useAuth();
@@ -44,7 +44,7 @@ export default function Question() {
       {myAnswer ? (
         <>
           <h2 className="font-bold">Tu respuesta</h2>
-          <AnswerCard answer={myAnswer} />
+          <AnswerCard answer={myAnswer} isMine={true} />
         </>
       ) : (
         <AnswerForm onPublish={handleAnswerPublish} question={question} />
