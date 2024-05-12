@@ -29,7 +29,7 @@ export default function Editor({
     ],
     editorProps: {
       attributes: {
-        class: "prose outline-none p-3 rounded-xl w-full",
+        class: "prose dark:prose-invert outline-none p-3 rounded-xl w-full",
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),

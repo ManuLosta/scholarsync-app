@@ -39,7 +39,7 @@ export default function QuestionCard({ question }: { question: Question | undefi
     editable: false,
     editorProps: {
       attributes: {
-        class: 'prose',
+        class: 'prose dark:prose-invert',
       },
     },
   });
