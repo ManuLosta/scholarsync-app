@@ -74,7 +74,7 @@ export default function FileUploader({
       {images.length > 0 && (
         <div className="flex p-3 gap-4 max-h-[200px]">
           {images.map((image) => (
-            <div className="relative">
+            <div key={image.name} className="relative">
             <span
               onClick={() => handleDeleteImage(image)}
               className="z-50 transition-all hover:cursor-pointer hover:scale-110 absolute bg-danger rounded-full top-2 right-2"

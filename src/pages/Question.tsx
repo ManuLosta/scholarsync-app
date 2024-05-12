@@ -38,7 +38,7 @@ export default function Question() {
     setMyAnswer(answer);
   };
 
-  return (
+  return question && (
     <div className="container py-4 px-6 flex flex-col gap-4">
       <QuestionCard question={question} />
       {question?.authorId != user?.id && (

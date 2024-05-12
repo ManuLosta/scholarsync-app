@@ -11,6 +11,8 @@ import MathExtension from '@aarkue/tiptap-math-extension';
 import QuestionSkeleton from './QuestionSkeleton.tsx';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import QuestionOptions from './QuestionOptions.tsx';
+import { useAuth } from '../../hooks/useAuth.ts';
 
 type Image = {
   base64Encoding: string;
@@ -23,13 +25,14 @@ type FileType = {
   name: string;
 }
 
-export default function QuestionCard({ question }: { question: Question | undefined }) {
+export default function QuestionCard({ question }: { question: Question }) {
   const { id } = useParams();
   const [author, setAuthor] = useState<Profile>();
   const [group, setGroup] = useState<Group>();
   const [images, setImages] = useState<Image[]>([]);
   const [files, setFiles] = useState<FileType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useAuth();
 
   dayjs.extend(relativeTime);
   dayjs.locale('es-us');
@@ -130,9 +133,14 @@ export default function QuestionCard({ question }: { question: Question | undefi
               </Link>
             </div>
           </div>
-          <p className="font-light">{dayjs(new Date(question?.createdAt || '')).fromNow()}</p>
+          <div className="flex items-center gap-3">
+            <p className="font-light">{dayjs(new Date(question.createdAt)).fromNow()}</p>
+            {question.authorId == user?.id && (
+              <QuestionOptions questionId={question.id} />
+            )}
+          </div>
         </div>
-        <h1 className="text-2xl font-bold">{question?.title}</h1>
+        <h1 className="text-2xl font-bold">{question.title}</h1>
         <EditorContent editor={editor} />
         {images.length > 0 && (
           <Carousel

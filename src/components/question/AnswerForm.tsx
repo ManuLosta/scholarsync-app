@@ -16,7 +16,7 @@ const formSchema = z.object({
 type InputType = z.infer<typeof formSchema>;
 
 export default function AnswerForm({ question, onPublish }: {
-  question: Question | undefined,
+  question: Question,
   onPublish: (answer: Answer) => void
 }) {
   const {
