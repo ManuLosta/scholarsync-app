@@ -21,7 +21,7 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
   const { credits } = useCredit();
 
   return (
-    <Navbar maxWidth="full" isBlurred>
+    <Navbar maxWidth="full" isBlurred={false}>
       <NavbarBrand>
         <Image src={SSIcon} width={40} height={40} />
         <h1 className="font-bold text-2xl">ScholarSync</h1>

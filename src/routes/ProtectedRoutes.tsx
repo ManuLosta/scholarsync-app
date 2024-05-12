@@ -11,7 +11,7 @@ export default function ProtectedRoutes() {
   return auth?.sessionId ? (
     <>
       {auth?.loading ? (
-        <div>
+        <div className="w-screen h-screen flex items-center justify-center">
           <CircularProgress />
         </div>
       ) : (

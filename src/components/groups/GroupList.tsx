@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { User } from '@nextui-org/react';
 import CreateGroupModal from './CreateGroupModal.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
+import GroupListSkeleton from './GroupListSkeleton.tsx';
 
 type Group = {
   id: string;
@@ -43,7 +44,10 @@ export default function GroupList() {
       <h2 className="font-bold text-lg">Grupos</h2>
       <CreateGroupModal fetchGroups={() => fetchGroups(auth?.user?.id)} />
       {loading ? (
-        <div>Loading</div>
+        <>
+          <GroupListSkeleton />
+          <GroupListSkeleton />
+        </>
       ) : (
         groups.map((group) => (
           <Link

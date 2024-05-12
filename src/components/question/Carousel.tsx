@@ -25,7 +25,7 @@ const variants = {
 
 export default function Carousel({ images }: { images: string[] }) {
   const [[page, direction], setPage] = useState([0, 0]);
-  const imageIndex = ((page - 1) % images.length + images.length) % images.length;
+  const imageIndex = (page % images.length + images.length) % images.length;
 
   const paginate = (newDirection: number) => {
     setPage([page + newDirection, newDirection]);
@@ -49,26 +49,30 @@ export default function Carousel({ images }: { images: string[] }) {
           }}
         />
       </AnimatePresence>
-      <div
-        onClick={() => paginate(-1)}
-        className="hover:cursor-pointer absolute left-4 top-[45%] z-10 bg-foreground bg-opacity-40 rounded-full text-background"
-      >
-        <LuChevronLeft size={25} />
-      </div>
-      <div
-        onClick={() => paginate(1)}
-        className="hover:cursor-pointer absolute right-4 top-[45%] z-10 bg-foreground bg-opacity-40 rounded-full text-background"
-      >
-        <LuChevronRight size={25} />
-      </div>
-      <div className="bg-black bg-opacity-30 absolute z-10 bottom-2 rounded-full flex gap-2 p-2">
-        {images.map((img, index) => (
+      {images.length > 1 && (
+        <>
           <div
-            key={img}
-            className={`w-[10px] h-[10px] rounded-full bg-white bg-opacity-20 ${imageIndex == index && 'bg-opacity-90'}`}
-          ></div>
-        ))}
-      </div>
+            onClick={() => paginate(-1)}
+            className="hover:cursor-pointer absolute left-4 top-[45%] z-10 bg-foreground bg-opacity-40 rounded-full text-background"
+          >
+            <LuChevronLeft size={25} />
+          </div>
+          <div
+            onClick={() => paginate(1)}
+            className="hover:cursor-pointer absolute right-4 top-[45%] z-10 bg-foreground bg-opacity-40 rounded-full text-background"
+          >
+            <LuChevronRight size={25} />
+          </div>
+          <div className="bg-black bg-opacity-30 absolute z-10 bottom-2 rounded-full flex gap-2 p-2">
+            {images.map((img, index) => (
+              <div
+                key={img}
+                className={`w-[10px] h-[10px] rounded-full bg-white bg-opacity-20 ${imageIndex == index && 'bg-opacity-90'}`}
+              ></div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
