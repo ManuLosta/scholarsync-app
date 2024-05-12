@@ -163,20 +163,24 @@ export default function NewPostForm() {
             />
           )}
         />
-        <p className="font-bold text-lg">Pregunta</p>
         <Controller
           name="body"
           control={control}
           render={({ field: { onChange } }) => (
-            <Editor autoFocus={false} error={errors.body?.message} onChange={onChange} />
+            <div>
+              <p className="font-bold text-lg mb-1">Pregunta</p>
+              <Editor autoFocus={false} error={errors.body?.message} onChange={onChange} />
+            </div>
           )}
         />
-        <p className="font-bold text-lg">Archivos</p>
         <Controller
           name="files"
           control={control}
           render={({ field: { onChange } }) => (
-            <FileUploader onChange={onChange} />
+            <div>
+              <p className="font-bold text-lg mb-1">Archivos</p>
+              <FileUploader onChange={onChange} />
+            </div>
           )}
         />
         <ConfirmModal onSubmit={handleSubmit(onSubmit)} />

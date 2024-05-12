@@ -50,9 +50,9 @@ export default function FileUploader({
   };
 
   return (
-    <div className="border p-2 rounded-lg flex flex-col">
+    <div className="border border-foreground-200 p-2 rounded-lg flex flex-col">
       <div
-        className={`outline-none p-2 rounded-lg border-dashed border flex flex-col items-center ${isDragActive && 'border-2 border-dashed bg-primary-50 border-primary'}`}
+        className={`outline-none p-2 rounded-lg border-dashed border border-foreground-200 flex flex-col items-center ${isDragActive && 'border-2 border-dashed bg-primary-50 border-primary'}`}
         {...getRootProps({
           onClick: (event) => event.stopPropagation(),
         })}

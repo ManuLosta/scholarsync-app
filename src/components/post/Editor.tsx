@@ -42,7 +42,7 @@ export default function Editor({
   return (
     <>
       <div
-        className={`border flex flex-col gap-3 p-4 rounded-xl focus:border-primary ${error && 'bg-danger-50'}`}
+        className={`border border-foreground-200 flex flex-col gap-3 p-4 rounded-xl focus:border-primary ${error && 'bg-danger-50'}`}
       >
         <EditorMenu editor={editor} />
         <Divider />
