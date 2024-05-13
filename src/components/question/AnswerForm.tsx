@@ -15,9 +15,12 @@ const formSchema = z.object({
 
 type InputType = z.infer<typeof formSchema>;
 
-export default function AnswerForm({ question, onPublish }: {
-  question: Question,
-  onPublish: (answer: Answer) => void
+export default function AnswerForm({
+  question,
+  onPublish,
+}: {
+  question: Question;
+  onPublish: (answer: Answer) => void;
 }) {
   const {
     handleSubmit,
@@ -35,19 +38,21 @@ export default function AnswerForm({ question, onPublish }: {
     bodyFormData.append('userId', user?.id || '');
     bodyFormData.append('groupId', question?.groupId || '');
 
-    data.files && data.files.forEach((file: File) => {
-      bodyFormData.append(`files`, file);
-    });
+    data.files &&
+      data.files.forEach((file: File) => {
+        bodyFormData.append(`files`, file);
+      });
 
-    api.post('answers/answer-question', bodyFormData)
-      .then(res => {
+    api
+      .post('answers/answer-question', bodyFormData)
+      .then((res) => {
         setEdit(false);
         onPublish({
           ...res.data,
-          ratings: []
+          ratings: [],
         });
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   return edit ? (
@@ -57,7 +62,11 @@ export default function AnswerForm({ question, onPublish }: {
           name="content"
           control={control}
           render={({ field: { onChange } }) => (
-            <Editor autoFocus onChange={onChange} error={errors.content?.message} />
+            <Editor
+              autoFocus
+              onChange={onChange}
+              error={errors.content?.message}
+            />
           )}
         />
         <Controller
@@ -68,14 +77,21 @@ export default function AnswerForm({ question, onPublish }: {
           )}
         />
         <div className="ms-auto flex gap-3">
-          <Button variant="flat" color="danger" onPress={() => setEdit(false)}>Cancelar</Button>
-          <Button color="primary" variant="shadow" type="submit">Responder</Button>
+          <Button variant="flat" color="danger" onPress={() => setEdit(false)}>
+            Cancelar
+          </Button>
+          <Button color="primary" variant="shadow" type="submit">
+            Responder
+          </Button>
         </div>
       </form>
     </>
   ) : (
-    <div onClick={() => setEdit(true)} className="border rounded-full p-4 hover:cursor-text">
+    <div
+      onClick={() => setEdit(true)}
+      className="border rounded-full p-4 hover:cursor-text"
+    >
       <p className="font-light">Responder</p>
     </div>
   );
-};
+}

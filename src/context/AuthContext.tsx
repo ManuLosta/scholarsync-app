@@ -10,7 +10,6 @@ interface AuthContextType {
   loading: boolean;
 }
 
-
 const defaultContext: AuthContextType = {
   sessionId: null,
   setSessionId: () => {},

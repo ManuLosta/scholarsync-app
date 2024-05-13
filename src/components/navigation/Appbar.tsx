@@ -34,9 +34,9 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <div className='flex gap-2 items-center'>
+          <div className="flex gap-2 items-center">
             <p>{credits}</p>
-            <RiCopperCoinFill className='text-yellow-500' />
+            <RiCopperCoinFill className="text-yellow-500" />
           </div>
         </NavbarItem>
         <NavbarItem>

@@ -16,7 +16,13 @@ type Image = {
   fileType: string;
 };
 
-export default function AnswerCard({ answer, isMine }: { answer: Answer, isMine: boolean }) {
+export default function AnswerCard({
+  answer,
+  isMine,
+}: {
+  answer: Answer;
+  isMine: boolean;
+}) {
   const { user } = useAuth();
   const [author, setAuthor] = useState<Profile | null>();
   const [images, setImages] = useState<Image[]>([]);
@@ -45,33 +51,36 @@ export default function AnswerCard({ answer, isMine }: { answer: Answer, isMine:
       editor?.commands.setContent(answer.content);
     }
 
-    api.get(`users/profile/${answer.userId}`)
-      .then(res => setAuthor(res.data))
-      .catch(err => console.error(err));
+    api
+      .get(`users/profile/${answer.userId}`)
+      .then((res) => setAuthor(res.data))
+      .catch((err) => console.error(err));
 
-    api.get(`answers/get-images?answerId=${answer.answerId}`)
-      .then(res => {
+    api
+      .get(`answers/get-images?answerId=${answer.answerId}`)
+      .then((res) => {
         const data = res.data;
         setImages(data);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
 
     setLoading(false);
   }, [answer, editor]);
 
   const handleRating = (newRating: number) => {
     setUserRating(newRating);
-    api.post('answers/rate-answer', {
-      answer_id: answer.answerId,
-      user_id: user?.id,
-      rating: newRating,
-    })
-      .then(res => {
+    api
+      .post('answers/rate-answer', {
+        answer_id: answer.answerId,
+        user_id: user?.id,
+        rating: newRating,
+      })
+      .then((res) => {
         const data = res.data;
         setRating(data.ratingAverage);
         setRatingCount(data.ratingCount);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   return loading && author == null ? (
@@ -79,21 +88,26 @@ export default function AnswerCard({ answer, isMine }: { answer: Answer, isMine:
   ) : (
     <div className="bg-foreground-100 rounded-lg p-4 flex flex-col gap-3">
       <div>
-        <User name={`${author?.firstName || ''} ${author?.lastName || ''}`}
-              description={`@${author?.username || ''}`} />
+        <User
+          name={`${author?.firstName || ''} ${author?.lastName || ''}`}
+          description={`@${author?.username || ''}`}
+        />
       </div>
       <EditorContent editor={editor} />
       {images?.length > 0 && (
-        <Carousel images={images.map(
-          (image) =>
-            `data:${image.fileType};base64,${image.base64Encoding}`,
-        )} />
+        <Carousel
+          images={images.map(
+            (image) => `data:${image.fileType};base64,${image.base64Encoding}`,
+          )}
+        />
       )}
       <div className="flex justify-between">
         {ratingCount > 0 && (
           <div className="flex gap-2 items-center">
             <FaStar className="text-yellow-400" size={20} />
-            <p>{rating.toPrecision(2)} ({ratingCount}) </p>
+            <p>
+              {rating.toPrecision(2)} ({ratingCount}){' '}
+            </p>
           </div>
         )}
         {!isMine && (

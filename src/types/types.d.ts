@@ -38,21 +38,21 @@ export type Profile = {
 };
 
 export type Group = {
-  createdBy: string
+  createdBy: string;
   invitations: Array<{
-    user_id: string
-  }>
-  description: string
-  id: string
-  isPrivate: boolean
-  title: string
+    user_id: string;
+  }>;
+  description: string;
+  id: string;
+  isPrivate: boolean;
+  title: string;
   users: Array<{
-    firstName: string
-    lastName: string
-    id: string
-    username: string
-  }>
-}
+    firstName: string;
+    lastName: string;
+    id: string;
+    username: string;
+  }>;
+};
 
 export type Question = {
   id: string;
@@ -61,7 +61,7 @@ export type Question = {
   createdAt: Date;
   groupId: string;
   title: string;
-}
+};
 
 export type Answer = {
   answerId: string;
@@ -75,4 +75,4 @@ export type Answer = {
     rating: number;
     userId: string;
   }[];
-}
+};

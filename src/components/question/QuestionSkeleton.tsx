@@ -15,5 +15,5 @@ export default function QuestionSkeleton() {
       <Skeleton className="w-[80%] h-[1em] rounded-full" />
       <Skeleton className="w-[40%] h-[1em] rounded-full" />
     </div>
-  )
+  );
 }

@@ -1,23 +1,34 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react';
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from '@nextui-org/react';
 import { LuMoreVertical, LuPencil, LuTrash } from 'react-icons/lu';
 import api from '../../api.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { useNavigate } from 'react-router-dom';
 
-export default function QuestionOptions({ questionId }: { questionId: string }) {
+export default function QuestionOptions({
+  questionId,
+}: {
+  questionId: string;
+}) {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleDelete = () => {
     // delete question
-    api.post('questions/delete-question', {
-      question_id: questionId,
-      user_id: user?.id,
-    })
-      .then(() => {
-        navigate("/")
+    api
+      .post('questions/delete-question', {
+        question_id: questionId,
+        user_id: user?.id,
       })
-      .catch(err => console.error(err))
+      .then(() => {
+        navigate('/');
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -27,8 +38,9 @@ export default function QuestionOptions({ questionId }: { questionId: string }) 
           <LuMoreVertical size={20} />
         </Button>
       </DropdownTrigger>
-      <DropdownMenu  aria-label="Static Actions">
+      <DropdownMenu aria-label="Static Actions">
         <DropdownItem
+          onPress={() => navigate(`/question/${questionId}/edit`)}
           startContent={<LuPencil />}
         >
           Editar
