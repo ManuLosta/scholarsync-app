@@ -17,8 +17,10 @@ import {
 
 import api from '../api';
 import { useAuth } from '../hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import React from 'react';
+
+import { useGroups } from '../hooks/useGroups';
 
 interface Invitation {
   group_id: string;
@@ -53,13 +55,16 @@ export default function AddToGroupButton({
   // Que vos seas el owner
   // Mostrar los grupos publicos y de los que sos el owner
 
-  const getUserInvitations = (userId: string | undefined) => {
+  const {groups} = useGroups();
+  console.log("groups:", groups)
+
+  const getUserInvitations = useCallback((userId: string | undefined) => {
     api.get(`group-invitations/get-invitations/${userId}`).then((res) => {
       const data = res.data;
 
       getDisabledItems(data);
-    });
-  };
+    })
+  }, [])
 
   function getDisabledItems(hisInvitations: Invitation[]) {
     if (hisInvitations != undefined && hisInvitations != null) {
@@ -99,7 +104,7 @@ export default function AddToGroupButton({
       });
   };
 
-  function setGroupsWhoCanSendInvitation() {
+  const setGroupsWhoCanSendInvitation = useCallback(() => {
     // Si es publico,
     // Si vos lo creaste
     // Si la persona no esta en el grupo ya
@@ -116,14 +121,14 @@ export default function AddToGroupButton({
 
       SetGroupsCanSendInvitation(gropswhoCanSendInvitation);
     }
-  }
+  }, [auth?.user?.id, disabledItems, hisgroups, myGroups])
 
   useEffect(() => {
     fetchGroups(auth?.user?.id, setMyGroups);
     fetchGroups(hisId, setHisGroups);
     getUserInvitations(hisId);
     setGroupsWhoCanSendInvitation();
-  }, [auth?.user?.id, needFetch]);
+  }, [auth?.user?.id, getUserInvitations, hisId, needFetch, setGroupsWhoCanSendInvitation]);
 
   function handleClick() {
     setNeedFetch(!needFetch);
