@@ -89,6 +89,7 @@ export default function AddToGroupButton({
     api
       .get(`groups/getGroups?user_id=${userId}`)
       .then((res) => {
+        console.log("grupos: ", res.data)
         const data = res.data;
         set(data);
       })
