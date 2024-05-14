@@ -4,67 +4,93 @@ import { Button } from '@nextui-org/react';
 import { z } from 'zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import FileUploader from '../post/FIleUploader.tsx';
-import { Answer, Question } from '../../types/types';
+import { Answer } from '../../types/types';
 import { useAuth } from '../../hooks/useAuth.ts';
 import api from '../../api.ts';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const formSchema = z.object({
-  content: z.string(),
+  content: z
+    .string()
+    .min(10, { message: 'Respuesta muy corta.' })
+    .max(5000, { message: 'Respuesta muy larga,' }),
   files: z.custom<File[]>().optional(),
 });
 
 type InputType = z.infer<typeof formSchema>;
 
 export default function AnswerForm({
-  question,
+  questionId,
   onPublish,
+  edit = false,
+  answer,
 }: {
-  question: Question;
+  questionId: string;
   onPublish: (answer: Answer) => void;
+  edit?: boolean;
+  answer?: Answer;
 }) {
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<InputType>();
-  const [edit, setEdit] = useState<boolean>(false);
+  } = useForm<InputType>({
+    resolver: zodResolver(formSchema),
+  });
+  const [focused, setFocused] = useState<boolean>(edit);
   const { user } = useAuth();
 
   const onSubmit: SubmitHandler<InputType> = (data) => {
-    console.log(data);
     const bodyFormData = new FormData();
-    bodyFormData.append('questionId', question?.id || '');
     bodyFormData.append('content', data.content);
     bodyFormData.append('userId', user?.id || '');
-    bodyFormData.append('groupId', question?.groupId || '');
 
     data.files &&
       data.files.forEach((file: File) => {
         bodyFormData.append(`files`, file);
       });
 
-    api
-      .post('answers/answer-question', bodyFormData)
-      .then((res) => {
-        setEdit(false);
-        onPublish({
-          ...res.data,
-          ratings: [],
-        });
-      })
-      .catch((err) => console.error(err));
+    if (edit) {
+      bodyFormData.append('answerId', answer?.answerId || '');
+
+      api
+        .post('answers/edit', bodyFormData)
+        .then((res) => {
+          console.log(res.data);
+          onPublish({
+            ...res.data,
+            ratings: [],
+          });
+        })
+        .catch((err) => console.error(err));
+    } else {
+      bodyFormData.append('questionId', questionId || '');
+
+      api
+        .post('answers/answer-question', bodyFormData)
+        .then((res) => {
+          setFocused(false);
+          onPublish({
+            ...res.data,
+            ratings: [],
+          });
+        })
+        .catch((err) => console.error(err));
+    }
   };
 
-  return edit ? (
+  return focused ? (
     <>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="content"
           control={control}
+          defaultValue={answer?.content}
           render={({ field: { onChange } }) => (
             <Editor
               autoFocus
               onChange={onChange}
+              defaultValue={answer?.content}
               error={errors.content?.message}
             />
           )}
@@ -77,18 +103,24 @@ export default function AnswerForm({
           )}
         />
         <div className="ms-auto flex gap-3">
-          <Button variant="flat" color="danger" onPress={() => setEdit(false)}>
-            Cancelar
-          </Button>
+          {!edit && (
+            <Button
+              variant="flat"
+              color="danger"
+              onPress={() => setFocused(false)}
+            >
+              Cancelar
+            </Button>
+          )}
           <Button color="primary" variant="shadow" type="submit">
-            Responder
+            {edit ? 'Editar' : 'Responder'}
           </Button>
         </div>
       </form>
     </>
   ) : (
     <div
-      onClick={() => setEdit(true)}
+      onClick={() => setFocused(true)}
       className="border rounded-full p-4 hover:cursor-text"
     >
       <p className="font-light">Responder</p>

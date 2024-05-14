@@ -10,6 +10,7 @@ import { FaStar } from 'react-icons/fa6';
 import AnswerRating from './AnswerRating.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import AnswerCardSkeleton from './AnswerCardSkeleton.tsx';
+import AnswerOptions from './AnswerOptions.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -19,9 +20,13 @@ type Image = {
 export default function AnswerCard({
   answer,
   isMine,
+  onDelete,
+  onEdit,
 }: {
   answer: Answer;
   isMine: boolean;
+  onDelete?: () => void;
+  onEdit?: (answer: Answer) => void;
 }) {
   const { user } = useAuth();
   const [author, setAuthor] = useState<Profile | null>();
@@ -87,11 +92,14 @@ export default function AnswerCard({
     <AnswerCardSkeleton />
   ) : (
     <div className="bg-foreground-100 rounded-lg p-4 flex flex-col gap-3">
-      <div>
+      <div className="flex justify-between">
         <User
           name={`${author?.firstName || ''} ${author?.lastName || ''}`}
           description={`@${author?.username || ''}`}
         />
+        {isMine && onDelete && onEdit && (
+          <AnswerOptions answer={answer} onDelete={onDelete} onEdit={onEdit} />
+        )}
       </div>
       <EditorContent editor={editor} />
       {images?.length > 0 && (

@@ -11,7 +11,7 @@ import { useAuth } from '../hooks/useAuth.ts';
 export default function Question() {
   const [question, setQuestion] = useState<QuestionType>();
   const [answers, setAnswers] = useState<Answer[] | null>(null);
-  const [myAnswer, setMyAnswer] = useState<Answer | undefined>();
+  const [myAnswer, setMyAnswer] = useState<Answer | null | undefined>();
   const { id } = useParams();
   const { user } = useAuth();
 
@@ -35,8 +35,11 @@ export default function Question() {
   }, [id]);
 
   const handleAnswerPublish = (answer: Answer) => {
-    console.log(answer);
     setMyAnswer(answer);
+  };
+
+  const handleDeleteAnswer = () => {
+    setMyAnswer(null);
   };
 
   return (
@@ -47,10 +50,18 @@ export default function Question() {
           (myAnswer ? (
             <>
               <h2 className="font-bold">Tu respuesta</h2>
-              <AnswerCard answer={myAnswer} isMine={true} />
+              <AnswerCard
+                onDelete={() => handleDeleteAnswer()}
+                answer={myAnswer}
+                isMine={true}
+                onEdit={handleAnswerPublish}
+              />
             </>
           ) : (
-            <AnswerForm onPublish={handleAnswerPublish} question={question} />
+            <AnswerForm
+              onPublish={handleAnswerPublish}
+              questionId={question.id}
+            />
           ))}
         <h2 className="font-bold text-lg">Respuestas</h2>
         <AnswerList answers={answers} />
