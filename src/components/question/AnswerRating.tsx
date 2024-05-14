@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { FaStar } from 'react-icons/fa6';
 
-export default function AnswerRating({ rating, setRating }: { rating: number, setRating: (rating: number) => void }) {
+export default function AnswerRating({
+  rating,
+  setRating,
+}: {
+  rating: number;
+  setRating: (rating: number) => void;
+}) {
   const [hover, setHover] = useState<number>(0);
 
   return (
@@ -16,7 +22,14 @@ export default function AnswerRating({ rating, setRating }: { rating: number, se
             onMouseLeave={() => setHover(0)}
             onClick={() => setRating(ratingValue)}
           >
-            <FaStar className={ratingValue <= (hover || rating) ? "text-yellow-400" : "text-foreground-300"} size={20} />
+            <FaStar
+              className={
+                ratingValue <= (hover || rating)
+                  ? 'text-yellow-400'
+                  : 'text-foreground-300'
+              }
+              size={20}
+            />
           </div>
         );
       })}

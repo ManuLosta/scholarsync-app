@@ -5,13 +5,13 @@ import { Answer, Question as QuestionType } from '../types/types';
 import api from '../api.ts';
 import { useParams } from 'react-router-dom';
 import AnswerList from '../components/question/AnswerList.tsx';
-import { useAuth } from '../hooks/useAuth.ts';
 import AnswerCard from '../components/question/AnswerCard.tsx';
+import { useAuth } from '../hooks/useAuth.ts';
 
 export default function Question() {
   const [question, setQuestion] = useState<QuestionType>();
   const [answers, setAnswers] = useState<Answer[] | null>(null);
-  const [myAnswer, setMyAnswer] = useState<Answer | undefined>();
+  const [myAnswer, setMyAnswer] = useState<Answer | null | undefined>();
   const { id } = useParams();
   const { user } = useAuth();
 
@@ -24,34 +24,48 @@ export default function Question() {
       })
       .catch((err) => console.error(err));
 
-    api.get(`questions/get-answers-by-question?question_id=${id}`)
-      .then(res => {
+    api
+      .get(`questions/get-answers-by-question?question_id=${id}`)
+      .then((res) => {
         const data: Answer[] = res.data.body;
-        setMyAnswer(data.find(answer => answer.userId == user?.id));
-        setAnswers(data.filter(answer => answer.userId != user?.id));
+        setMyAnswer(data.find((answer) => answer.userId == user?.id));
+        setAnswers(data.filter((answer) => answer.userId != user?.id));
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }, [id]);
 
   const handleAnswerPublish = (answer: Answer) => {
-    console.log(answer);
     setMyAnswer(answer);
   };
 
+  const handleDeleteAnswer = () => {
+    setMyAnswer(null);
+  };
+
   return (
-    <div className="container py-4 px-6 flex flex-col gap-4">
-      <QuestionCard question={question} />
-      {question?.authorId != user?.id && (
-        myAnswer ? (
-          <>
-            <h2 className="font-bold">Tu respuesta</h2>
-            <AnswerCard answer={myAnswer} isMine={true} />
-          </>
-        ) : (
-          <AnswerForm onPublish={handleAnswerPublish} question={question} />
-        ))}
-      <h2 className="font-bold text-lg">Respuestas</h2>
-      <AnswerList answers={answers} />
-    </div>
+    question && (
+      <div className="container py-4 px-6 flex flex-col gap-4">
+        <QuestionCard question={question} />
+        {question?.authorId != user?.id &&
+          (myAnswer ? (
+            <>
+              <h2 className="font-bold">Tu respuesta</h2>
+              <AnswerCard
+                onDelete={() => handleDeleteAnswer()}
+                answer={myAnswer}
+                isMine={true}
+                onEdit={handleAnswerPublish}
+              />
+            </>
+          ) : (
+            <AnswerForm
+              onPublish={handleAnswerPublish}
+              questionId={question.id}
+            />
+          ))}
+        <h2 className="font-bold text-lg">Respuestas</h2>
+        <AnswerList answers={answers} />
+      </div>
+    )
   );
 }

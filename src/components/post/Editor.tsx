@@ -3,7 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import EditorMenu from './EditorMenu.tsx';
 import { Underline } from '@tiptap/extension-underline';
 import { Divider } from '@nextui-org/react';
-import "katex/dist/katex.min.css"
+import 'katex/dist/katex.min.css';
 import MathExtension from '@aarkue/tiptap-math-extension';
 import { useEffect } from 'react';
 
@@ -11,10 +11,12 @@ export default function Editor({
   onChange,
   error,
   autoFocus,
+  defaultValue,
 }: {
   onChange: (text: string) => void;
   error: string | undefined;
-  autoFocus: boolean
+  autoFocus: boolean;
+  defaultValue?: string;
 }) {
   const editor = useEditor({
     extensions: [
@@ -25,18 +27,19 @@ export default function Editor({
         },
       }),
       Underline,
-      MathExtension.configure({ evaluation: true })
+      MathExtension.configure({ evaluation: true }),
     ],
     editorProps: {
       attributes: {
-        class: "prose dark:prose-invert outline-none p-3 rounded-xl w-full",
+        class: 'prose dark:prose-invert outline-none p-3 rounded-xl w-full',
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
 
   useEffect(() => {
-    if (autoFocus) editor?.commands.focus()
+    if (autoFocus) editor?.commands.focus();
+    if (defaultValue) editor?.commands.setContent(defaultValue);
   }, [editor]);
 
   return (

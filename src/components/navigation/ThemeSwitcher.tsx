@@ -15,5 +15,5 @@ export default function ThemeSwitcher() {
     >
       Tema
     </Switch>
-  )
+  );
 }

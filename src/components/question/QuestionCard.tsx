@@ -11,6 +11,8 @@ import MathExtension from '@aarkue/tiptap-math-extension';
 import QuestionSkeleton from './QuestionSkeleton.tsx';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import QuestionOptions from './QuestionOptions.tsx';
+import { useAuth } from '../../hooks/useAuth.ts';
 
 type Image = {
   base64Encoding: string;
@@ -21,15 +23,16 @@ type FileType = {
   id: string;
   file_type: string;
   name: string;
-}
+};
 
-export default function QuestionCard({ question }: { question: Question | undefined }) {
+export default function QuestionCard({ question }: { question: Question }) {
   const { id } = useParams();
   const [author, setAuthor] = useState<Profile>();
   const [group, setGroup] = useState<Group>();
   const [images, setImages] = useState<Image[]>([]);
   const [files, setFiles] = useState<FileType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useAuth();
 
   dayjs.extend(relativeTime);
   dayjs.locale('es-us');
@@ -59,9 +62,7 @@ export default function QuestionCard({ question }: { question: Question | undefi
       .get(`questions/get-question-files?id=${id}`)
       .then((res) => {
         const data: FileType[] = res.data.body;
-        setFiles(
-          data.filter(file => !file.file_type.startsWith('image')),
-        );
+        setFiles(data.filter((file) => !file.file_type.startsWith('image')));
       })
       .catch((err) => console.error(err));
   }, [id]);
@@ -95,10 +96,11 @@ export default function QuestionCard({ question }: { question: Question | undefi
   }, [editor, question]);
 
   const handleDownload = (fileId: string, fileName: string) => {
-    api.get(`questions/download-file?id=${fileId}`, {
-      responseType: 'blob',
-    })
-      .then(res => {
+    api
+      .get(`questions/download-file?id=${fileId}`, {
+        responseType: 'blob',
+      })
+      .then((res) => {
         const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement('a');
         link.href = downloadUrl;
@@ -109,55 +111,66 @@ export default function QuestionCard({ question }: { question: Question | undefi
       });
   };
 
-  return (
-    !loading && author && group ? (
-      <div className="p-4 flex gap-3 flex-col">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-2 items-center">
-            <Avatar name={group?.title} color="primary" />
-            <div className="flex flex-col">
-              <Link
-                href={`/group/${group?.id}`}
-                className="font-bold hover:cursour-pointer text-foregorund"
-              >
-                {group?.title}
-              </Link>
-              <Link
-                href={`/user/${author?.id}`}
-                className="hover:cursour-pointer text-foregorund"
-              >
-                @{author?.username}
-              </Link>
-            </div>
+  return !loading && author && group ? (
+    <div className="p-4 flex gap-3 flex-col">
+      <div className="flex items-center justify-between">
+        <div className="flex gap-2 items-center">
+          <Avatar name={group?.title} color="primary" />
+          <div className="flex flex-col">
+            <Link
+              href={`/group/${group?.id}`}
+              className="font-bold hover:cursour-pointer text-foregorund"
+            >
+              {group?.title}
+            </Link>
+            <Link
+              href={`/user/${author?.id}`}
+              className="hover:cursour-pointer text-foregorund"
+            >
+              @{author?.username}
+            </Link>
           </div>
-          <p className="font-light">{dayjs(new Date(question?.createdAt || '')).fromNow()}</p>
         </div>
-        <h1 className="text-2xl font-bold">{question?.title}</h1>
-        <EditorContent editor={editor} />
-        {images.length > 0 && (
-          <Carousel
-            images={images.map(
-              (image) =>
-                `data:${image.fileType};base64,${image.base64Encoding}`,
-            )}
-          />
-        )}
-        {files.length > 0 && (
-          <div className="flex gap-2">
-            {files.map(file => (
-              <div className="border py-2 px-4 rounded-lg flex items-center gap-3">
-                <p>{file.name}</p>
-                <Button onPress={() => handleDownload(file.id, file.name)} isIconOnly variant="flat"
-                        className="bg-transparent">
-                  <LuDownload size={20} />
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          <p className="font-light">
+            {dayjs(new Date(question.createdAt)).fromNow()}
+          </p>
+          {question.authorId == user?.id && (
+            <QuestionOptions questionId={question.id} />
+          )}
+        </div>
       </div>
-    ) : (
-      <QuestionSkeleton />
-    )
+      <h1 className="text-2xl font-bold">{question.title}</h1>
+      <EditorContent editor={editor} />
+      {images.length > 0 && (
+        <Carousel
+          images={images.map(
+            (image) => `data:${image.fileType};base64,${image.base64Encoding}`,
+          )}
+        />
+      )}
+      {files.length > 0 && (
+        <div className="flex gap-2">
+          {files.map((file) => (
+            <div
+              key={file.id}
+              className="border py-2 px-4 rounded-lg flex items-center gap-3"
+            >
+              <p>{file.name}</p>
+              <Button
+                onPress={() => handleDownload(file.id, file.name)}
+                isIconOnly
+                variant="flat"
+                className="bg-transparent"
+              >
+                <LuDownload size={20} />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  ) : (
+    <QuestionSkeleton />
   );
 }

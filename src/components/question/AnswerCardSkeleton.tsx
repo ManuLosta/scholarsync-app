@@ -12,5 +12,5 @@ export default function AnswerCardSkeleton() {
       </div>
       <Skeleton className="w-[70%] h-[1em] rounded-full" />
     </div>
-  )
+  );
 }

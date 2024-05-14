@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { createContext, useEffect, useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 interface CreditContextType {
   credits: number;
@@ -13,7 +13,7 @@ const defaultContext = {
   xp: 0,
   removeCredits: () => {},
   addCredits: () => {},
-}
+};
 
 export const CreditContext = createContext<CreditContextType>(defaultContext);
 
@@ -23,22 +23,21 @@ export const CreditProvider = ({ children }: { children: React.ReactNode }) => {
   const [xp, setXp] = useState(0);
 
   useEffect(() => {
-    setCredits(user?.credits || 0)
-    setXp(user?.xp || 0)
-  }, [user])
+    setCredits(user?.credits || 0);
+    setXp(user?.xp || 0);
+  }, [user]);
 
   const removeCredits = (count: number) => {
-    setCredits(credits - count)
-  }
+    setCredits(credits - count);
+  };
 
   const addCredits = (count: number) => {
-    setCredits(credits + count)
-  }
+    setCredits(credits + count);
+  };
 
   return (
     <CreditContext.Provider value={{ credits, xp, removeCredits, addCredits }}>
-        {children}
+      {children}
     </CreditContext.Provider>
-  )
-}
-
+  );
+};

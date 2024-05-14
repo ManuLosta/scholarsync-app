@@ -169,7 +169,11 @@ export default function NewPostForm() {
           render={({ field: { onChange } }) => (
             <div>
               <p className="font-bold text-lg mb-1">Pregunta</p>
-              <Editor autoFocus={false} error={errors.body?.message} onChange={onChange} />
+              <Editor
+                autoFocus={false}
+                error={errors.body?.message}
+                onChange={onChange}
+              />
             </div>
           )}
         />
