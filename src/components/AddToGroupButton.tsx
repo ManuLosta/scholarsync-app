@@ -42,11 +42,12 @@ export default function AddToGroupButton({
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const [hisgroups, setHisGroups] = useState<Group[]>([]);
+  const {groups} = useGroups();
 
   const [groupsCanSendInvitation, SetGroupsCanSendInvitation] = useState<
     Group[]
   >([]);
-  const [needFetch, setNeedFetch] = useState(false);
+  
   const [disabledItems, setDisabledItems] = useState<string[]>([]);
   const auth = useAuth();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -55,8 +56,7 @@ export default function AddToGroupButton({
   // Que vos seas el owner
   // Mostrar los grupos publicos y de los que sos el owner
 
-  const {groups} = useGroups();
-  console.log("groups:", groups)
+  
 
   const getUserInvitations = useCallback((userId: string | undefined) => {
     api.get(`group-invitations/get-invitations/${userId}`).then((res) => {
@@ -124,14 +124,14 @@ export default function AddToGroupButton({
   }, [auth?.user?.id, disabledItems, hisgroups, myGroups])
 
   useEffect(() => {
-    fetchGroups(auth?.user?.id, setMyGroups);
+    setMyGroups(groups)
     fetchGroups(hisId, setHisGroups);
     getUserInvitations(hisId);
     setGroupsWhoCanSendInvitation();
-  }, [auth?.user?.id, getUserInvitations, hisId, needFetch, setGroupsWhoCanSendInvitation]);
+  }, [auth?.user?.id, groups, hisId]);
 
   function handleClick() {
-    setNeedFetch(!needFetch);
+    
     onOpen();
   }
 
