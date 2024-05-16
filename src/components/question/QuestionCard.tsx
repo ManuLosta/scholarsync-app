@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import api from '../../api.ts';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Group, Profile, Question } from '../../types/types';
 import { Avatar, Button, Image, Link } from '@nextui-org/react';
 import Carousel from './Carousel.tsx';
-import { LuDownload } from 'react-icons/lu';
+import { LuArrowLeft, LuDownload } from 'react-icons/lu';
 import MathExtension from '@aarkue/tiptap-math-extension';
 import QuestionSkeleton from './QuestionSkeleton.tsx';
 import dayjs from 'dayjs';
@@ -26,7 +25,6 @@ type FileType = {
 };
 
 export default function QuestionCard({ question }: { question: Question }) {
-  const { id } = useParams();
   const [author, setAuthor] = useState<Profile>();
   const [group, setGroup] = useState<Group>();
   const [images, setImages] = useState<Image[]>([]);
@@ -50,7 +48,7 @@ export default function QuestionCard({ question }: { question: Question }) {
   useEffect(() => {
     // fetch question images
     api
-      .get(`questions/get-images?id=${id}`)
+      .get(`questions/get-images?id=${question.id}`)
       .then((res) => {
         const data = res.data;
         setImages(data.body);
@@ -59,13 +57,13 @@ export default function QuestionCard({ question }: { question: Question }) {
 
     // fetch question files and filter images
     api
-      .get(`questions/get-question-files?id=${id}`)
+      .get(`questions/get-question-files?id=${question.id}`)
       .then((res) => {
         const data: FileType[] = res.data.body;
         setFiles(data.filter((file) => !file.file_type.startsWith('image')));
       })
       .catch((err) => console.error(err));
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     if (!question) return;
@@ -115,6 +113,9 @@ export default function QuestionCard({ question }: { question: Question }) {
     <div className="p-4 flex gap-3 flex-col">
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
+          <Link href="..">
+            <LuArrowLeft size={20} />
+          </Link>
           <Avatar name={group?.title} color="primary" />
           <div className="flex flex-col">
             <Link
