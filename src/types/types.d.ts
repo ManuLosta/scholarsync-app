@@ -56,23 +56,35 @@ export type Group = {
 
 export type Question = {
   id: string;
-  authorId: string;
+  author: Profile;
   content: string;
   createdAt: Date;
   groupId: string;
+  groupTitle: string;
   title: string;
+  files: FileType[];
 };
 
 export type Answer = {
   answerId: string;
   questionId: string;
   content: string;
-  userId: string;
+  author: Profile;
   groupId: string;
+  groupTitle: string;
+  files: FileType[];
   createdAt: Date;
-  ratings: {
-    id: string;
-    rating: number;
-    userId: string;
-  }[];
+  ratings: Rating[];
+};
+
+export type Rating = {
+  id: string;
+  rating: number;
+  userId: string;
+};
+
+export type FileType = {
+  id: string;
+  name: string;
+  file_type: string;
 };

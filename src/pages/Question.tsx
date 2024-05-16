@@ -28,8 +28,8 @@ export default function Question() {
       .get(`questions/get-answers-by-question?question_id=${id}`)
       .then((res) => {
         const data: Answer[] = res.data.body;
-        setMyAnswer(data.find((answer) => answer.userId == user?.id));
-        setAnswers(data.filter((answer) => answer.userId != user?.id));
+        setMyAnswer(data.find((answer) => answer.author.id == user?.id));
+        setAnswers(data.filter((answer) => answer.author.id != user?.id));
       })
       .catch((err) => console.error(err));
   }, [id]);
@@ -46,7 +46,7 @@ export default function Question() {
     question && (
       <div className="container py-4 px-6 flex flex-col gap-4">
         <QuestionCard question={question} />
-        {question?.authorId != user?.id &&
+        {question?.author.id != user?.id &&
           (myAnswer ? (
             <>
               <h2 className="font-bold">Tu respuesta</h2>
