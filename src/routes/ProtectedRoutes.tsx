@@ -4,7 +4,7 @@ import Layout from '../components/Layout.tsx';
 import { NotificationProvider } from '../context/NotificationContext.tsx';
 import { CircularProgress } from '@nextui-org/react';
 import { CreditProvider } from '../context/CreditContext.tsx';
-import { PostsProvider } from '../context/PostsContext.tsx';
+import { FeedProvider } from '../context/FeedContext.tsx';
 
 export default function ProtectedRoutes() {
   const auth = useAuth();
@@ -18,11 +18,11 @@ export default function ProtectedRoutes() {
       ) : (
         <NotificationProvider>
           <CreditProvider>
-            <PostsProvider>
+            <FeedProvider>
               <Layout>
                 <Outlet />
               </Layout>
-            </PostsProvider>
+            </FeedProvider>
           </CreditProvider>
         </NotificationProvider>
       )}
