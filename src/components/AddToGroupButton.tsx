@@ -17,8 +17,10 @@ import {
 
 import api from '../api';
 import { useAuth } from '../hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import React from 'react';
+
+import { useGroups } from '../hooks/useGroups';
 
 interface Invitation {
   group_id: string;
@@ -40,11 +42,12 @@ export default function AddToGroupButton({
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const [hisgroups, setHisGroups] = useState<Group[]>([]);
+  const {groups} = useGroups();
 
   const [groupsCanSendInvitation, SetGroupsCanSendInvitation] = useState<
     Group[]
   >([]);
-  const [needFetch, setNeedFetch] = useState(false);
+  
   const [disabledItems, setDisabledItems] = useState<string[]>([]);
   const auth = useAuth();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -53,13 +56,15 @@ export default function AddToGroupButton({
   // Que vos seas el owner
   // Mostrar los grupos publicos y de los que sos el owner
 
-  const getUserInvitations = (userId: string | undefined) => {
+  
+
+  const getUserInvitations = useCallback((userId: string | undefined) => {
     api.get(`group-invitations/get-invitations/${userId}`).then((res) => {
       const data = res.data;
 
       getDisabledItems(data);
-    });
-  };
+    })
+  }, [])
 
   function getDisabledItems(hisInvitations: Invitation[]) {
     if (hisInvitations != undefined && hisInvitations != null) {
@@ -89,6 +94,7 @@ export default function AddToGroupButton({
     api
       .get(`groups/getGroups?user_id=${userId}`)
       .then((res) => {
+        console.log("grupos: ", res.data)
         const data = res.data;
         set(data);
       })
@@ -98,7 +104,7 @@ export default function AddToGroupButton({
       });
   };
 
-  function setGroupsWhoCanSendInvitation() {
+  const setGroupsWhoCanSendInvitation = useCallback(() => {
     // Si es publico,
     // Si vos lo creaste
     // Si la persona no esta en el grupo ya
@@ -115,17 +121,17 @@ export default function AddToGroupButton({
 
       SetGroupsCanSendInvitation(gropswhoCanSendInvitation);
     }
-  }
+  }, [auth?.user?.id, disabledItems, hisgroups, myGroups])
 
   useEffect(() => {
-    fetchGroups(auth?.user?.id, setMyGroups);
+    setMyGroups(groups)
     fetchGroups(hisId, setHisGroups);
     getUserInvitations(hisId);
     setGroupsWhoCanSendInvitation();
-  }, [auth?.user?.id, needFetch]);
+  }, [auth?.user?.id, groups, hisId]);
 
   function handleClick() {
-    setNeedFetch(!needFetch);
+    
     onOpen();
   }
 

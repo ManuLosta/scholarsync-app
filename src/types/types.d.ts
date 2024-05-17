@@ -34,8 +34,9 @@ export type Profile = {
   groups: {
     id: string;
     title: string;
-  };
+  }[];
 };
+
 
 export type Group = {
   createdBy: string;
