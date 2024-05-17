@@ -1,4 +1,4 @@
-import { Answer, Profile } from '../../types/types';
+import { Answer } from '../../types/types';
 import { useEffect, useState } from 'react';
 import api from '../../api.ts';
 import { User } from '@nextui-org/react';
@@ -11,6 +11,7 @@ import AnswerRating from './AnswerRating.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import AnswerCardSkeleton from './AnswerCardSkeleton.tsx';
 import AnswerOptions from './AnswerOptions.tsx';
+import FileDownloader from './FileDownloader.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -29,7 +30,6 @@ export default function AnswerCard({
   onEdit?: (answer: Answer) => void;
 }) {
   const { user } = useAuth();
-  const [author, setAuthor] = useState<Profile | null>();
   const [images, setImages] = useState<Image[]>([]);
   const [userRating, setUserRating] = useState<number | null>(
     answer.ratings.find((rating) => rating.userId === user?.id)?.rating || null,
@@ -55,11 +55,6 @@ export default function AnswerCard({
     if (answer?.content) {
       editor?.commands.setContent(answer.content);
     }
-
-    api
-      .get(`users/profile/${answer.userId}`)
-      .then((res) => setAuthor(res.data))
-      .catch((err) => console.error(err));
 
     api
       .get(`answers/get-images?answerId=${answer.answerId}`)
@@ -88,14 +83,14 @@ export default function AnswerCard({
       .catch((err) => console.error(err));
   };
 
-  return loading && author == null ? (
+  return loading ? (
     <AnswerCardSkeleton />
   ) : (
     <div className="bg-foreground-100 rounded-lg p-4 flex flex-col gap-3">
       <div className="flex justify-between">
         <User
-          name={`${author?.firstName || ''} ${author?.lastName || ''}`}
-          description={`@${author?.username || ''}`}
+          name={`${answer.author.firstName || ''} ${answer.author.lastName || ''}`}
+          description={`@${answer.author.username || ''}`}
         />
         {isMine && onDelete && onEdit && (
           <AnswerOptions answer={answer} onDelete={onDelete} onEdit={onEdit} />
@@ -109,6 +104,7 @@ export default function AnswerCard({
           )}
         />
       )}
+      <FileDownloader files={answer.files} />
       <div className="flex justify-between">
         {ratingCount > 0 && (
           <div className="flex gap-2 items-center">

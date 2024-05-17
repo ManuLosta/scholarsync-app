@@ -1,36 +1,27 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import api from '../../api.ts';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Group, Profile, Question } from '../../types/types';
-import { Avatar, Button, Image, Link } from '@nextui-org/react';
+import { Question } from '../../types/types';
+import { Avatar, Image } from '@nextui-org/react';
 import Carousel from './Carousel.tsx';
-import { LuDownload } from 'react-icons/lu';
+import { LuArrowLeft } from 'react-icons/lu';
 import MathExtension from '@aarkue/tiptap-math-extension';
 import QuestionSkeleton from './QuestionSkeleton.tsx';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import QuestionOptions from './QuestionOptions.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
+import FileDownloader from './FileDownloader.tsx';
+import { Link } from 'react-router-dom';
 
 type Image = {
   base64Encoding: string;
   fileType: string;
 };
 
-type FileType = {
-  id: string;
-  file_type: string;
-  name: string;
-};
-
 export default function QuestionCard({ question }: { question: Question }) {
-  const { id } = useParams();
-  const [author, setAuthor] = useState<Profile>();
-  const [group, setGroup] = useState<Group>();
   const [images, setImages] = useState<Image[]>([]);
-  const [files, setFiles] = useState<FileType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
 
@@ -50,22 +41,14 @@ export default function QuestionCard({ question }: { question: Question }) {
   useEffect(() => {
     // fetch question images
     api
-      .get(`questions/get-images?id=${id}`)
+      .get(`questions/get-images?id=${question.id}`)
       .then((res) => {
         const data = res.data;
         setImages(data.body);
       })
-      .catch((err) => console.error(err));
-
-    // fetch question files and filter images
-    api
-      .get(`questions/get-question-files?id=${id}`)
-      .then((res) => {
-        const data: FileType[] = res.data.body;
-        setFiles(data.filter((file) => !file.file_type.startsWith('image')));
-      })
-      .catch((err) => console.error(err));
-  }, [id]);
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, [question.id]);
 
   useEffect(() => {
     if (!question) return;
@@ -74,60 +57,28 @@ export default function QuestionCard({ question }: { question: Question }) {
     if (question?.content) {
       editor?.commands.setContent(question.content);
     }
-
-    // fetch user profile
-    api
-      .get(`users/profile/${question?.authorId}`)
-      .then((res) => {
-        const data = res.data;
-        setAuthor(data);
-      })
-      .catch((err) => console.error(err));
-
-    // fetch group info
-    api
-      .get(`groups/getGroup?group_id=${question?.groupId}`)
-      .then((res) => {
-        const data = res.data;
-        setGroup(data);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
   }, [editor, question]);
 
-  const handleDownload = (fileId: string, fileName: string) => {
-    api
-      .get(`questions/download-file?id=${fileId}`, {
-        responseType: 'blob',
-      })
-      .then((res) => {
-        const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      });
-  };
-
-  return !loading && author && group ? (
+  return !loading ? (
     <div className="p-4 flex gap-3 flex-col">
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
-          <Avatar name={group?.title} color="primary" />
+          <Link className="hover:bg-foreground-200 p-1 rounded-full" to="..">
+            <LuArrowLeft size={20} />
+          </Link>
+          <Avatar name={question.groupTitle} color="primary" />
           <div className="flex flex-col">
             <Link
-              href={`/group/${group?.id}`}
+              to={`/group/${question.groupId}`}
               className="font-bold hover:cursour-pointer text-foregorund"
             >
-              {group?.title}
+              {question.groupTitle}
             </Link>
             <Link
-              href={`/user/${author?.id}`}
+              to={`/user/${question.author.id}`}
               className="hover:cursour-pointer text-foregorund"
             >
-              @{author?.username}
+              @{question.author.username}
             </Link>
           </div>
         </div>
@@ -135,7 +86,7 @@ export default function QuestionCard({ question }: { question: Question }) {
           <p className="font-light">
             {dayjs(new Date(question.createdAt)).fromNow()}
           </p>
-          {question.authorId == user?.id && (
+          {question.author.id == user?.id && (
             <QuestionOptions questionId={question.id} />
           )}
         </div>
@@ -149,26 +100,7 @@ export default function QuestionCard({ question }: { question: Question }) {
           )}
         />
       )}
-      {files.length > 0 && (
-        <div className="flex gap-2">
-          {files.map((file) => (
-            <div
-              key={file.id}
-              className="border py-2 px-4 rounded-lg flex items-center gap-3"
-            >
-              <p>{file.name}</p>
-              <Button
-                onPress={() => handleDownload(file.id, file.name)}
-                isIconOnly
-                variant="flat"
-                className="bg-transparent"
-              >
-                <LuDownload size={20} />
-              </Button>
-            </div>
-          ))}
-        </div>
-      )}
+      {question.files.length > 0 && <FileDownloader files={question.files} />}
     </div>
   ) : (
     <QuestionSkeleton />
