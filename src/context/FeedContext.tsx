@@ -1,9 +1,9 @@
 import React, {
   createContext,
-  useContext,
   useReducer,
   ReactNode,
   Dispatch,
+  useState,
 } from 'react';
 import {
   feedReducer,
@@ -19,9 +19,12 @@ interface FeedContextProps {
   state: FeedState;
   dispatch: Dispatch<FeedAction>;
   fetchPosts: () => void;
+  loading: boolean;
 }
 
-const FeedContext = createContext<FeedContextProps | undefined>(undefined);
+export const FeedContext = createContext<FeedContextProps | undefined>(
+  undefined,
+);
 
 interface FeedProviderProps {
   children: ReactNode;
@@ -29,11 +32,12 @@ interface FeedProviderProps {
 
 export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(feedReducer, initialState);
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
   const fetchPosts = () => {
-    console.log('called');
     if (user) {
+      setLoading(true);
       api
         .get(
           `questions/get-questions-by-score?offset=${state.page}&limit=20&user_id=${user.id}`,
@@ -43,21 +47,14 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
           dispatch({ type: 'SET_POSTS', payload: data });
           dispatch({ type: 'SET_PAGE', payload: state.page + 1 });
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+        .finally(() => setLoading(false));
     }
   };
 
   return (
-    <FeedContext.Provider value={{ state, dispatch, fetchPosts }}>
+    <FeedContext.Provider value={{ state, dispatch, fetchPosts, loading }}>
       {children}
     </FeedContext.Provider>
   );
-};
-
-export const useFeed = (): FeedContextProps => {
-  const context = useContext(FeedContext);
-  if (!context) {
-    throw new Error('useFeed must be used within a FeedProvider');
-  }
-  return context;
 };

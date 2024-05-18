@@ -40,11 +40,11 @@ export default function AnswerCard({
   const [ratingCount, setRatingCount] = useState<number>(answer.ratings.length);
 
   const editor = useEditor({
-    extensions: [StarterKit, MathExtension.configure({ evaluation: true })],
+    extensions: [StarterKit, MathExtension],
     editable: false,
     editorProps: {
       attributes: {
-        class: 'prose',
+        class: 'prose dark:prose-invert',
       },
     },
   });

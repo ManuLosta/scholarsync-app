@@ -1,5 +1,4 @@
 import { Question } from '../../types/types';
-import { Link } from 'react-router-dom';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import MathExtension from '@aarkue/tiptap-math-extension';
@@ -27,23 +26,20 @@ export default function PostCard({ question }: { question: Question }) {
         <div className="flex gap-2 items-center">
           <Avatar name={question.groupTitle} color="primary" />
           <div className="flex flex-col">
-            <Link
-              to={`/group/${question.groupId}`}
-              className="font-bold hover:cursour-pointer text-foregorund"
-            >
-              {question.groupTitle}
-            </Link>
-            <Link
-              to={`/user/${question.author.id}`}
-              className="hover:cursour-pointer text-foregorund"
-            >
-              @{question.author.username}
-            </Link>
+            <p>{question.groupTitle}</p>
+            <p>@{question.author.username}</p>
           </div>
         </div>
       </div>
       <h2 className="text-xl font-bold">{question.title}</h2>
-      <EditorContent editor={editor} />
+      {editor ? (
+        <EditorContent editor={editor} />
+      ) : (
+        <div
+          className="prose dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: question.content }}
+        />
+      )}
     </div>
   );
 }

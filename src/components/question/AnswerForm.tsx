@@ -121,7 +121,7 @@ export default function AnswerForm({
   ) : (
     <div
       onClick={() => setFocused(true)}
-      className="border rounded-full p-4 hover:cursor-text"
+      className="border border-foreground-200 rounded-full p-4 hover:cursor-text"
     >
       <p className="font-light">Responder</p>
     </div>
