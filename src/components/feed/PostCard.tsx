@@ -18,7 +18,10 @@ type Image = {
 
 export default function PostCard({ question }: { question: Question }) {
   const currRef = useRef(null);
-  const isVisible = useIntersectionObserver(currRef, { threshold: 0.5 });
+  const isVisible = useIntersectionObserver(currRef, {
+    rootMargin: '300px',
+    threshold: 0.5,
+  });
   const hasImages = question.files.some((file) =>
     file.file_type.includes('image'),
   );
@@ -50,14 +53,14 @@ export default function PostCard({ question }: { question: Question }) {
   }, [isVisible]);
 
   return (
-    <Link
-      to={`question/${question.id}`}
-      key={question.id}
-      preventScrollReset={true}
+    <div
+      ref={currRef}
+      className="hover:bg-foreground-100 flex flex-col p-3 gap-2"
     >
-      <div
-        ref={currRef}
-        className="hover:bg-foreground-100 rounded-xl flex flex-col p-3 gap-2"
+      <Link
+        to={`question/${question.id}`}
+        key={question.id}
+        preventScrollReset={true}
       >
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
@@ -80,15 +83,14 @@ export default function PostCard({ question }: { question: Question }) {
             dangerouslySetInnerHTML={{ __html: question.content }}
           />
         )}
-        {hasImages && (
-          <Carousel
-            images={images.map(
-              (image) =>
-                `data:${image.fileType};base64,${image.base64Encoding}`,
-            )}
-          />
-        )}
-      </div>
-    </Link>
+      </Link>
+      {hasImages && (
+        <Carousel
+          images={images.map(
+            (image) => `data:${image.fileType};base64,${image.base64Encoding}`,
+          )}
+        />
+      )}
+    </div>
   );
 }

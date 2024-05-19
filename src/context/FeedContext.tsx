@@ -44,8 +44,12 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
         )
         .then((res) => {
           const data: Post[] = res.data.body;
-          dispatch({ type: 'SET_POSTS', payload: data });
-          dispatch({ type: 'SET_PAGE', payload: state.page + 1 });
+          if (data.length == 0) {
+            dispatch({ type: 'SET_HAS_MORE', payload: false });
+          } else {
+            dispatch({ type: 'SET_POSTS', payload: data });
+            dispatch({ type: 'SET_PAGE', payload: state.page + 1 });
+          }
         })
         .catch((err) => console.error(err))
         .finally(() => setLoading(false));
