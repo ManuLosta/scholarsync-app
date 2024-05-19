@@ -63,7 +63,11 @@ export default function QuestionCard({ question }: { question: Question }) {
     <div className="p-4 flex gap-3 flex-col">
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
-          <Link className="hover:bg-foreground-200 p-1 rounded-full" to="..">
+          <Link
+            className="hover:bg-foreground-200 p-1 rounded-full"
+            to=".."
+            preventScrollReset={true}
+          >
             <LuArrowLeft size={20} />
           </Link>
           <Avatar name={question.groupTitle} color="primary" />

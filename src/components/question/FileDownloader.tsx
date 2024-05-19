@@ -21,11 +21,11 @@ export default function FileDownloader({ files }: { files: FileType[] }) {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-wrap">
       {files.map((file) => (
         <div
           key={file.id}
-          className="border py-2 px-4 rounded-lg flex items-center gap-3"
+          className="border border-foreground-200 py-2 px-4 rounded-lg flex items-center gap-3"
         >
           <p>{file.name}</p>
           <Button

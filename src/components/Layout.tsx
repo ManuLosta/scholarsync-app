@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="lg:container mx-auto flex flex-col relative">
+    <div className="container mx-auto flex flex-col relative max-w-[1280px]">
       <Appbar handleOpen={handleOpen} />
       <Sidebar />
       <div className="ms-[20rem]">{children}</div>

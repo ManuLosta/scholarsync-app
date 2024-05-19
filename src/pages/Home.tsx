@@ -1,6 +1,5 @@
 import CreatePostButton from '../components/post/CreatePostButton';
 import PostCard from '../components/feed/PostCard.tsx';
-import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useRef } from 'react';
 import useIntersectionObserver from '../hooks/useIntersectionObserver.ts';
 import { useFeed } from '../hooks/useFeed.ts';
@@ -19,16 +18,7 @@ export default function Home() {
   }, [inViewport]);
 
   const renderPosts = useMemo(
-    () =>
-      state.posts.map((post) => (
-        <Link
-          to={`question/${post.question.id}`}
-          key={post.question.id}
-          preventScrollReset={true}
-        >
-          <PostCard question={post.question} />
-        </Link>
-      )),
+    () => state.posts.map((post) => <PostCard question={post.question} />),
     [state.posts],
   );
 
@@ -36,7 +26,7 @@ export default function Home() {
     state.posts.length > 0 && (
       <div className="container p-8">
         <CreatePostButton />
-        <div className="flex flex-col divide-y divide-foreground-200 mt-4">
+        <div className="flex flex-col divide-y divide-foreground-200 mt-4 container">
           {renderPosts}
         </div>
         <div ref={targetRef}></div>
