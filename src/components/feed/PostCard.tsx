@@ -55,7 +55,7 @@ export default function PostCard({ question }: { question: Question }) {
   return (
     <div
       ref={currRef}
-      className="hover:bg-foreground-100 flex flex-col p-3 gap-2"
+      className="hover:bg-foreground-100 flex flex-col px-3 py-4 gap-2"
     >
       <Link
         to={`question/${question.id}`}

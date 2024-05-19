@@ -3,7 +3,7 @@ import api from '../../api.ts';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Question } from '../../types/types';
-import { Avatar, Image } from '@nextui-org/react';
+import { Avatar, Button, Image } from '@nextui-org/react';
 import Carousel from './Carousel.tsx';
 import { LuArrowLeft } from 'react-icons/lu';
 import MathExtension from '@aarkue/tiptap-math-extension';
@@ -13,7 +13,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import QuestionOptions from './QuestionOptions.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import FileDownloader from './FileDownloader.tsx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 type Image = {
   base64Encoding: string;
@@ -24,6 +24,7 @@ export default function QuestionCard({ question }: { question: Question }) {
   const [images, setImages] = useState<Image[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   dayjs.extend(relativeTime);
   dayjs.locale('es-us');
@@ -63,13 +64,13 @@ export default function QuestionCard({ question }: { question: Question }) {
     <div className="p-4 flex gap-3 flex-col">
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
-          <Link
-            className="hover:bg-foreground-200 p-1 rounded-full"
-            to=".."
-            preventScrollReset={true}
+          <Button
+            onPress={() => navigate(-1)}
+            isIconOnly
+            className="bg-background hover:bg-foreground-200 rounded-full"
           >
             <LuArrowLeft size={20} />
-          </Link>
+          </Button>
           <Avatar name={question.groupTitle} color="primary" />
           <div className="flex flex-col">
             <Link
