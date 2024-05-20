@@ -1,28 +1,24 @@
 import { Question } from '../types/types';
 
-export interface Post {
-  question: Question;
-  score: number;
-}
-
 export interface FeedState {
-  posts: Post[];
+  posts: Question[];
   page: number;
   hasMore: boolean;
-  scrollPosition: number;
+  order: 'score' | 'date';
 }
 
 export type FeedAction =
-  | { type: 'SET_POSTS'; payload: Post[] }
+  | { type: 'SET_POSTS'; payload: Question[] }
   | { type: 'SET_PAGE'; payload: number }
   | { type: 'SET_HAS_MORE'; payload: boolean }
+  | { type: 'SET_ORDER'; payload: 'score' | 'date' }
   | { type: 'RESET_POSTS' };
 
 export const initialState: FeedState = {
   posts: [],
   page: 0,
   hasMore: true,
-  scrollPosition: 0,
+  order: 'score',
 };
 
 export const feedReducer = (
@@ -35,10 +31,7 @@ export const feedReducer = (
         ...state,
         posts: [
           ...state.posts.filter(
-            (post) =>
-              !action.payload.some(
-                (newPost) => newPost.question.id === post.question.id,
-              ),
+            (post) => !action.payload.some((newPost) => newPost.id === post.id),
           ),
           ...action.payload,
         ],
@@ -53,11 +46,16 @@ export const feedReducer = (
         ...state,
         hasMore: action.payload,
       };
+    case 'SET_ORDER':
+      return {
+        ...state,
+        order: action.payload,
+      };
     case 'RESET_POSTS':
       return {
         ...state,
         posts: [],
-        page: 1,
+        page: 0,
         hasMore: true,
       };
     default:

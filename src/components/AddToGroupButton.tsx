@@ -42,12 +42,12 @@ export default function AddToGroupButton({
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const [hisgroups, setHisGroups] = useState<Group[]>([]);
-  const {groups} = useGroups();
+  const { groups } = useGroups();
 
   const [groupsCanSendInvitation, SetGroupsCanSendInvitation] = useState<
     Group[]
   >([]);
-  
+
   const [disabledItems, setDisabledItems] = useState<string[]>([]);
   const auth = useAuth();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -56,15 +56,13 @@ export default function AddToGroupButton({
   // Que vos seas el owner
   // Mostrar los grupos publicos y de los que sos el owner
 
-  
-
   const getUserInvitations = useCallback((userId: string | undefined) => {
     api.get(`group-invitations/get-invitations/${userId}`).then((res) => {
       const data = res.data;
 
       getDisabledItems(data);
-    })
-  }, [])
+    });
+  }, []);
 
   function getDisabledItems(hisInvitations: Invitation[]) {
     if (hisInvitations != undefined && hisInvitations != null) {
@@ -94,7 +92,7 @@ export default function AddToGroupButton({
     api
       .get(`groups/getGroups?user_id=${userId}`)
       .then((res) => {
-        console.log("grupos: ", res.data)
+        console.log('grupos: ', res.data);
         const data = res.data;
         set(data);
       })
@@ -121,17 +119,16 @@ export default function AddToGroupButton({
 
       SetGroupsCanSendInvitation(gropswhoCanSendInvitation);
     }
-  }, [auth?.user?.id, disabledItems, hisgroups, myGroups])
+  }, [auth?.user?.id, disabledItems, hisgroups, myGroups]);
 
   useEffect(() => {
-    setMyGroups(groups)
+    setMyGroups(groups);
     fetchGroups(hisId, setHisGroups);
     getUserInvitations(hisId);
     setGroupsWhoCanSendInvitation();
   }, [auth?.user?.id, groups, hisId]);
 
   function handleClick() {
-    
     onOpen();
   }
 

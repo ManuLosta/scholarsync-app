@@ -1,26 +1,23 @@
-import { createContext, useEffect, useState } from "react";
-import { Group } from "../types/types";
-import api from "../api";
-import { useAuth } from "../hooks/useAuth";
+import { createContext, useEffect, useState } from 'react';
+import { Group } from '../types/types';
+import api from '../api';
+import { useAuth } from '../hooks/useAuth';
 
 interface groupContextType {
-    groups: Group[],
+  groups: Group[];
 }
 
 const defaultContext = {
-    groups: []
-}
+  groups: [],
+};
 
 export const groupContext = createContext<groupContextType>(defaultContext);
 
-
-
 export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
-    const { user } = useAuth();
-    const [groups, setGroups] = useState([]);
+  const { user } = useAuth();
+  const [groups, setGroups] = useState([]);
 
-
-    const fetchGroups = (userId: string | undefined) => {
+  const fetchGroups = (userId: string | undefined) => {
     api
       .get(`groups/getGroups?user_id=${userId}`)
       .then((res) => {
@@ -33,17 +30,11 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-    useEffect(() => {
-        fetchGroups(user?.id)
-      }, [user])
+  useEffect(() => {
+    fetchGroups(user?.id);
+  }, [user]);
 
-      return (
-        <groupContext.Provider value={{ groups }}>
-            {children}
-        </groupContext.Provider>
-    );
-
-
-}
-
-
+  return (
+    <groupContext.Provider value={{ groups }}>{children}</groupContext.Provider>
+  );
+};
