@@ -37,7 +37,6 @@ export function NotificationProvider({
       .get(`notification/get-notifications/${user?.id}`)
       .then((res) => {
         const data = res.data;
-        console.log(data);
         setNotifications(data);
       })
       .catch((err) => console.error('Error fetching notifications: ', err));

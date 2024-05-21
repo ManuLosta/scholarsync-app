@@ -58,7 +58,7 @@ export default function PostCard({ question }: { question: Question }) {
       className="hover:bg-foreground-100 flex flex-col px-3 py-4 gap-2"
     >
       <Link
-        to={`question/${question.id}`}
+        to={`/question/${question.id}`}
         key={question.id}
         preventScrollReset={true}
       >

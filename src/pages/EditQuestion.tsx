@@ -64,7 +64,7 @@ export default function EditQuestion() {
   }, [id]);
 
   useEffect(() => {
-    if (question && user && question?.authorId !== user?.id) {
+    if (question && user && question?.author.id !== user?.id) {
       navigate(`/question/${id}`);
     }
   }, [id, navigate, question, user]);

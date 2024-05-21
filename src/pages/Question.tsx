@@ -28,7 +28,6 @@ export default function Question() {
       .get(`answers/answers-by-question?questionId=${id}`)
       .then((res) => {
         const data: Answer[] = res.data;
-        console.log(data);
         setMyAnswer(data.find((answer) => answer.author.id == user?.id));
         setAnswers(data.filter((answer) => answer.author.id != user?.id));
       })
