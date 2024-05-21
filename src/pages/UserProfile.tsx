@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api.ts';
-import { CircularProgress } from '@nextui-org/react';
+import { Chip, CircularProgress } from '@nextui-org/react';
 
 import { useAuth } from '../hooks/useAuth.ts';
 import FriendStatusButton from '../components/FriendStatusButton.tsx';
@@ -49,6 +49,7 @@ export default function UserProfile() {
           <p className="text-xl text-foreground-400">
             {`@${UserProfile?.username}`}{' '}
           </p>
+          <Chip color="primary">{UserProfile?.level}</Chip>
         </div>
       </div>
 
@@ -58,8 +59,15 @@ export default function UserProfile() {
           Amigos: {UserProfile?.friends?.length?.toString()}
         </p>
       </div>
-      <div>
+      <div className="flex align-center gap-4">
         <p className="text-xl">Grupos:</p>
+        <div className="flex gap-4">
+          {UserProfile?.groups.map((group) => (
+            <Chip key={group.id} color="primary" variant="bordered">
+              {group.title}
+            </Chip>
+          ))}
+        </div>
       </div>
       <div className="flex gap-4">
         <FriendStatusButton userId={UserProfile?.id} myId={currentId} />

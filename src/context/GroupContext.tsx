@@ -5,10 +5,12 @@ import { useAuth } from '../hooks/useAuth';
 
 interface groupContextType {
   groups: Group[];
+  fetchGroupsforProfile: CallableFunction;
 }
 
 const defaultContext = {
   groups: [],
+  fetchGroupsforProfile: () => {},
 };
 
 export const groupContext = createContext<groupContextType>(defaultContext);
@@ -17,9 +19,9 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   const [groups, setGroups] = useState([]);
 
-  const fetchGroups = (userId: string | undefined) => {
+  const fetchGroupsforProfile = () => {
     api
-      .get(`groups/getGroups?user_id=${userId}`)
+      .get(`groups/getGroups?user_id=${user?.id}`)
       .then((res) => {
         const data = res.data;
         setGroups(data);
@@ -31,10 +33,12 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    fetchGroups(user?.id);
+    fetchGroupsforProfile();
   }, [user]);
 
   return (
-    <groupContext.Provider value={{ groups }}>{children}</groupContext.Provider>
+    <groupContext.Provider value={{ groups, fetchGroupsforProfile }}>
+      {children}
+    </groupContext.Provider>
   );
 };

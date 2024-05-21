@@ -6,6 +6,7 @@ import { useAuth } from '../../hooks/useAuth.ts';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import api from '../../api.ts';
+import { useGroups } from '../../hooks/useGroups.ts';
 
 type PropsType = {
   onClose: () => void;
@@ -25,6 +26,7 @@ const formSchema = z.object({
 type InputType = z.infer<typeof formSchema>;
 
 export default function CreateGroupForm({ onClose, onCreate }: PropsType) {
+  const { fetchGroupsforProfile } = useGroups();
   const {
     handleSubmit,
     control,
@@ -67,6 +69,12 @@ export default function CreateGroupForm({ onClose, onCreate }: PropsType) {
       setError('name', { message: 'El nombre del grupo ya está en uso' });
     }
   };
+
+  function handleClick(): void {
+    setTimeout(function () {
+      fetchGroupsforProfile();
+    }, 300);
+  }
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -133,7 +141,12 @@ export default function CreateGroupForm({ onClose, onCreate }: PropsType) {
         <Button variant="flat" color="danger" onClick={onClose}>
           Cerrar
         </Button>
-        <Button color="primary" isLoading={loading} type="submit">
+        <Button
+          color="primary"
+          isLoading={loading}
+          type="submit"
+          onClick={() => handleClick()}
+        >
           Crear grupo
         </Button>
       </div>

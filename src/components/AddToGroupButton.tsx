@@ -17,7 +17,7 @@ import {
 
 import api from '../api';
 import { useAuth } from '../hooks/useAuth';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import React from 'react';
 
 import { useGroups } from '../hooks/useGroups';
@@ -40,8 +40,7 @@ export default function AddToGroupButton({
   hisId: string | undefined;
 }) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-  const [myGroups, setMyGroups] = useState<Group[]>([]);
-  const [hisgroups, setHisGroups] = useState<Group[]>([]);
+
   const { groups } = useGroups();
 
   const [groupsCanSendInvitation, SetGroupsCanSendInvitation] = useState<
@@ -88,45 +87,44 @@ export default function AddToGroupButton({
       });
   };
 
-  const fetchGroups = (userId: string | undefined, set: CallableFunction) => {
-    api
+  const fetchGroups = (
+    userId: string | undefined,
+  ): Promise<Group[] | undefined> => {
+    return api
       .get(`groups/getGroups?user_id=${userId}`)
       .then((res) => {
         console.log('grupos: ', res.data);
         const data = res.data;
-        set(data);
+        return data;
       })
 
       .catch((err) => {
         console.error('Error fetching groups', err);
+        return undefined;
       });
   };
 
-  const setGroupsWhoCanSendInvitation = useCallback(() => {
+  const setGroupsWhoCanSendInvitation = useCallback(async () => {
+    console.log('ejecute');
+    const hisGroups = await fetchGroups(hisId);
+    getUserInvitations(hisId);
     // Si es publico,
     // Si vos lo creaste
     // Si la persona no esta en el grupo ya
-    if (myGroups != undefined) {
-      const fetchGroups = myGroups.filter((grup) => {
+    if (groups != undefined && hisGroups !== undefined) {
+      const fetchGroups = groups.filter((grup) => {
         return (
           (grup.createdBy === auth?.user?.id || !grup.isPrivate) &&
           !(grup.id in disabledItems)
         );
       });
       const gropswhoCanSendInvitation = fetchGroups.filter((grup) => {
-        return !hisgroups.some((hisG) => hisG.id === grup.id);
+        return !hisGroups.some((hisG) => hisG.id === grup.id);
       });
 
       SetGroupsCanSendInvitation(gropswhoCanSendInvitation);
     }
-  }, [auth?.user?.id, disabledItems, hisgroups, myGroups]);
-
-  useEffect(() => {
-    setMyGroups(groups);
-    fetchGroups(hisId, setHisGroups);
-    getUserInvitations(hisId);
-    setGroupsWhoCanSendInvitation();
-  }, [auth?.user?.id, groups, hisId]);
+  }, [auth?.user?.id, disabledItems, getUserInvitations, groups, hisId]);
 
   function handleClick() {
     onOpen();
@@ -145,13 +143,6 @@ export default function AddToGroupButton({
   function handleClose() {
     setSelectedKeys(new Set([]));
   }
-
-  console.log(
-    'selected:',
-    selectedKeys,
-    disabledItems,
-    groupsCanSendInvitation,
-  );
 
   const rows = groupsCanSendInvitation.map((grupo) => ({
     key: grupo.id,
@@ -172,7 +163,11 @@ export default function AddToGroupButton({
 
   return (
     <>
-      <Button onPress={() => handleClick()} color="secondary">
+      <Button
+        onPress={() => handleClick()}
+        onClick={() => setGroupsWhoCanSendInvitation()}
+        color="secondary"
+      >
         Invitar a grupo
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
