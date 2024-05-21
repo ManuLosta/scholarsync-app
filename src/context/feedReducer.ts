@@ -9,6 +9,7 @@ export type OrderType =
 export interface FeedState {
   posts: Question[];
   hasMore: boolean;
+  page: number;
   order: OrderType;
 }
 
@@ -16,12 +17,14 @@ export type FeedAction =
   | { type: 'SET_POSTS'; payload: Question[] }
   | { type: 'SET_PAGE'; payload: number }
   | { type: 'SET_HAS_MORE'; payload: boolean }
+  | { type: 'SET_PAGE'; payload: number }
   | { type: 'SET_ORDER'; payload: OrderType }
   | { type: 'RESET_POSTS' };
 
 export const initialState: FeedState = {
   posts: [],
   hasMore: true,
+  page: 0,
   order: 'score-user',
 };
 
@@ -33,17 +36,17 @@ export const feedReducer = (
     case 'SET_POSTS':
       return {
         ...state,
-        posts: [
-          ...state.posts.filter(
-            (post) => !action.payload.some((newPost) => newPost.id === post.id),
-          ),
-          ...action.payload,
-        ],
+        posts: action.payload,
       };
     case 'SET_HAS_MORE':
       return {
         ...state,
         hasMore: action.payload,
+      };
+    case 'SET_PAGE':
+      return {
+        ...state,
+        page: action.payload,
       };
     case 'SET_ORDER':
       return {
@@ -54,6 +57,7 @@ export const feedReducer = (
       return {
         ...state,
         posts: [],
+        page: 0,
         hasMore: true,
       };
     default:

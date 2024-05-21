@@ -4,7 +4,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import useIntersectionObserver from '../hooks/useIntersectionObserver.ts';
 import { useFeed } from '../hooks/useFeed.ts';
 import PostCardSkeleton from '../components/feed/PostCardSkeleton.tsx';
-import { Select, Selection, SelectItem } from '@nextui-org/react';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from '@nextui-org/react';
+import { OrderType } from '../context/feedReducer.ts';
 import { LuCalendar, LuStar } from 'react-icons/lu';
 
 export default function Home() {
@@ -14,17 +20,15 @@ export default function Home() {
     rootMargin: '300px',
     threshold: 1,
   });
-  const [order, setOrder] = useState<Set<string>>(new Set(['score-user']));
+  const [order, setOrder] = useState<OrderType>('score-user');
 
   useEffect(() => {
     console.log(order);
-    if (!order.has(state.order) || state.posts.length == 0)
-      fetchPosts(order.values().next().value);
+    if (order != state.order || state.posts.length == 0) fetchPosts(order);
   }, [order]);
 
   useEffect(() => {
-    if (!loading && inViewport && state.hasMore)
-      fetchPosts(order.values().next().value);
+    if (!loading && inViewport && state.hasMore) fetchPosts(order);
   }, [inViewport]);
 
   const renderPosts = useMemo(
@@ -38,29 +42,30 @@ export default function Home() {
   return (
     <div className="container p-8">
       <div className="flex justify-between items-end">
-        <Select
-          startContent={order.has('score-user') ? <LuStar /> : <LuCalendar />}
-          defaultSelectedKeys={order}
-          label="Ordenar"
-          labelPlacement="outside"
-          className="w-[200px]"
-          onSelectionChange={(keys: Selection) => setOrder(keys as Set<string>)}
-        >
-          <SelectItem
-            startContent={<LuStar />}
-            key="score-user"
-            value="score-user"
+        <Dropdown className="w-[150px]">
+          <DropdownTrigger>
+            <div className="flex gap-2 items-center hover:cursor-pointer">
+              {order.includes('date') ? (
+                <>
+                  <LuCalendar />
+                  <p>Fecha de carga</p>
+                </>
+              ) : (
+                <>
+                  <LuStar />
+                  <p>Relevancia</p>
+                </>
+              )}
+            </div>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Seleccionar orden de preguntas"
+            onAction={(key) => setOrder(key as OrderType)}
           >
-            Relevancia
-          </SelectItem>
-          <SelectItem
-            startContent={<LuCalendar />}
-            key="date-user"
-            value="date-user"
-          >
-            Fecha de carga
-          </SelectItem>
-        </Select>
+            <DropdownItem key="score-user">Relevancia</DropdownItem>
+            <DropdownItem key="date-user">Fecha de carga</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         <CreatePostButton />
       </div>
       {loading && state.posts.length == 0 ? (
