@@ -14,7 +14,7 @@ export default function Home() {
     rootMargin: '300px',
     threshold: 1,
   });
-  const [order, setOrder] = useState<Set<string>>(new Set(['score']));
+  const [order, setOrder] = useState<Set<string>>(new Set(['score-user']));
 
   useEffect(() => {
     console.log(order);
@@ -39,17 +39,25 @@ export default function Home() {
     <div className="container p-8">
       <div className="flex justify-between items-end">
         <Select
-          startContent={order.has('score') ? <LuStar /> : <LuCalendar />}
+          startContent={order.has('score-user') ? <LuStar /> : <LuCalendar />}
           defaultSelectedKeys={order}
           label="Ordenar"
           labelPlacement="outside"
           className="w-[200px]"
           onSelectionChange={(keys: Selection) => setOrder(keys as Set<string>)}
         >
-          <SelectItem startContent={<LuStar />} key="score" value="score">
+          <SelectItem
+            startContent={<LuStar />}
+            key="score-user"
+            value="score-user"
+          >
             Relevancia
           </SelectItem>
-          <SelectItem startContent={<LuCalendar />} key="date" value="data">
+          <SelectItem
+            startContent={<LuCalendar />}
+            key="date-user"
+            value="date-user"
+          >
             Fecha de carga
           </SelectItem>
         </Select>

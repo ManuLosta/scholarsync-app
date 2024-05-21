@@ -3,10 +3,16 @@ import { Button } from '@nextui-org/react';
 import { LuDownload } from 'react-icons/lu';
 import api from '../../api.ts';
 
-export default function FileDownloader({ files }: { files: FileType[] }) {
+export default function FileDownloader({
+  files,
+  isQuestion = true,
+}: {
+  files: FileType[];
+  isQuestion?: boolean;
+}) {
   const handleDownload = (fileId: string, fileName: string) => {
     api
-      .get(`questions/download-file?id=${fileId}`, {
+      .get(`downloads?id=${fileId}&isQuestion=${isQuestion}`, {
         responseType: 'blob',
       })
       .then((res) => {

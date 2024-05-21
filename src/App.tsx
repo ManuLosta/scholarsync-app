@@ -17,7 +17,7 @@ export default function App() {
 
   return (
     <NextUIProvider navigate={navigate}>
-      <ThemeProvider attribute="class" defaultTheme="dark">
+      <ThemeProvider attribute="class" defaultTheme="light">
         <AuthProvider>
           <Routes>
             <Route element={<ProtectedRoutes />}>

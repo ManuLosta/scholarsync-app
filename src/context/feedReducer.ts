@@ -1,24 +1,28 @@
 import { Question } from '../types/types';
 
+export type OrderType =
+  | 'score-user'
+  | 'score-group'
+  | 'date-user'
+  | 'date-group';
+
 export interface FeedState {
   posts: Question[];
-  page: number;
   hasMore: boolean;
-  order: 'score' | 'date';
+  order: OrderType;
 }
 
 export type FeedAction =
   | { type: 'SET_POSTS'; payload: Question[] }
   | { type: 'SET_PAGE'; payload: number }
   | { type: 'SET_HAS_MORE'; payload: boolean }
-  | { type: 'SET_ORDER'; payload: 'score' | 'date' }
+  | { type: 'SET_ORDER'; payload: OrderType }
   | { type: 'RESET_POSTS' };
 
 export const initialState: FeedState = {
   posts: [],
-  page: 0,
   hasMore: true,
-  order: 'score',
+  order: 'score-user',
 };
 
 export const feedReducer = (
@@ -36,11 +40,6 @@ export const feedReducer = (
           ...action.payload,
         ],
       };
-    case 'SET_PAGE':
-      return {
-        ...state,
-        page: action.payload,
-      };
     case 'SET_HAS_MORE':
       return {
         ...state,
@@ -55,7 +54,6 @@ export const feedReducer = (
       return {
         ...state,
         posts: [],
-        page: 0,
         hasMore: true,
       };
     default:
