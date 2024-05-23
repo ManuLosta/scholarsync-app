@@ -25,7 +25,8 @@ export default function QuestionOptions({
         question_id: questionId,
         user_id: user?.id,
       })
-      .then(() => {
+      .then((res) => {
+        console.log(res);
         navigate('/');
       })
       .catch((err) => console.error(err));

@@ -5,10 +5,11 @@ import { Avatar, Button, Skeleton } from '@nextui-org/react';
 import MemberList from '../components/groups/MemberList.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
 import InviteToGroup from '../components/groups/InviteToGroup.tsx';
-import { LuLock } from 'react-icons/lu';
+import { LuCalendar, LuLock, LuStar } from 'react-icons/lu';
 import { useNotifications } from '../hooks/useNotifications.ts';
 import { GroupInvite } from '../types/types';
-import CreatePostButton from '../components/post/CreatePostButton.tsx';
+import { useGroups } from '../hooks/useGroups.ts';
+import PostList from '../components/feed/PostList.tsx';
 
 type Group = {
   createdBy: string;
@@ -26,6 +27,19 @@ type Group = {
   }[];
 };
 
+const postsOrder = [
+  {
+    key: 'score-group',
+    name: 'Relevancia',
+    icon: <LuStar />,
+  },
+  {
+    key: 'date-group',
+    name: 'Fecha de Carga',
+    icon: <LuCalendar />,
+  },
+];
+
 export default function Group() {
   const { groupId } = useParams();
   const [group, setGroup] = useState<Group | null>(null);
@@ -39,6 +53,7 @@ export default function Group() {
       return (notification as GroupInvite).group_id == groupId;
     }
   })?.notification_id;
+  const { groups } = useGroups();
 
   useEffect(() => {
     api
@@ -54,7 +69,7 @@ export default function Group() {
         console.error('Error fetching group info: ', err);
       })
       .finally(() => setLoading(false));
-  }, [group?.createdBy, groupId, user?.id, isMember]);
+  }, [groupId]);
 
   const handleLeave = () => {
     api
@@ -77,7 +92,7 @@ export default function Group() {
   };
 
   return loading ? (
-    <div className="container mt-8 mx-auto">
+    <div className="container mt-8 px-8 mx-auto">
       <div className="flex gap-4 items-center">
         <Skeleton className="w-[80px] h-[80px] rounded-full" />
         <div>
@@ -146,7 +161,13 @@ export default function Group() {
           )}
         </div>
       </div>
-      <CreatePostButton />
+      {groups.some((group) => group.id == groupId) && (
+        <PostList
+          orders={postsOrder}
+          defaultOrder={'score-group'}
+          queryId={groupId || ''}
+        />
+      )}
     </div>
   );
 }
