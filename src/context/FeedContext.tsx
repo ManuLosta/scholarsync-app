@@ -32,19 +32,18 @@ interface FeedProviderProps {
 
 export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(feedReducer, initialState);
+  const [prevId, setPredId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetchPosts = (order: OrderType, id: string) => {
-    if (state.order !== order) {
-      dispatch({ type: 'RESET_POSTS' });
-      dispatch({ type: 'SET_ORDER', payload: order });
-      dispatch({ type: 'SET_PAGE', payload: 0 });
-    }
+    const reset: boolean = state.order !== order || id !== prevId;
 
-    const currentPage = state.order !== order ? 0 : state.page;
-    const posts = state.order !== order ? [] : state.posts;
+    reset && setPredId(id);
+    reset && setLoading(true);
+    reset && dispatch({ type: 'SET_ORDER', payload: order });
+    const currentPage = reset ? 0 : state.page;
+    const posts = reset ? [] : state.posts;
 
-    setLoading(true);
     api
       .get(`feeds?offset=${currentPage}&limit=20&id=${id}&type=${order}`)
       .then((res) => {
@@ -55,12 +54,11 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
           ),
           ...data,
         ];
-        if (data.length == 0) {
+        if (data.length == 0 || (currentPage == 0 && newPosts.length < 20)) {
           dispatch({ type: 'SET_HAS_MORE', payload: false });
-        } else {
-          dispatch({ type: 'SET_POSTS', payload: newPosts });
-          dispatch({ type: 'SET_PAGE', payload: currentPage + 1 });
         }
+        dispatch({ type: 'SET_POSTS', payload: newPosts });
+        dispatch({ type: 'SET_PAGE', payload: currentPage + 1 });
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

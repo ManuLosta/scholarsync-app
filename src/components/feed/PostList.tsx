@@ -28,10 +28,10 @@ export default function PostList({
     threshold: 1,
   });
   const [order, setOrder] = useState<OrderType>(defaultOrder);
+  const selected = orders.find((item) => item.key == order);
 
   useEffect(() => {
-    if (order != state.order || state.posts.length == 0)
-      fetchPosts(order, queryId);
+    fetchPosts(order, queryId);
   }, [order, queryId]);
 
   useEffect(() => {
@@ -52,7 +52,8 @@ export default function PostList({
         <Dropdown className="w-[150px]">
           <DropdownTrigger>
             <div className="flex gap-2 items-center hover:cursor-pointer">
-              Orden
+              {selected?.icon || <p></p>}
+              <p>{selected?.name || ''}</p>
             </div>
           </DropdownTrigger>
           <DropdownMenu
@@ -71,10 +72,8 @@ export default function PostList({
         </Dropdown>
         <CreatePostButton />
       </div>
-      {loading && state.posts.length == 0 ? (
+      {loading ? (
         <div className="flex flex-col gap-2 divide-y divide-foreground-200 mt-4">
-          <PostCardSkeleton />
-          <PostCardSkeleton />
           <PostCardSkeleton />
         </div>
       ) : (
@@ -84,7 +83,7 @@ export default function PostList({
           </div>
           <div ref={targetRef}>
             {!state.hasMore ? (
-              <p className="font-bold text-xl justify-center mt-5 text-center">
+              <p className="justify-center mt-5 text-center">
                 No hay más preguntas
               </p>
             ) : (
