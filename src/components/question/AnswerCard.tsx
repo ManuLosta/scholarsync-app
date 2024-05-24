@@ -104,7 +104,7 @@ export default function AnswerCard({
           )}
         />
       )}
-      <FileDownloader files={answer.files} isQuestion={false} />
+      <FileDownloader files={answer.files} />
       <div className="flex justify-between">
         {ratingCount > 0 && (
           <div className="flex gap-2 items-center">

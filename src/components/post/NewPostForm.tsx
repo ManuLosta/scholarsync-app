@@ -39,6 +39,7 @@ export default function NewPostForm() {
   });
   const [groups, setGroups] = useState<Group[]>([]);
   const [groupError, setGroupError] = useState<string | null>(null);
+  const [creditsError, setCreditsError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { groupId } = useParams();
   const { user } = useAuth();
@@ -68,39 +69,36 @@ export default function NewPostForm() {
       return;
     }
 
-    if (data.files) {
-      const bodyFormData = new FormData();
-      bodyFormData.append('title', data.title);
-      bodyFormData.append('content', data.body);
-      bodyFormData.append('groupId', groupId || '');
-      bodyFormData.append('authorId', user?.id || '');
+    const bodyFormData = new FormData();
+    bodyFormData.append('title', data.title);
+    bodyFormData.append('content', data.body);
+    bodyFormData.append('groupId', groupId || '');
+    bodyFormData.append('authorId', user?.id || '');
 
+    if (data.files) {
       data.files.forEach((file: File) => {
         bodyFormData.append(`files`, file);
       });
-
-      api
-        .post('questions/publish-question', bodyFormData)
-        .then((res) => {
-          const id = res.data.body.id;
-          handleNavigate(id);
-        })
-        .catch((err) => console.error(err));
-    } else {
-      api
-        .post('questions/publish-no-doc-question', {
-          title: data.title,
-          content: data.body,
-          groupId: groupId,
-          authorId: user?.id,
-        })
-        .then((res) => {
-          const id = res.data.id;
-          handleNavigate(id);
-        })
-        .catch((err) => console.error(err));
     }
-    removeCredits(20);
+
+    api
+      .post('questions/publish-question', bodyFormData)
+      .then((res) => {
+        const id = res.data.body.id;
+        console.log(res);
+        handleNavigate(id);
+        removeCredits(20);
+      })
+      .catch((err) => {
+        const error = err.response.data;
+        handleError(error);
+      });
+  };
+
+  const handleError = (error: string) => {
+    if (error === 'user/not-enough-credits') {
+      setCreditsError('No tienes créditos suficientes');
+    }
   };
 
   const handleNavigate = (questionId: string) => {
@@ -113,6 +111,14 @@ export default function NewPostForm() {
         className="flex flex-col gap-4 mt-2"
         onSubmit={handleSubmit(onSubmit)}
       >
+        {creditsError && (
+          <div className="p-2 bg-danger-100 rounded-lg mb-2">
+            <p className="text-danger">{creditsError}</p>
+            <p className="text-danger font-light">
+              Para conseguir más creditos responde preguntas de otros usuarios
+            </p>
+          </div>
+        )}
         <Select
           classNames={{
             base: 'max-w-xs',
