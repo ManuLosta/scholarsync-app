@@ -11,7 +11,7 @@ import {
 } from '@nextui-org/react';
 import SSIcon from '../../assets/scholarsync.svg';
 import { LuBell, LuSearch } from 'react-icons/lu';
-import UserDropdown from '../auth/UserDropdown.tsx';
+import UserDropdown from '../user/UserDropdown.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
 import { RiCopperCoinFill } from 'react-icons/ri';
 import { useCredit } from '../../hooks/useCredit.ts';

@@ -20,7 +20,7 @@ export default function Question() {
       .get(`questions/get-question?id=${id}`)
       .then((res) => {
         const data = res.data;
-        setQuestion(data.body);
+        setQuestion(data);
       })
       .catch((err) => console.error(err));
 

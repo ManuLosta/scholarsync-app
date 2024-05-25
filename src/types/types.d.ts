@@ -20,12 +20,16 @@ export type Profile = {
   lastName: string;
   username: string;
   credits: number;
-  level: string;
+  level: Level;
   xp: number;
+  prevLevel: number;
+  nextLevel: number;
   email: string;
   birthDate: string;
   createdAt: string;
   id: string;
+  questions: number;
+  answers: number;
   friends: {
     id: string;
     firstName: string;
@@ -36,6 +40,18 @@ export type Profile = {
     title: string;
   }[];
 };
+
+export type Level =
+  | 'Newbie'
+  | 'Learner'
+  | 'Initiate'
+  | 'Contender'
+  | 'Skilled'
+  | 'Veteran'
+  | 'Master'
+  | 'Grand_Master'
+  | 'Champion'
+  | 'Legend';
 
 export type Group = {
   createdBy: string;
