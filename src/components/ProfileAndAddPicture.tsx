@@ -1,18 +1,14 @@
 import { Avatar } from '@nextui-org/react';
 import { Profile } from '../types/types';
 import api from '../api';
-import { useEffect, useState } from 'react';
-
-interface Image extends File {
-  preview: string;
-}
+import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   profile: Profile | undefined;
 }
 
 const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
-  const [image, setImage] = useState<Image | null>(null);
+  const [image, setImage] = useState<string>('');
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -36,7 +32,7 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
     }
   };
 
-  const getImg = async () => {
+  const getImg = useCallback(async () => {
     if (!profile) return;
 
     try {
@@ -44,22 +40,21 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
         params: { user_id: profile.id },
       });
 
-      const imageData: Image = response.data;
-      setImage(imageData);
-      console.log(response.data);
+      const imageSrc = `data:image/png;base64,${response.data}`;
+      setImage(imageSrc);
     } catch (error) {
       console.error('Error fetching profile picture:', error);
     }
-  };
+  }, [profile]);
 
   useEffect(() => {
     if (profile) getImg();
-  }, [profile]);
+  }, [getImg, profile]);
 
   return (
     <>
       <Avatar
-        src={image?.preview || ''}
+        src={image || ''}
         className="w-20 h-20 text-large"
         alt="Profile picture"
       />
