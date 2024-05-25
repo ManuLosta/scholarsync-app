@@ -5,9 +5,10 @@ import { Chip, CircularProgress } from '@nextui-org/react';
 
 import { useAuth } from '../hooks/useAuth.ts';
 import FriendStatusButton from '../components/FriendStatusButton.tsx';
-import { Avatar } from '@nextui-org/react';
+
 import { Profile } from '../types/types';
 import AddToGroupButton from '../components/AddToGroupButton.tsx';
+import ProfileAndAddPicture from '../components/ProfileAndAddPicture.tsx';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -37,11 +38,7 @@ export default function UserProfile() {
   ) : (
     <div className="flex gap-8 flex-col justify-start align-center ml-20 mt-9">
       <div className="flex gap-8 align-center">
-        <Avatar
-          name={`${UserProfile?.firstName}`}
-          className="w-20 h-20 text-large"
-          //description={`@${UserProfile?.username}`}
-        />
+        <ProfileAndAddPicture profile={UserProfile} />
         <div className="flex gap-4 flex-col">
           <p className="text-2xl">
             {UserProfile?.firstName} {UserProfile?.lastName}
@@ -69,6 +66,7 @@ export default function UserProfile() {
           ))}
         </div>
       </div>
+
       <div className="flex gap-4">
         <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
         <AddToGroupButton hisId={UserProfile?.id} />
