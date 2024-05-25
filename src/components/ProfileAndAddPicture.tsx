@@ -12,7 +12,7 @@ interface Props {
 }
 
 const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
-  const [images, setImages] = useState<Image[]>([]);
+  const [image, setImage] = useState<Image | null>(null);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -42,11 +42,10 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
     try {
       const response = await api.get(`/users/get-profile-picture`, {
         params: { user_id: profile.id },
-        responseType: 'blob',
       });
 
-      const file: Image = response.data;
-      setImages([Object.assign(file, { preview: URL.createObjectURL(file) })]);
+      const imageData: Image = response.data;
+      setImage(imageData);
       console.log(response.data);
     } catch (error) {
       console.error('Error fetching profile picture:', error);
@@ -60,9 +59,9 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
   return (
     <>
       <Avatar
-        src={images[0]?.preview || ''}
+        src={image?.preview || ''}
         className="w-20 h-20 text-large"
-        alt={images[0]?.name || 'Profile picture'}
+        alt="Profile picture"
       />
       <input type="file" onChange={handleFileChange} />
     </>
