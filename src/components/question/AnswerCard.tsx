@@ -12,6 +12,8 @@ import { useAuth } from '../../hooks/useAuth.ts';
 import AnswerCardSkeleton from './AnswerCardSkeleton.tsx';
 import AnswerOptions from './AnswerOptions.tsx';
 import FileDownloader from './FileDownloader.tsx';
+import { Link } from 'react-router-dom';
+import UserTooltip from '../user/UserTooltip.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -88,10 +90,14 @@ export default function AnswerCard({
   ) : (
     <div className="bg-foreground-100 rounded-lg p-4 flex flex-col gap-3">
       <div className="flex justify-between">
-        <User
-          name={`${answer.author.firstName || ''} ${answer.author.lastName || ''}`}
-          description={`@${answer.author.username || ''}`}
-        />
+        <UserTooltip user={answer.author}>
+          <Link to={`/user/${answer.author.id}`}>
+            <User
+              name={`${answer.author.firstName || ''} ${answer.author.lastName || ''}`}
+              description={`@${answer.author.username || ''}`}
+            />
+          </Link>
+        </UserTooltip>
         {isMine && onDelete && onEdit && (
           <AnswerOptions answer={answer} onDelete={onDelete} onEdit={onEdit} />
         )}

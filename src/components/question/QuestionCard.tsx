@@ -14,6 +14,7 @@ import QuestionOptions from './QuestionOptions.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import FileDownloader from './FileDownloader.tsx';
 import { Link, useNavigate } from 'react-router-dom';
+import UserTooltip from '../user/UserTooltip.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -45,7 +46,7 @@ export default function QuestionCard({ question }: { question: Question }) {
       .get(`questions/get-images?id=${question.id}`)
       .then((res) => {
         const data = res.data;
-        setImages(data.body);
+        setImages(data);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
@@ -75,16 +76,18 @@ export default function QuestionCard({ question }: { question: Question }) {
           <div className="flex flex-col">
             <Link
               to={`/group/${question.groupId}`}
-              className="font-bold hover:cursour-pointer text-foregorund"
+              className="font-bold hover:text-primary hover:cursour-pointer text-foregorund"
             >
               {question.groupTitle}
             </Link>
-            <Link
-              to={`/user/${question.author.id}`}
-              className="hover:cursour-pointer text-foregorund"
-            >
-              @{question.author.username}
-            </Link>
+            <UserTooltip user={question.author}>
+              <Link
+                to={`/user/${question.author.id}`}
+                className="hover:cursour-pointer text-foregorund hover:text-primary"
+              >
+                @{question.author.username}
+              </Link>
+            </UserTooltip>
           </div>
         </div>
         <div className="flex items-center gap-3">

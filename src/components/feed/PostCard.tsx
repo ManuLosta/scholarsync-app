@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import api from '../../api.ts';
 import Carousel from '../question/Carousel.tsx';
+import UserTooltip from '../user/UserTooltip.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -46,7 +47,7 @@ export default function PostCard({ question }: { question: Question }) {
       api
         .get(`questions/get-images?id=${question.id}`)
         .then((res) => {
-          const data = res.data.body;
+          const data = res.data;
           setImages(data);
         })
         .catch((err) => console.log(err));
@@ -66,8 +67,12 @@ export default function PostCard({ question }: { question: Question }) {
           <div className="flex gap-2 items-center">
             <Avatar name={question.groupTitle} color="primary" />
             <div className="flex flex-col">
-              <p>{question.groupTitle}</p>
-              <p>@{question.author.username}</p>
+              <p className="font-bold">{question.groupTitle}</p>
+              <UserTooltip user={question.author}>
+                <p className="font-light hover:text-primary">
+                  @{question.author.username}
+                </p>
+              </UserTooltip>
             </div>
           </div>
           <p className="font-light">

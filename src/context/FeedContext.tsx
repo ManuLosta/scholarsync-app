@@ -38,9 +38,13 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
   const fetchPosts = (order: OrderType, id: string) => {
     const reset: boolean = state.order !== order || id !== prevId;
 
-    reset && setPredId(id);
-    reset && setLoading(true);
-    reset && dispatch({ type: 'SET_ORDER', payload: order });
+    if (reset) {
+      setPredId(id);
+      setLoading(true);
+      dispatch({ type: 'SET_ORDER', payload: order });
+      dispatch({ type: 'RESET_POSTS' });
+    }
+
     const currentPage = reset ? 0 : state.page;
     const posts = reset ? [] : state.posts;
 

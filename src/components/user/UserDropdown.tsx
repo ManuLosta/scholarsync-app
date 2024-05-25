@@ -7,6 +7,8 @@ import {
 } from '@nextui-org/react';
 import { useAuth } from '../../hooks/useAuth.ts';
 import ThemeSwitcher from '../navigation/ThemeSwitcher.tsx';
+import ProfileCard from './ProfileCard.tsx';
+import { LuArrowLeftToLine } from 'react-icons/lu';
 
 export default function UserDropdown() {
   const auth = useAuth();
@@ -20,7 +22,15 @@ export default function UserDropdown() {
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
-        <DropdownItem closeOnSelect={false}>
+        <DropdownItem
+          classNames={{ base: 'hover:bg-background' }}
+          key="user"
+          textValue="user"
+          className="hover:cursor-default"
+        >
+          {auth?.user && <ProfileCard user={auth?.user} />}
+        </DropdownItem>
+        <DropdownItem key="theme" textValue="theme" closeOnSelect={false}>
           <ThemeSwitcher />
         </DropdownItem>
         <DropdownItem
@@ -28,6 +38,7 @@ export default function UserDropdown() {
           className="text-danger"
           color="danger"
           onPress={() => auth.logOut()}
+          startContent={<LuArrowLeftToLine />}
         >
           Cerrar sesión
         </DropdownItem>
