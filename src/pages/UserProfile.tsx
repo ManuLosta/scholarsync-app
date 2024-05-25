@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api.ts';
-import { Chip, CircularProgress } from '@nextui-org/react';
+import { Avatar, Chip, CircularProgress } from '@nextui-org/react';
 
 import { useAuth } from '../hooks/useAuth.ts';
 import FriendStatusButton from '../components/FriendStatusButton.tsx';
@@ -15,6 +15,7 @@ export default function UserProfile() {
   const [UserProfile, setUserProfile] = useState<Profile>();
   const [loading, setLoading] = useState(true);
   const auth = useAuth();
+  const [image, setImage] = useState<string>('');
   const currentId = auth?.user?.id;
 
   useEffect(() => {
@@ -38,10 +39,16 @@ export default function UserProfile() {
   ) : (
     <div className="flex gap-8 flex-col justify-start align-center ml-20 mt-9">
       <div className="flex gap-8 align-center">
-        <ProfileAndAddPicture profile={UserProfile} />
+        <Avatar
+          src={image || ''}
+          className="w-20 h-20 text-large"
+          alt="Profile picture"
+        />
+
         <div className="flex gap-4 flex-col">
-          <p className="text-2xl">
+          <p className="text-2xl flex  gap-4 ">
             {UserProfile?.firstName} {UserProfile?.lastName}
+            <ProfileAndAddPicture profile={UserProfile} setImage={setImage} />
           </p>
           <p className="text-xl text-foreground-400">
             {`@${UserProfile?.username}`}{' '}
@@ -67,10 +74,12 @@ export default function UserProfile() {
         </div>
       </div>
 
-      <div className="flex gap-4">
-        <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
-        <AddToGroupButton hisId={UserProfile?.id} />
-      </div>
+      {currentId !== UserProfile?.id && (
+        <div className="flex gap-4">
+          <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
+          <AddToGroupButton hisId={UserProfile?.id} />
+        </div>
+      )}
     </div>
   );
 }

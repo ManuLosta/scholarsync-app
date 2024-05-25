@@ -1,14 +1,17 @@
-import { Avatar } from '@nextui-org/react';
 import { Profile } from '../types/types';
 import api from '../api';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
+import { Button } from '@nextui-org/react';
+import { useAuth } from '../hooks/useAuth';
 
 interface Props {
   profile: Profile | undefined;
+  setImage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
-  const [image, setImage] = useState<string>('');
+const ProfileAndAddPicture: React.FC<Props> = ({ profile, setImage }) => {
+  const auth = useAuth();
+  const currentId = auth?.user?.id;
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -53,12 +56,28 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile }) => {
 
   return (
     <>
-      <Avatar
-        src={image || ''}
-        className="w-20 h-20 text-large"
-        alt="Profile picture"
-      />
-      <input type="file" onChange={handleFileChange} />
+      {currentId === profile?.id && (
+        <div className="className='hover:cursor-pointer'">
+          <Button
+            color="primary"
+            variant="bordered"
+            className="max-w-[150px] flex p-3 items-center hover:scale-105 hover:cursor-pointer"
+          >
+            Cambiar foto
+            <input
+              type="file"
+              onChange={handleFileChange}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                opacity: 0,
+                cursor: 'pointer',
+              }}
+            />
+          </Button>
+        </div>
+      )}
     </>
   );
 };
