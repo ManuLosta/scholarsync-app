@@ -48,7 +48,7 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile, setImage }) => {
     } catch (error) {
       console.error('Error fetching profile picture:', error);
     }
-  }, [profile]);
+  }, [profile, setImage]);
 
   useEffect(() => {
     if (profile) getImg();
