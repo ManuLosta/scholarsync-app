@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.ts';
 import api from '../api.ts';
 import { FriendRequest, GroupInvite } from '../types/types';
+import { useSubscription } from 'react-stomp-hooks';
 
 interface NotificationContext {
   notifications: (FriendRequest | GroupInvite)[];
@@ -27,10 +28,15 @@ export function NotificationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
+  const { user, sessionId } = useAuth();
   const [notifications, setNotifications] = useState<
     (GroupInvite | FriendRequest)[]
   >([]);
+
+  useSubscription(`/individual/${sessionId}/notification`, (message) => {
+    const notification = JSON.parse(message.body);
+    setNotifications([...notifications, notification]);
+  });
 
   useEffect(() => {
     api
