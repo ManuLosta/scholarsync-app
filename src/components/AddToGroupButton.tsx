@@ -1,3 +1,4 @@
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   Modal,
   ModalContent,
@@ -6,21 +7,11 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  getKeyValue,
 } from '@nextui-org/react';
-
+import TableOfGroups from './TableOfGroups';
 import api from '../api';
-import { useAuth } from '../hooks/useAuth';
-import { useState, useCallback } from 'react';
-import React from 'react';
-
 import { useGroups } from '../hooks/useGroups';
+import { useAuth } from '../hooks/useAuth';
 
 interface Invitation {
   group_id: string;
@@ -39,135 +30,94 @@ export default function AddToGroupButton({
 }: {
   hisId: string | undefined;
 }) {
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-
   const { groups } = useGroups();
-
-  const [groupsCanSendInvitation, SetGroupsCanSendInvitation] = useState<
-    Group[]
-  >([]);
-
-  const [disabledItems, setDisabledItems] = useState<string[]>([]);
   const auth = useAuth();
+  const [disabledItems, setDisabledItems] = useState<string[]>([]);
+  const [groupSelected, setGroupSelected] = useState<string[]>([]);
+  const [groupsWhoCanSendInvite, setGroupsWhoCanSendInvite] = useState<Group[]>(
+    [],
+  );
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  // Que sea un grupo publico
-  // Que vos seas el owner
-  // Mostrar los grupos publicos y de los que sos el owner
-
-  const getUserInvitations = useCallback((userId: string | undefined) => {
-    api.get(`group-invitations/get-invitations/${userId}`).then((res) => {
-      const data = res.data;
-
-      getDisabledItems(data);
-    });
-  }, []);
-
-  function getDisabledItems(hisInvitations: Invitation[]) {
-    if (hisInvitations != undefined && hisInvitations != null) {
-      const disabledItems: string[] = [];
-      hisInvitations.forEach((element) => {
-        disabledItems.push(element.group_id);
-      });
-      setDisabledItems(disabledItems);
-    }
-  }
-  const sendInvitations = (id: string, groupId: string) => {
-    api
-      .post('group-invitations/send-invitation', {
-        user_id: id,
-        group_id: groupId,
-      })
-      .then((res) => {
-        const data = res.data;
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const fetchGroups = (
-    userId: string | undefined,
-  ): Promise<Group[] | undefined> => {
-    return api
-      .get(`groups/getGroups?user_id=${userId}`)
-      .then((res) => {
-        console.log('grupos: ', res.data);
-        const data = res.data;
-        return data;
-      })
-
-      .catch((err) => {
+  const fetchGroups = useCallback(
+    async (userId: string | undefined): Promise<Group[] | undefined> => {
+      try {
+        const res = await api.get(`groups/getGroups?user_id=${userId}`);
+        return res.data;
+      } catch (err) {
         console.error('Error fetching groups', err);
         return undefined;
+      }
+    },
+    [],
+  );
+
+  const getUserInvitations = useCallback(async (userId: string | undefined) => {
+    try {
+      const res = await api.get(`group-invitations/get-invitations/${userId}`);
+      const invitations: Invitation[] = res.data;
+      setDisabledItems(invitations.map((invite) => invite.group_id));
+    } catch (err) {
+      console.error('Error fetching invitations', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && hisId) {
+      (async () => {
+        const hisGroups = await fetchGroups(hisId);
+        await getUserInvitations(hisId);
+        if (groups && hisGroups) {
+          const filteredGroups = groups.filter(
+            (group) =>
+              (group.createdBy === auth?.user?.id || !group.isPrivate) &&
+              !disabledItems.includes(group.id) &&
+              !hisGroups.some((hisGroup) => hisGroup.id === group.id),
+          );
+          setGroupsWhoCanSendInvite(filteredGroups);
+        }
+      })();
+    }
+  }, [
+    isOpen,
+    hisId,
+    groups,
+    auth?.user?.id,
+    disabledItems,
+    fetchGroups,
+    getUserInvitations,
+  ]);
+
+  const sendInvitations = async (id: string, groupId: string) => {
+    try {
+      const res = await api.post('group-invitations/send-invitation', {
+        user_id: id,
+        group_id: groupId,
       });
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const setGroupsWhoCanSendInvitation = useCallback(async () => {
-    console.log('ejecute');
-    const hisGroups = await fetchGroups(hisId);
-    getUserInvitations(hisId);
-    // Si es publico,
-    // Si vos lo creaste
-    // Si la persona no esta en el grupo ya
-    if (groups != undefined && hisGroups !== undefined) {
-      const fetchGroups = groups.filter((grup) => {
-        return (
-          (grup.createdBy === auth?.user?.id || !grup.isPrivate) &&
-          !(grup.id in disabledItems)
-        );
-      });
-      const gropswhoCanSendInvitation = fetchGroups.filter((grup) => {
-        return !hisGroups.some((hisG) => hisG.id === grup.id);
-      });
-
-      SetGroupsCanSendInvitation(gropswhoCanSendInvitation);
-    }
-  }, [auth?.user?.id, disabledItems, getUserInvitations, groups, hisId]);
-
-  function handleClick() {
+  const handleClick = () => {
     onOpen();
-  }
+  };
 
-  function handleInvitations() {
-    if (hisId != undefined && hisId != null) {
-      for (const element of selectedKeys) {
-        sendInvitations(hisId, element);
-        setSelectedKeys(new Set([]));
-        setDisabledItems([...disabledItems, element]);
-      }
-    }
-  }
+  const handleClose = () => {
+    setGroupSelected([]);
+  };
 
-  function handleClose() {
-    setSelectedKeys(new Set([]));
-  }
-
-  const rows = groupsCanSendInvitation.map((grupo) => ({
-    key: grupo.id,
-    title: grupo.title,
-    privacidad: grupo.isPrivate ? 'Privado' : 'Público',
-  }));
-
-  const columns = [
-    {
-      key: 'title',
-      label: 'Nombre',
-    },
-    {
-      key: 'privacidad',
-      label: 'Es Privado',
-    },
-  ];
+  const handleInvitations = () => {
+    groupSelected.forEach((group) => {
+      sendInvitations(hisId as string, group);
+    });
+    setGroupSelected([]);
+  };
 
   return (
     <>
-      <Button
-        onPress={() => handleClick()}
-        onClick={() => setGroupsWhoCanSendInvitation()}
-        color="secondary"
-      >
+      <Button onPress={handleClick} color="secondary">
         Invitar a grupo
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -178,44 +128,25 @@ export default function AddToGroupButton({
                 Agregar a grupo
               </ModalHeader>
               <ModalBody>
-                <h1>Grupos:</h1>
-                <Table
-                  aria-label="Selection behavior table example with dynamic content"
-                  selectionMode="multiple"
-                  selectedKeys={selectedKeys}
-                  onSelectionChange={setSelectedKeys}
-                  disabledKeys={disabledItems}
-                >
-                  <TableHeader columns={columns}>
-                    {(column) => (
-                      <TableColumn key={column.key}>{column.label}</TableColumn>
-                    )}
-                  </TableHeader>
-                  <TableBody items={rows}>
-                    {(item) => (
-                      <TableRow key={item.key}>
-                        {(columnKey) => (
-                          <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                        )}
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                <TableOfGroups
+                  groups={groupsWhoCanSendInvite}
+                  groupSelected={groupSelected}
+                  setGroupSelected={setGroupSelected}
+                />
               </ModalBody>
-
               <ModalFooter>
                 <Button
                   color="danger"
                   variant="light"
                   onPress={onClose}
-                  onClick={() => handleClose()}
+                  onClick={handleClose}
                 >
                   Cancelar
                 </Button>
                 <Button
                   color="primary"
                   onPress={onClose}
-                  onClick={() => handleInvitations()}
+                  onClick={handleInvitations}
                 >
                   Invitar
                 </Button>
