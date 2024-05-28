@@ -65,7 +65,7 @@ export default function UserProfile() {
       </div>
       <div className="flex align-center gap-4">
         <p className="text-xl">Grupos:</p>
-        <div className="flex gap-4">
+        <div className="flex gap-4 max-w-[500px] flex-wrap">
           {UserProfile?.groups.map((group) => (
             <Chip key={group.id} color="primary" variant="bordered">
               {group.title}

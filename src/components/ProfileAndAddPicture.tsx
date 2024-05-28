@@ -42,8 +42,10 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile, setImage }) => {
       const response = await api.get(`/users/get-profile-picture`, {
         params: { user_id: profile.id },
       });
+      const base64 = response.data.base64Encoding;
+      const fileType = response.data.file.fileType;
 
-      const imageSrc = `data:image/png;base64,${response.data}`;
+      const imageSrc = `data:${fileType};base64,${base64}`;
       setImage(imageSrc);
     } catch (error) {
       console.error('Error fetching profile picture:', error);
