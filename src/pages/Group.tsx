@@ -10,6 +10,7 @@ import { useNotifications } from '../hooks/useNotifications.ts';
 import { GroupInvite } from '../types/types';
 import { useGroups } from '../hooks/useGroups.ts';
 import PostList from '../components/feed/PostList.tsx';
+import CreateChat from '../components/chat/CreateChat.tsx';
 
 type Group = {
   createdBy: string;
@@ -162,11 +163,15 @@ export default function Group() {
         </div>
       </div>
       {groups.some((group) => group.id == groupId) && (
-        <PostList
-          orders={postsOrder}
-          defaultOrder={'score-group'}
-          queryId={groupId || ''}
-        />
+        <div>
+          <h2 className="font-bold text-lg">Sesiones de estudio</h2>
+          <CreateChat groupId={groupId || ''} userId={user?.id || ''} />
+          <PostList
+            orders={postsOrder}
+            defaultOrder={'score-group'}
+            queryId={groupId || ''}
+          />
+        </div>
       )}
     </div>
   );

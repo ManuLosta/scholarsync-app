@@ -15,6 +15,15 @@ export type GroupInvite = {
   notificationType: string;
 };
 
+export type ChatNotification = {
+  notification_id: string;
+  chat_id: string;
+  created_at: string;
+  name: string;
+  group: string;
+  notificationType: string;
+};
+
 export type Profile = {
   firstName: string;
   lastName: string;

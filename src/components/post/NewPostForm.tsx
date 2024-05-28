@@ -84,7 +84,7 @@ export default function NewPostForm() {
     api
       .post('questions/publish-question', bodyFormData)
       .then((res) => {
-        const id = res.data.body.id;
+        const id = res.data.id;
         console.log(res);
         handleNavigate(id);
         removeCredits(20);

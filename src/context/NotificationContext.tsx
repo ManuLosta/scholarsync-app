@@ -1,15 +1,17 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.ts';
 import api from '../api.ts';
-import { FriendRequest, GroupInvite } from '../types/types';
+import { ChatNotification, FriendRequest, GroupInvite } from '../types/types';
 import { useSubscription } from 'react-stomp-hooks';
+import { v4 as uuidv4 } from 'uuid';
 
 interface NotificationContext {
-  notifications: (FriendRequest | GroupInvite)[];
+  notifications: (FriendRequest | GroupInvite | ChatNotification)[];
   acceptFriendRequest: (id: string) => void;
   rejectFriendRequest: (id: string) => void;
   acceptGroupInvite: (id: string) => void;
   rejectGroupInvite: (id: string) => void;
+  removeNotification: (id: string) => void;
 }
 
 const defaultContext = {
@@ -18,6 +20,7 @@ const defaultContext = {
   rejectFriendRequest: () => {},
   acceptGroupInvite: () => {},
   rejectGroupInvite: () => {},
+  removeNotification: () => {},
 };
 
 export const NotificationContext =
@@ -30,11 +33,20 @@ export function NotificationProvider({
 }) {
   const { user, sessionId } = useAuth();
   const [notifications, setNotifications] = useState<
-    (GroupInvite | FriendRequest)[]
+    (GroupInvite | FriendRequest | ChatNotification)[]
   >([]);
 
   useSubscription(`/individual/${sessionId}/notification`, (message) => {
     const notification = JSON.parse(message.body);
+    setNotifications([...notifications, notification]);
+  });
+
+  useSubscription(`/individual/${sessionId}/chat`, (message) => {
+    const notification = {
+      ...JSON.parse(message.body),
+      notification_id: uuidv4(),
+      notificationType: 'NEW_CHAT',
+    };
     setNotifications([...notifications, notification]);
   });
 
@@ -112,6 +124,7 @@ export function NotificationProvider({
         rejectFriendRequest,
         acceptGroupInvite,
         rejectGroupInvite,
+        removeNotification,
       }}
     >
       {children}
