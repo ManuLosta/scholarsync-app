@@ -4,7 +4,7 @@ import useIntersectionObserver from '../hooks/useIntersectionObserver';
 import api from '../api';
 
 interface GroupPictureProps {
-  groupId: string;
+  userId: string;
   propForUser: UserProps;
 }
 
@@ -12,9 +12,9 @@ interface src {
   src: string;
 }
 
-export default function GroupUserPicture({
+export default function UserPicture({
   propForUser,
-  groupId,
+  userId,
 }: GroupPictureProps) {
   const [imgSrc, setImgScr] = useState<string>('');
   const currRef = useRef<HTMLDivElement | null>(null);
@@ -26,13 +26,13 @@ export default function GroupUserPicture({
 
   const getImg = useCallback(async () => {
     try {
-      const response = await api.get(`/groups/get-picture`, {
-        params: { group_id: groupId },
+      const response = await api.get(`/users/get-profile-picture`, {
+        params: { user_id: userId },
       });
-      console.log('respuesta en group pic:', response);
+      console.log('respuesta en user pic:', response);
 
-      const base64 = response.data;
-      const fileType = 'image/jpeg';
+      const base64 = response.data.base64Encoding;
+      const fileType = response.data.file.fileType;
 
       const imageSrc = `data:${fileType};base64,${base64}`;
 
@@ -41,7 +41,7 @@ export default function GroupUserPicture({
       setImgScr('');
       console.error('Error in group fetching profile picture:', error);
     }
-  }, [groupId]);
+  }, [userId]);
 
   useEffect(() => {
     if (isVisible) {
@@ -54,7 +54,7 @@ export default function GroupUserPicture({
   };
 
   return (
-    <div ref={currRef}>
+    <p ref={currRef}>
       <User
         name={propForUser.name}
         description={propForUser.description}
@@ -62,6 +62,6 @@ export default function GroupUserPicture({
         className={propForUser.className}
         avatarProps={Object.assign({}, referencia, propForUser.avatarProps)}
       />
-    </div>
+    </p>
   );
 }

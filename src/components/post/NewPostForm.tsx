@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import ConfirmModal from './ConfirmModal.tsx';
 import { useCredit } from '../../hooks/useCredit.ts';
 import Group from '../../pages/Group.tsx';
-import GroupPicture from '../GroupPicture.tsx';
+import GroupUserPicture from '../GroupPicture.tsx';
 
 type Group = {
   id: string;
@@ -137,7 +137,7 @@ export default function NewPostForm() {
           onChange={handleGroupChange}
           renderValue={(items) => {
             return items.map((item) => (
-              <GroupPicture
+              <GroupUserPicture
                 groupId={item.data?.id || ''}
                 propForUser={{
                   name: item.data?.title,
@@ -152,7 +152,7 @@ export default function NewPostForm() {
         >
           {(group) => (
             <SelectItem key={group.id} textValue={group.id}>
-              <GroupPicture
+              <GroupUserPicture
                 groupId={group.id}
                 propForUser={{
                   name: group.title,
