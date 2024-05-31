@@ -8,7 +8,7 @@ import FriendStatusButton from '../components/FriendStatusButton.tsx';
 
 import { Profile } from '../types/types';
 import AddToGroupButton from '../components/AddToGroupButton.tsx';
-import ProfileAndAddPicture from '../components/ProfileAndAddPicture.tsx';
+import ChangeProfilePicture from '../components/ChangeProfilePicture.tsx';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -48,7 +48,7 @@ export default function UserProfile() {
         <div className="flex gap-4 flex-col">
           <p className="text-2xl flex  gap-4 ">
             {UserProfile?.firstName} {UserProfile?.lastName}
-            <ProfileAndAddPicture profile={UserProfile} setImage={setImage} />
+            <ChangeProfilePicture profile={UserProfile} setImage={setImage} />
           </p>
           <p className="text-xl text-foreground-400">
             {`@${UserProfile?.username}`}{' '}

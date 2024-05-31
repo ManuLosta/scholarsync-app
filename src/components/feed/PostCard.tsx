@@ -3,7 +3,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import MathExtension from '@aarkue/tiptap-math-extension';
 import { useEffect, useRef, useState } from 'react';
-import { Avatar } from '@nextui-org/react';
+
 import useIntersectionObserver from '../../hooks/useIntersectionObserver.ts';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -11,6 +11,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import api from '../../api.ts';
 import Carousel from '../question/Carousel.tsx';
 import UserTooltip from '../user/UserTooltip.tsx';
+import UserPicture from '../UserPicture.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -65,7 +66,16 @@ export default function PostCard({ question }: { question: Question }) {
       >
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
-            <Avatar name={question.groupTitle} color="primary" />
+            <UserPicture
+              userId={question.author.id} // Asumiendo que `userId` es una propiedad de `question`
+              propForUser={{
+                name: '',
+                avatarProps: {
+                  color: 'primary',
+                },
+              }}
+            />
+
             <div className="flex flex-col">
               <p className="font-bold">{question.groupTitle}</p>
               <UserTooltip user={question.author}>

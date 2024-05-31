@@ -1,5 +1,5 @@
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Input, Select, SelectItem, User } from '@nextui-org/react';
+import { Input, Select, SelectItem } from '@nextui-org/react';
 import Editor from './Editor.tsx';
 import FileUploader from './FIleUploader.tsx';
 import api from '../../api.ts';
@@ -10,6 +10,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ConfirmModal from './ConfirmModal.tsx';
 import { useCredit } from '../../hooks/useCredit.ts';
+import Group from '../../pages/Group.tsx';
+import GroupUserPicture from '../GroupPicture.tsx';
 
 type Group = {
   id: string;
@@ -135,21 +137,28 @@ export default function NewPostForm() {
           onChange={handleGroupChange}
           renderValue={(items) => {
             return items.map((item) => (
-              <User
-                key={item.data?.id}
-                avatarProps={{ color: 'primary' }}
-                className="m-2"
-                name={item.data?.title}
+              <GroupUserPicture
+                groupId={item.data?.id || ''}
+                propForUser={{
+                  name: item.data?.title,
+                  description: item.data?.description,
+                  className: 'm-2',
+                  avatarProps: { color: 'primary' },
+                  key: item.data?.id,
+                }}
               />
             ));
           }}
         >
           {(group) => (
             <SelectItem key={group.id} textValue={group.id}>
-              <User
-                avatarProps={{ color: 'primary' }}
-                name={group.title}
-                description={group.description}
+              <GroupUserPicture
+                groupId={group.id}
+                propForUser={{
+                  name: group.title,
+                  description: group.description,
+                  avatarProps: { color: 'primary' },
+                }}
               />
             </SelectItem>
           )}

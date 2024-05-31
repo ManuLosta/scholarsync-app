@@ -1,6 +1,7 @@
 import { Level, Profile } from '../../types/types';
-import { Chip, Progress, User } from '@nextui-org/react';
+import { Chip, Progress } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
+import UserPicture from '../UserPicture';
 
 interface LevelStyle {
   color?:
@@ -57,10 +58,13 @@ export default function ProfileCard({ user }: { user: Profile }) {
       to={`/user/${user.id}`}
       className="flex flex-col items-start gap-3 p-2"
     >
-      <User
-        classNames={{ base: 'w-full justify-start' }}
-        name={`${user.firstName} ${user.lastName}`}
-        description={`@${user.username}`}
+      <UserPicture
+        userId={user.id}
+        propForUser={{
+          name: `${user.firstName} ${user.lastName}`,
+          description: `@${user.username}`,
+          className: 'w-full justify-start',
+        }}
       />
       {getLevelChip(user.level as Level)}
       <div className="w-full">
