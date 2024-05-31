@@ -113,3 +113,8 @@ export type FileType = {
   name: string;
   file_type: string;
 };
+
+export type Message = {
+  sender: Profile;
+  message: string;
+};

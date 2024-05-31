@@ -1,15 +1,18 @@
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStompClient } from 'react-stomp-hooks';
 import { useAuth } from '../hooks/useAuth.ts';
 import { Button } from '@nextui-org/react';
 import api from '../api.ts';
+import ChatBox from '../components/chat/ChatBox.tsx';
 
 type Chat = {
+  id: string;
   name: string;
 };
 
 export default function Chat() {
+  const [chat, setChat] = useState<Chat | null>(null); // [1
   const { id } = useParams();
   const { user } = useAuth();
   const client = useStompClient();
@@ -29,41 +32,34 @@ export default function Chat() {
   }, [client, id, user?.id]);
 
   useEffect(() => {
-    api.get(`chat/get-chat?chatId=${id}`).then((res) => console.log(res));
-
-    client?.subscribe(`/chat/${id}`, (message) => {
-      console.log(JSON.parse(message.body));
-    });
+    api
+      .get(`chat/get-chat?chatId=${id}`)
+      .then((res) => {
+        const data = res.data;
+        setChat(data);
+      })
+      .then((err) => console.error(err));
   }, []);
 
   return (
-    <div>
-      This is chat
-      <Button
-        onPress={() =>
-          client?.publish({
-            destination: '/app/chat/send-message',
-            body: JSON.stringify({
-              chat_id: id,
-              sender_id: user?.id,
-              message: 'Hello',
-            }),
-          })
-        }
-      >
-        Send message
-      </Button>
-      <Button
-        onPress={() =>
-          client?.publish({
-            destination: '/app/chat/leave',
-            body: JSON.stringify({ chat_id: id, user_id: user?.id }),
-          })
-        }
-        color="danger"
-      >
-        Leave
-      </Button>
-    </div>
+    chat && (
+      <div className="container p-8 h-[88vh] flex flex-col">
+        <div className="flex justify-between items-center flex-none">
+          <h1 className="font-bold text-2xl">{chat?.name}</h1>
+          <Button
+            onPress={() =>
+              client?.publish({
+                destination: '/app/chat/leave',
+                body: JSON.stringify({ chat_id: id, user_id: user?.id }),
+              })
+            }
+            color="danger"
+          >
+            Leave
+          </Button>
+        </div>
+        <ChatBox chatId={chat?.id || ''} />
+      </div>
+    )
   );
 }
