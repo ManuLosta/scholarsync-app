@@ -9,7 +9,7 @@ interface Props {
   setImage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ProfileAndAddPicture: React.FC<Props> = ({ profile, setImage }) => {
+const ChangeProfilePicture: React.FC<Props> = ({ profile, setImage }) => {
   const auth = useAuth();
   const currentId = auth?.user?.id;
 
@@ -84,4 +84,4 @@ const ProfileAndAddPicture: React.FC<Props> = ({ profile, setImage }) => {
   );
 };
 
-export default ProfileAndAddPicture;
+export default ChangeProfilePicture;

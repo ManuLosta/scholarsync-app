@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from '../api.ts';
 import { Avatar, Button, Skeleton } from '@nextui-org/react';
 import MemberList from '../components/groups/MemberList.tsx';
@@ -10,6 +10,7 @@ import { useNotifications } from '../hooks/useNotifications.ts';
 import { GroupInvite } from '../types/types';
 import { useGroups } from '../hooks/useGroups.ts';
 import PostList from '../components/feed/PostList.tsx';
+import ChangeGroupPicture from '../components/ChangeGroupPicture.tsx';
 
 type Group = {
   createdBy: string;
@@ -42,10 +43,12 @@ const postsOrder = [
 
 export default function Group() {
   const { groupId } = useParams();
+
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState<boolean>(false);
   const { user } = useAuth();
+  const [image, setImage] = useState<string>('');
   const { notifications, acceptGroupInvite, rejectGroupInvite } =
     useNotifications();
   const notificationId = notifications.find((notification) => {
@@ -69,7 +72,7 @@ export default function Group() {
         console.error('Error fetching group info: ', err);
       })
       .finally(() => setLoading(false));
-  }, [groupId]);
+  }, [groupId, user?.id]);
 
   const handleLeave = () => {
     api
@@ -91,6 +94,31 @@ export default function Group() {
       .catch((err) => console.error(err));
   };
 
+  const getImg = useCallback(async () => {
+    if (user?.id == undefined) return;
+
+    try {
+      const response = await api.get(`/groups/get-picture`, {
+        params: { group_id: groupId },
+      });
+      console.log('respuesta foto:', response);
+
+      const base64 = response.data;
+      const fileType = 'image/jpeg';
+
+      const imageSrc = `data:${fileType};base64,${base64}`;
+
+      setImage(imageSrc);
+    } catch (error) {
+      setImage('');
+      console.error('Error fetching profile picture:', error);
+    }
+  }, [groupId, user?.id]);
+
+  useEffect(() => {
+    getImg();
+  }, [getImg]);
+
   return loading ? (
     <div className="container mt-8 px-8 mx-auto">
       <div className="flex gap-4 items-center">
@@ -110,6 +138,7 @@ export default function Group() {
             className="w-[90px] h-[90px] text-2xl"
             name={group?.title}
             color="primary"
+            src={image}
           />
           <div className="max-w-[400px]">
             <h1 className="font-bold text-3xl flex items-center">
@@ -125,6 +154,10 @@ export default function Group() {
           </div>
         </div>
         <div className="flex gap-2">
+          <ChangeGroupPicture
+            groupId={groupId}
+            getImg={getImg}
+          ></ChangeGroupPicture>
           {(group?.createdBy == user?.id ||
             (isMember && !group?.isPrivate)) && (
             <InviteToGroup
@@ -133,6 +166,7 @@ export default function Group() {
               invitations={group?.invitations || []}
             />
           )}
+
           {isMember && group?.createdBy != user?.id && (
             <Button onPress={handleLeave} color="danger" variant="ghost">
               Dejar

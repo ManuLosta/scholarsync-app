@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import api from '../../api.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { Link, useParams } from 'react-router-dom';
-import { User } from '@nextui-org/react';
 import CreateGroupModal from './CreateGroupModal.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
 import GroupListSkeleton from './GroupListSkeleton.tsx';
+import GroupPicture from '../GroupPicture.tsx';
+import { UserProps } from '@nextui-org/react';
 
 type Group = {
   id: string;
@@ -17,6 +18,7 @@ type Group = {
 export default function GroupList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
+
   const { notifications } = useNotifications();
   const auth = useAuth();
   const { groupId } = useParams();
@@ -49,15 +51,28 @@ export default function GroupList() {
           <GroupListSkeleton />
         </>
       ) : (
-        groups.map((group) => (
-          <Link
-            className={`hover:bg-foreground-200 w-full rounded-xl p-2 flex ${groupId == group.id && 'bg-foreground-200'}`}
-            to={`/group/${group.id}`}
-            key={group.id}
-          >
-            <User avatarProps={{ color: 'primary' }} name={group.title} />
-          </Link>
-        ))
+        groups.map((group) => {
+          const userProps: UserProps = {
+            name: group.title,
+            avatarProps: {
+              color: 'primary',
+            },
+          };
+
+          return (
+            <Link
+              className={`hover:bg-foreground-200 w-full rounded-xl p-2 flex ${groupId === group.id && 'bg-foreground-200'}`}
+              to={`/group/${group.id}`}
+              key={group.id}
+            >
+              <GroupPicture
+                groupTitle={group.title}
+                groupId={group.id}
+                propForUser={userProps}
+              />
+            </Link>
+          );
+        })
       )}
     </div>
   );
