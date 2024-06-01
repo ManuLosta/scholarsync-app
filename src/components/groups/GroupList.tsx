@@ -13,6 +13,7 @@ type Group = {
   title: string;
   description: string;
   isPrivate: boolean;
+  hasPicture: boolean;
 };
 
 export default function GroupList() {
@@ -28,17 +29,20 @@ export default function GroupList() {
   }, [auth?.user?.id, notifications]);
 
   const fetchGroups = (userId: string | undefined) => {
-    setLoading(true);
-    api
-      .get(`groups/getGroups?user_id=${userId}`)
-      .then((res) => {
-        const data = res.data;
-        setGroups(data);
-      })
-      .catch((err) => {
-        console.error('Error fetching groups', err);
-      })
-      .finally(() => setLoading(false));
+    if (userId != undefined) {
+      setLoading(true);
+      api
+        .get(`groups/getGroups?user_id=${userId}`)
+        .then((res) => {
+          const data = res.data;
+          setGroups(data);
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.error('Error fetching groups', err);
+        })
+        .finally(() => setLoading(false));
+    }
   };
 
   return (
@@ -65,7 +69,11 @@ export default function GroupList() {
               to={`/group/${group.id}`}
               key={group.id}
             >
-              <GroupUserPicture groupId={group.id} propForUser={userProps} />
+              <GroupUserPicture
+                groupId={group.id}
+                propForUser={userProps}
+                hasPicture={group.hasPicture}
+              />
             </Link>
           );
         })

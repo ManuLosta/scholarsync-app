@@ -17,23 +17,25 @@ export default function UserDropdown() {
   const [image, setImage] = useState<string>('');
 
   const getImg = useCallback(async () => {
-    try {
-      const response = await api.get(`/users/get-profile-picture`, {
-        params: { user_id: auth.user?.id },
-      });
-      const base64 = response.data.base64Encoding;
-      const fileType = response.data.file.fileType;
+    if (auth.user?.hasPicture) {
+      try {
+        const response = await api.get(`/users/get-profile-picture`, {
+          params: { user_id: auth.user?.id },
+        });
+        const base64 = response.data.base64Encoding;
+        const fileType = response.data.file.fileType;
 
-      const imageSrc = `data:${fileType};base64,${base64}`;
-      setImage(imageSrc);
-    } catch (error) {
-      console.error('Error fetching profile picture:', error);
+        const imageSrc = `data:${fileType};base64,${base64}`;
+        setImage(imageSrc);
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
     }
-  }, [auth.user?.id]);
+  }, [auth.user?.hasPicture, auth.user?.id]);
 
   useEffect(() => {
     getImg();
-  }, [getImg]);
+  }, [getImg, auth.user?.hasPicture]);
 
   return (
     <Dropdown closeOnSelect={false} placement="bottom">

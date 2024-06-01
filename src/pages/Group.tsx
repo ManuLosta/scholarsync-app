@@ -14,6 +14,7 @@ import ChangeGroupPicture from '../components/ChangeGroupPicture.tsx';
 
 type Group = {
   createdBy: string;
+  hasPicture: boolean;
   title: string;
   description: string;
   isPrivate: boolean;
@@ -63,7 +64,9 @@ export default function Group() {
       .get(`groups/getGroup?group_id=${groupId}`)
       .then((res) => {
         const data = res.data;
+
         setGroup(data);
+
         setIsMember(
           data.users.some((u: { id: string | undefined }) => u.id == user?.id),
         );
@@ -95,25 +98,26 @@ export default function Group() {
   };
 
   const getImg = useCallback(async () => {
-    if (user?.id == undefined) return;
+    if (user?.id == undefined || !group?.hasPicture) return;
+    else {
+      try {
+        const response = await api.get(`/groups/get-picture`, {
+          params: { group_id: groupId },
+        });
+        console.log('respuesta foto:', response);
 
-    try {
-      const response = await api.get(`/groups/get-picture`, {
-        params: { group_id: groupId },
-      });
-      console.log('respuesta foto:', response);
+        const base64 = response.data;
+        const fileType = 'image/jpeg';
 
-      const base64 = response.data;
-      const fileType = 'image/jpeg';
+        const imageSrc = `data:${fileType};base64,${base64}`;
 
-      const imageSrc = `data:${fileType};base64,${base64}`;
-
-      setImage(imageSrc);
-    } catch (error) {
-      setImage('');
-      console.error('Error fetching profile picture:', error);
+        setImage(imageSrc);
+      } catch (error) {
+        setImage('');
+        console.error('Error fetching profile picture:', error);
+      }
     }
-  }, [groupId, user?.id]);
+  }, [group?.hasPicture, groupId, user?.id]);
 
   useEffect(() => {
     getImg();

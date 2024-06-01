@@ -16,6 +16,7 @@ export type GroupInvite = {
 };
 
 export type Profile = {
+  hasPicture: boolean;
   firstName: string;
   lastName: string;
   username: string;

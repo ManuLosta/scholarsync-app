@@ -6,6 +6,7 @@ import api from '../api';
 interface GroupPictureProps {
   groupId: string;
   propForUser: UserProps;
+  hasPicture: boolean;
 }
 
 interface src {
@@ -13,6 +14,7 @@ interface src {
 }
 
 export default function GroupUserPicture({
+  hasPicture,
   propForUser,
   groupId,
 }: GroupPictureProps) {
@@ -25,23 +27,25 @@ export default function GroupUserPicture({
   });
 
   const getImg = useCallback(async () => {
-    try {
-      const response = await api.get(`/groups/get-picture`, {
-        params: { group_id: groupId },
-      });
-      console.log('respuesta en group pic:', response);
+    if (hasPicture) {
+      try {
+        const response = await api.get(`/groups/get-picture`, {
+          params: { group_id: groupId },
+        });
+        console.log('respuesta en group pic:', response);
 
-      const base64 = response.data;
-      const fileType = 'image/jpeg';
+        const base64 = response.data;
+        const fileType = 'image/jpeg';
 
-      const imageSrc = `data:${fileType};base64,${base64}`;
+        const imageSrc = `data:${fileType};base64,${base64}`;
 
-      setImgScr(imageSrc);
-    } catch (error) {
-      setImgScr('');
-      console.error('Error in group fetching profile picture:', error);
+        setImgScr(imageSrc);
+      } catch (error) {
+        setImgScr('');
+        console.error('Error in group fetching profile picture:', error);
+      }
     }
-  }, [groupId]);
+  }, [groupId, hasPicture]);
 
   useEffect(() => {
     if (isVisible) {
