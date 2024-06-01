@@ -58,7 +58,7 @@ export default function GroupUserPicture({
   };
 
   return (
-    <div ref={currRef}>
+    <div ref={currRef} className="flex items-center">
       <User
         name={propForUser.name}
         description={propForUser.description}

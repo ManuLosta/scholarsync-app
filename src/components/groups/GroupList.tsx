@@ -19,7 +19,6 @@ type Group = {
 export default function GroupList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
-
   const { notifications } = useNotifications();
   const auth = useAuth();
   const { groupId } = useParams();
@@ -65,7 +64,7 @@ export default function GroupList() {
 
           return (
             <Link
-              className={`hover:bg-foreground-200 w-full rounded-xl p-2 flex ${groupId === group.id && 'bg-foreground-200'}`}
+              className={`hover:bg-foreground-200 w-full rounded-xl p-2 flex items-center ${groupId === group.id && 'bg-foreground-200'}`}
               to={`/group/${group.id}`}
               key={group.id}
             >

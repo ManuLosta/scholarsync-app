@@ -29,9 +29,9 @@ export default function UserPicture({
   const getImg = useCallback(async () => {
     if (hasPicture) {
       try {
-        const response = await api.get(`/users/get-profile-picture`, {
-          params: { user_id: userId },
-        });
+        const response = await api.get(
+          `/users/get-profile-picture?user_id=${userId}`,
+        );
         console.log('respuesta en user pic:', response);
 
         const base64 = response.data.base64Encoding;
@@ -58,7 +58,7 @@ export default function UserPicture({
   };
 
   return (
-    <p ref={currRef}>
+    <div ref={currRef}>
       <User
         name={propForUser.name}
         description={propForUser.description}
@@ -66,6 +66,6 @@ export default function UserPicture({
         className={propForUser.className}
         avatarProps={Object.assign({}, referencia, propForUser.avatarProps)}
       />
-    </p>
+    </div>
   );
 }
