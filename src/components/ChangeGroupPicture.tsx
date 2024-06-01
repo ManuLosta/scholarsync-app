@@ -2,14 +2,23 @@ import api from '../api';
 
 import { Button } from '@nextui-org/react';
 import { useAuth } from '../hooks/useAuth';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 interface Props {
   groupId: string | undefined;
   getImg: CallableFunction;
 }
 
-const ChangeProfilePicture: React.FC<Props> = ({ groupId, getImg }) => {
+const ChangeGroupPicture: React.FC<Props> = ({ groupId, getImg }) => {
   const auth = useAuth();
+
+  const { updateHasPicture } = useContext(AuthContext);
+
+  const handlePictureUpdate = () => {
+    // Actualizar el valor de hasPicture
+    updateHasPicture(true);
+  };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -25,6 +34,7 @@ const ChangeProfilePicture: React.FC<Props> = ({ groupId, getImg }) => {
         const response = await api.post('/groups/update-picture', formData);
         console.log(response.data);
         getImg();
+        handlePictureUpdate();
       } catch (err) {
         console.error('Error updating profile picture:', err);
       }
@@ -57,4 +67,4 @@ const ChangeProfilePicture: React.FC<Props> = ({ groupId, getImg }) => {
   );
 };
 
-export default ChangeProfilePicture;
+export default ChangeGroupPicture;

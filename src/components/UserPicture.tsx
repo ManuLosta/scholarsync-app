@@ -6,6 +6,7 @@ import api from '../api';
 interface GroupPictureProps {
   userId: string;
   propForUser: UserProps;
+  hasPicture: boolean;
 }
 
 interface src {
@@ -15,6 +16,7 @@ interface src {
 export default function UserPicture({
   propForUser,
   userId,
+  hasPicture,
 }: GroupPictureProps) {
   const [imgSrc, setImgScr] = useState<string>('');
   const currRef = useRef<HTMLDivElement | null>(null);
@@ -25,29 +27,31 @@ export default function UserPicture({
   });
 
   const getImg = useCallback(async () => {
-    try {
-      const response = await api.get(`/users/get-profile-picture`, {
-        params: { user_id: userId },
-      });
-      console.log('respuesta en user pic:', response);
+    if (hasPicture) {
+      try {
+        const response = await api.get(`/users/get-profile-picture`, {
+          params: { user_id: userId },
+        });
+        console.log('respuesta en user pic:', response);
 
-      const base64 = response.data.base64Encoding;
-      const fileType = response.data.file.fileType;
+        const base64 = response.data.base64Encoding;
+        const fileType = response.data.file.fileType;
 
-      const imageSrc = `data:${fileType};base64,${base64}`;
+        const imageSrc = `data:${fileType};base64,${base64}`;
 
-      setImgScr(imageSrc);
-    } catch (error) {
-      setImgScr('');
-      console.error('Error in group fetching profile picture:', error);
+        setImgScr(imageSrc);
+      } catch (error) {
+        setImgScr('');
+        console.error('Error in group fetching profile picture:', error);
+      }
     }
-  }, [userId]);
+  }, [hasPicture, userId]);
 
   useEffect(() => {
     if (isVisible) {
       getImg();
     }
-  }, [getImg, isVisible]);
+  }, [getImg, isVisible, hasPicture]);
 
   const referencia: src = {
     src: imgSrc,

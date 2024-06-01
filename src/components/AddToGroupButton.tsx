@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import {
   Modal,
   ModalContent,
@@ -32,7 +32,6 @@ export default function AddToGroupButton({
 }) {
   const { groups } = useGroups();
   const auth = useAuth();
-  const [disabledItems, setDisabledItems] = useState<string[]>([]);
   const [groupSelected, setGroupSelected] = useState<string[]>([]);
   const [groupsWhoCanSendInvite, setGroupsWhoCanSendInvite] = useState<Group[]>(
     [],
@@ -52,41 +51,40 @@ export default function AddToGroupButton({
     [],
   );
 
-  const getUserInvitations = useCallback(async (userId: string | undefined) => {
-    try {
-      const res = await api.get(`group-invitations/get-invitations/${userId}`);
-      const invitations: Invitation[] = res.data;
-      setDisabledItems(invitations.map((invite) => invite.group_id));
-    } catch (err) {
-      console.error('Error fetching invitations', err);
-    }
-  }, []);
+  const getUserInvitations = useCallback(
+    async (userId: string | undefined): Promise<string[]> => {
+      try {
+        const res = await api.get(
+          `group-invitations/get-invitations/${userId}`,
+        );
+        const invitations: Invitation[] = res.data;
+        return invitations.map((invite) => invite.group_id);
+      } catch (err) {
+        console.error('Error fetching invitations', err);
+        return [];
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (isOpen && hisId) {
       (async () => {
         const hisGroups = await fetchGroups(hisId);
-        await getUserInvitations(hisId);
+        const alreadyInvite: string[] = await getUserInvitations(hisId);
+
         if (groups && hisGroups) {
           const filteredGroups = groups.filter(
             (group) =>
               (group.createdBy === auth?.user?.id || !group.isPrivate) &&
-              !disabledItems.includes(group.id) &&
+              !alreadyInvite.includes(group.id) &&
               !hisGroups.some((hisGroup) => hisGroup.id === group.id),
           );
           setGroupsWhoCanSendInvite(filteredGroups);
         }
       })();
     }
-  }, [
-    isOpen,
-    hisId,
-    groups,
-    auth?.user?.id,
-    disabledItems,
-    fetchGroups,
-    getUserInvitations,
-  ]);
+  }, [isOpen, hisId, groups, auth?.user?.id, fetchGroups, getUserInvitations]);
 
   const sendInvitations = async (id: string, groupId: string) => {
     try {

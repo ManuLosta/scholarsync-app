@@ -82,6 +82,7 @@ export default function QuestionCard({ question }: { question: Question }) {
                 color: 'primary',
               },
             }}
+            hasPicture={question.author.hasPicture}
           />
           <div className="flex flex-col">
             <Link

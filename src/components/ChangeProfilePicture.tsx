@@ -1,8 +1,9 @@
 import { Profile } from '../types/types';
 import api from '../api';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { Button } from '@nextui-org/react';
 import { useAuth } from '../hooks/useAuth';
+import { AuthContext } from '../context/AuthContext';
 
 interface Props {
   profile: Profile | undefined;
@@ -12,7 +13,7 @@ interface Props {
 const ChangeProfilePicture: React.FC<Props> = ({ profile, setImage }) => {
   const auth = useAuth();
   const currentId = auth?.user?.id;
-
+  const { updateHasPicture } = useContext(AuthContext);
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -29,6 +30,8 @@ const ChangeProfilePicture: React.FC<Props> = ({ profile, setImage }) => {
         );
         console.log(response.data);
         getImg();
+        await updateHasPicture(true);
+        console.log('new  in auth:', auth.user);
       } catch (err) {
         console.error('Error updating profile picture:', err);
       }
@@ -36,7 +39,7 @@ const ChangeProfilePicture: React.FC<Props> = ({ profile, setImage }) => {
   };
 
   const getImg = useCallback(async () => {
-    if (!profile) return;
+    if (!profile || !auth.user?.hasPicture) return;
 
     try {
       const response = await api.get(`/users/get-profile-picture`, {
@@ -50,7 +53,7 @@ const ChangeProfilePicture: React.FC<Props> = ({ profile, setImage }) => {
     } catch (error) {
       console.error('Error fetching profile picture:', error);
     }
-  }, [profile, setImage]);
+  }, [auth.user?.hasPicture, profile, setImage]);
 
   useEffect(() => {
     if (profile) getImg();

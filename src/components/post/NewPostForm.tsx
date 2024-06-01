@@ -19,6 +19,7 @@ type Group = {
   description: string;
   isPrivate: boolean;
   createdBy: string;
+  hasPicture: boolean;
 };
 
 const formSchema = z.object({
@@ -146,6 +147,7 @@ export default function NewPostForm() {
                   avatarProps: { color: 'primary' },
                   key: item.data?.id,
                 }}
+                hasPicture={item.data?.hasPicture || false}
               />
             ));
           }}
@@ -154,6 +156,7 @@ export default function NewPostForm() {
             <SelectItem key={group.id} textValue={group.id}>
               <GroupUserPicture
                 groupId={group.id}
+                hasPicture={group.hasPicture}
                 propForUser={{
                   name: group.title,
                   description: group.description,

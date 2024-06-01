@@ -8,6 +8,7 @@ interface AuthContextType {
   user: Profile | null;
   logOut: () => void;
   loading: boolean;
+  updateHasPicture: (hasPicture: boolean) => void;
 }
 
 const defaultContext: AuthContextType = {
@@ -16,6 +17,7 @@ const defaultContext: AuthContextType = {
   user: null,
   logOut: () => {},
   loading: true,
+  updateHasPicture: () => {},
 };
 
 export const AuthContext = createContext<AuthContextType>(defaultContext);
@@ -26,6 +28,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [user, setUser] = useState<Profile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const updateHasPicture = (hasPicture: boolean) => {
+    if (user) {
+      setUser({ ...user, hasPicture });
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -59,7 +67,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ sessionId, setSessionId, user, logOut, loading }}
+      value={{
+        sessionId,
+        setSessionId,
+        user,
+        logOut,
+        loading,
+        updateHasPicture,
+      }}
     >
       {children}
     </AuthContext.Provider>

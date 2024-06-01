@@ -65,6 +65,7 @@ export default function ProfileCard({ user }: { user: Profile }) {
           description: `@${user.username}`,
           className: 'w-full justify-start',
         }}
+        hasPicture={user.hasPicture}
       />
       {getLevelChip(user.level as Level)}
       <div className="w-full">
