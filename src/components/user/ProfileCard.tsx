@@ -67,6 +67,7 @@ export default function ProfileCard({ user }: { user: Profile }) {
         {user.xp}
         {user.nextLevel != 0 && `/${user.nextLevel}`}xp
         <Progress
+          aria-label="User xp"
           minValue={user.prevLevel}
           maxValue={user.nextLevel}
           value={user.xp}

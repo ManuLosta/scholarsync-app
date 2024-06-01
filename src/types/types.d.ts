@@ -117,4 +117,5 @@ export type FileType = {
 export type Message = {
   sender: Profile;
   message: string;
+  time: string;
 };

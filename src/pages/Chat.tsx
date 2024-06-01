@@ -39,11 +39,11 @@ export default function Chat() {
         setChat(data);
       })
       .then((err) => console.error(err));
-  }, []);
+  }, [id]);
 
   return (
     chat && (
-      <div className="container p-8 h-[88vh] flex flex-col">
+      <div className="container p-8 flex h-[92vh] flex-col gap-2">
         <div className="flex justify-between items-center flex-none">
           <h1 className="font-bold text-2xl">{chat?.name}</h1>
           <Button
@@ -58,7 +58,9 @@ export default function Chat() {
             Leave
           </Button>
         </div>
-        <ChatBox chatId={chat?.id || ''} />
+        <div className="flex-grow overflow-hidden">
+          <ChatBox chatId={chat?.id || ''} />
+        </div>
       </div>
     )
   );
