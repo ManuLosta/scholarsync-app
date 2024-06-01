@@ -154,10 +154,9 @@ export default function Group() {
           </div>
         </div>
         <div className="flex gap-2">
-          <ChangeGroupPicture
-            groupId={groupId}
-            getImg={getImg}
-          ></ChangeGroupPicture>
+          {group?.createdBy === user?.id && (
+            <ChangeGroupPicture groupId={groupId} getImg={getImg} />
+          )}
           {(group?.createdBy == user?.id ||
             (isMember && !group?.isPrivate)) && (
             <InviteToGroup

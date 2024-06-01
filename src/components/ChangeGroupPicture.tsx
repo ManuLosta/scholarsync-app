@@ -8,7 +8,7 @@ interface Props {
   getImg: CallableFunction;
 }
 
-const ChangeProfilePicture: React.FC<Props> = ({ groupId, getImg }) => {
+const ChangeGroupPicture: React.FC<Props> = ({ groupId, getImg }) => {
   const auth = useAuth();
 
   const handleFileChange = async (
@@ -57,4 +57,4 @@ const ChangeProfilePicture: React.FC<Props> = ({ groupId, getImg }) => {
   );
 };
 
-export default ChangeProfilePicture;
+export default ChangeGroupPicture;

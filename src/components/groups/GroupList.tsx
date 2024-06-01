@@ -65,11 +65,7 @@ export default function GroupList() {
               to={`/group/${group.id}`}
               key={group.id}
             >
-              <GroupUserPicture
-                groupTitle={group.title}
-                groupId={group.id}
-                propForUser={userProps}
-              />
+              <GroupUserPicture groupId={group.id} propForUser={userProps} />
             </Link>
           );
         })
