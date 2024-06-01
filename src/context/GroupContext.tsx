@@ -6,11 +6,13 @@ import { useAuth } from '../hooks/useAuth';
 interface groupContextType {
   groups: Group[];
   fetchGroupsforProfile: CallableFunction;
+  loading: boolean;
 }
 
 const defaultContext = {
   groups: [],
   fetchGroupsforProfile: () => {},
+  loading: true,
 };
 
 export const groupContext = createContext<groupContextType>(defaultContext);
@@ -18,8 +20,10 @@ export const groupContext = createContext<groupContextType>(defaultContext);
 export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchGroupsforProfile = () => {
+    setLoading(true);
     api
       .get(`groups/getGroups?user_id=${user?.id}`)
       .then((res) => {
@@ -30,6 +34,7 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
       .catch((err) => {
         console.error('Error fetching groups', err);
       });
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -37,7 +42,7 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
   }, [user]);
 
   return (
-    <groupContext.Provider value={{ groups, fetchGroupsforProfile }}>
+    <groupContext.Provider value={{ groups, fetchGroupsforProfile, loading }}>
       {children}
     </groupContext.Provider>
   );

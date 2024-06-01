@@ -6,6 +6,7 @@ import { CircularProgress } from '@nextui-org/react';
 import { CreditProvider } from '../context/CreditContext.tsx';
 import { GroupProvider } from '../context/GroupContext.tsx';
 import { FeedProvider } from '../context/FeedContext.tsx';
+import { StompSessionProvider } from 'react-stomp-hooks';
 
 export default function ProtectedRoutes() {
   const auth = useAuth();
@@ -17,17 +18,19 @@ export default function ProtectedRoutes() {
           <CircularProgress />
         </div>
       ) : (
-        <NotificationProvider>
-          <GroupProvider>
-            <CreditProvider>
-              <FeedProvider>
-                <Layout>
-                  <Outlet />
-                </Layout>
-              </FeedProvider>
-            </CreditProvider>
-          </GroupProvider>
-        </NotificationProvider>
+        <StompSessionProvider url={'ws://localhost:8080/message-broker'}>
+          <NotificationProvider>
+            <GroupProvider>
+              <CreditProvider>
+                <FeedProvider>
+                  <Layout>
+                    <Outlet />
+                  </Layout>
+                </FeedProvider>
+              </CreditProvider>
+            </GroupProvider>
+          </NotificationProvider>
+        </StompSessionProvider>
       )}
     </>
   ) : (

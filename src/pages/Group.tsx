@@ -11,6 +11,7 @@ import { GroupInvite } from '../types/types';
 import { useGroups } from '../hooks/useGroups.ts';
 import PostList from '../components/feed/PostList.tsx';
 import ChangeGroupPicture from '../components/ChangeGroupPicture.tsx';
+import CreateChat from '../components/chat/CreateChat.tsx';
 
 type Group = {
   createdBy: string;
@@ -44,7 +45,6 @@ const postsOrder = [
 
 export default function Group() {
   const { groupId } = useParams();
-
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState<boolean>(false);
@@ -199,11 +199,15 @@ export default function Group() {
         </div>
       </div>
       {groups.some((group) => group.id == groupId) && (
-        <PostList
-          orders={postsOrder}
-          defaultOrder={'score-group'}
-          queryId={groupId || ''}
-        />
+        <div>
+          <h2 className="font-bold text-lg">Sesiones de estudio</h2>
+          <CreateChat groupId={groupId || ''} userId={user?.id || ''} />
+          <PostList
+            orders={postsOrder}
+            defaultOrder={'score-group'}
+            queryId={groupId || ''}
+          />
+        </div>
       )}
     </div>
   );
