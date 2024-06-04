@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useStompClient } from 'react-stomp-hooks';
 import { useAuth } from '../hooks/useAuth.ts';
@@ -16,6 +16,7 @@ export default function Chat() {
   const { id } = useParams();
   const { user } = useAuth();
   const client = useStompClient();
+  const navigate = useNavigate();
 
   useEffect(() => {
     client?.publish({
@@ -24,12 +25,16 @@ export default function Chat() {
     });
 
     return () => {
-      client?.publish({
-        destination: '/app/chat/leave',
-        body: JSON.stringify({ chat_id: id, user_id: user?.id }),
-      });
+      const isLeaving = true;
+
+      if (isLeaving) {
+        client?.publish({
+          destination: '/app/chat/leave',
+          body: JSON.stringify({ chat_id: id, user_id: user?.id }),
+        });
+      }
     };
-  }, [client, id, user?.id]);
+  }, [id, user?.id, client]);
 
   useEffect(() => {
     api
@@ -46,15 +51,7 @@ export default function Chat() {
       <div className="container p-8 flex h-[92vh] flex-col gap-2">
         <div className="flex justify-between items-center flex-none">
           <h1 className="font-bold text-2xl">{chat?.name}</h1>
-          <Button
-            onPress={() =>
-              client?.publish({
-                destination: '/app/chat/leave',
-                body: JSON.stringify({ chat_id: id, user_id: user?.id }),
-              })
-            }
-            color="danger"
-          >
+          <Button onPress={() => navigate('/')} color="danger">
             Abandonar
           </Button>
         </div>

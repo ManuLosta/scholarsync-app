@@ -109,8 +109,9 @@ export default function ChatBox({ chatId }: { chatId: string }) {
               >
                 <MessageBubble
                   image={
-                    images.find((image) => image.user === message.sender.id)
-                      ?.image
+                    images.find(
+                      (image) => image.user === (message as Message).sender.id,
+                    )?.image
                   }
                   message={message}
                   isUser={message.sender.id === user?.id}

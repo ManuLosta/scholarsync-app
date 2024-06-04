@@ -7,10 +7,11 @@ import { useAuth } from '../hooks/useAuth.ts';
 import InviteToGroup from '../components/groups/InviteToGroup.tsx';
 import { LuCalendar, LuLock, LuStar } from 'react-icons/lu';
 import { useNotifications } from '../hooks/useNotifications.ts';
-import { GroupInvite, Profile } from '../types/types';
+import { Chat, GroupInvite, Profile } from '../types/types';
 import { useGroups } from '../hooks/useGroups.ts';
 import PostList from '../components/feed/PostList.tsx';
 import ChangeGroupPicture from '../components/ChangeGroupPicture.tsx';
+import ChatList from '../components/groups/ChatList.tsx';
 import CreateChat from '../components/chat/CreateChat.tsx';
 
 type Group = {
@@ -53,6 +54,7 @@ export default function Group() {
     }
   })?.notification_id;
   const { groups } = useGroups();
+  const [chats, setChats] = useState<Chat[]>([]);
 
   useEffect(() => {
     api
@@ -68,7 +70,15 @@ export default function Group() {
       })
       .catch((err) => {
         console.error('Error fetching group info: ', err);
+      });
+
+    api
+      .get(`chat/get-chats?groupId=${groupId}`)
+      .then((res) => {
+        const data = res.data;
+        setChats(data);
       })
+      .catch((err) => console.error('Error fetching chats: ', err))
       .finally(() => setLoading(false));
   }, [groupId, user?.id]);
 
@@ -149,7 +159,7 @@ export default function Group() {
               )}
             </h1>
             <p className="text-xl font-light">{group?.description}</p>
-            <MemberList users={group?.users} />
+            <MemberList users={group?.users || []} />
           </div>
         </div>
         <div className="flex gap-2">
@@ -195,7 +205,13 @@ export default function Group() {
       </div>
       {groups.some((group) => group.id == groupId) && (
         <div>
-          <h2 className="font-bold text-lg">Sesiones de estudio</h2>
+          {chats.length > 0 && (
+            <ChatList
+              chats={chats}
+              userId={user?.id || ''}
+              groupId={groupId || ''}
+            />
+          )}
           <CreateChat groupId={groupId || ''} userId={user?.id || ''} />
           <PostList
             orders={postsOrder}

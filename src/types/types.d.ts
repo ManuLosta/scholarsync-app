@@ -120,3 +120,11 @@ export type Message = {
   message: string;
   time: string;
 };
+
+export type Chat = {
+  id: string;
+  name: string;
+  groupId: string;
+  groupTitle: string;
+  members: Profile[];
+};
