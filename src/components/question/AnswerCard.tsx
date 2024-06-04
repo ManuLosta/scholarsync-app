@@ -1,7 +1,6 @@
 import { Answer } from '../../types/types';
 import { useEffect, useState } from 'react';
 import api from '../../api.ts';
-import { User } from '@nextui-org/react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import MathExtension from '@aarkue/tiptap-math-extension';
@@ -14,6 +13,7 @@ import AnswerOptions from './AnswerOptions.tsx';
 import FileDownloader from './FileDownloader.tsx';
 import { Link } from 'react-router-dom';
 import UserTooltip from '../user/UserTooltip.tsx';
+import UserPicture from '../UserPicture.tsx';
 
 type Image = {
   base64Encoding: string;
@@ -92,9 +92,13 @@ export default function AnswerCard({
       <div className="flex justify-between">
         <UserTooltip user={answer.author}>
           <Link to={`/user/${answer.author.id}`}>
-            <User
-              name={`${answer.author.firstName || ''} ${answer.author.lastName || ''}`}
-              description={`@${answer.author.username || ''}`}
+            <UserPicture
+              userId={answer.author.id}
+              propForUser={{
+                name: `${answer.author.firstName} ${answer.author.lastName}`,
+                description: `@${answer.author.username}`,
+              }}
+              hasPicture={answer.author.hasPicture}
             />
           </Link>
         </UserTooltip>

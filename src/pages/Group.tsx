@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/useAuth.ts';
 import InviteToGroup from '../components/groups/InviteToGroup.tsx';
 import { LuCalendar, LuLock, LuStar } from 'react-icons/lu';
 import { useNotifications } from '../hooks/useNotifications.ts';
-import { GroupInvite } from '../types/types';
+import { GroupInvite, Profile } from '../types/types';
 import { useGroups } from '../hooks/useGroups.ts';
 import PostList from '../components/feed/PostList.tsx';
 import ChangeGroupPicture from '../components/ChangeGroupPicture.tsx';
@@ -22,12 +22,7 @@ type Group = {
   invitations: {
     user_id: string;
   }[];
-  users: {
-    id: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-  }[];
+  users: Profile[];
 };
 
 const postsOrder = [

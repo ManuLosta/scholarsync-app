@@ -7,13 +7,15 @@ import dayjs from 'dayjs';
 export default function MessageBubble({
   message,
   isUser,
+  image,
 }: {
   message: Message;
   isUser: boolean;
+  image: string | undefined;
 }) {
   return (
     <>
-      {!isUser && <Avatar />}
+      {!isUser && <Avatar src={image} name={message.sender.firstName} />}
       <div className="max-w-[75%]">
         {!isUser && (
           <UserTooltip user={message.sender}>

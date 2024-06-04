@@ -1,6 +1,4 @@
 import {
-  Avatar,
-  Chip,
   Modal,
   ModalBody,
   ModalContent,
@@ -10,19 +8,10 @@ import {
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { LuUsers } from 'react-icons/lu';
+import UserPicture from '../UserPicture.tsx';
+import { Profile } from '../../types/types';
 
-type propsType = {
-  users:
-    | {
-        id: string;
-        username: string;
-        firstName: string;
-        lastName: string;
-      }[]
-    | undefined;
-};
-
-export default function MemberList({ users }: propsType) {
+export default function MemberList({ users }: { users: Profile[] }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { user } = useAuth();
   const myId = user?.id;
@@ -52,26 +41,14 @@ export default function MemberList({ users }: propsType) {
                   to={`/user/${user.id == myId ? 'me' : user.id}`}
                   key={user.id}
                 >
-                  <div className="flex gap-3 items-center">
-                    <Avatar name={user.firstName} />
-                    <div>
-                      <div className="font-bold text-lg">
-                        {user.firstName} {user.lastName}
-                        <span>
-                          {myId == user.id && (
-                            <Chip
-                              className="ml-2"
-                              variant="flat"
-                              color="primary"
-                            >
-                              Tú
-                            </Chip>
-                          )}
-                        </span>
-                      </div>
-                      <p className="font-light">@{user.username}</p>
-                    </div>
-                  </div>
+                  <UserPicture
+                    userId={user.id}
+                    propForUser={{
+                      name: `${user.firstName} ${user.lastName}`,
+                      description: `@${user.username}`,
+                    }}
+                    hasPicture={user.hasPicture}
+                  />
                 </Link>
               ))}
             </div>

@@ -55,7 +55,7 @@ export default function Chat() {
             }
             color="danger"
           >
-            Leave
+            Abandonar
           </Button>
         </div>
         <div className="flex-grow overflow-hidden">
