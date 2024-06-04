@@ -35,7 +35,6 @@ export default function GroupList() {
         .then((res) => {
           const data = res.data;
           setGroups(data);
-          console.log(res.data);
         })
         .catch((err) => {
           console.error('Error fetching groups', err);

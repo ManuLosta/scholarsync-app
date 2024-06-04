@@ -12,8 +12,15 @@ type ImageTable = {
   image: string;
 };
 
+interface SystemMessage {
+  user_qty: number;
+  username: string;
+  has_joined: boolean;
+  is_system: boolean;
+}
+
 export default function ChatBox({ chatId }: { chatId: string }) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<(Message | SystemMessage)[]>([]);
   const [message, setMessage] = useState('' as string);
   const [images, setImages] = useState<ImageTable[]>([]);
   const { user } = useAuth();
@@ -33,6 +40,13 @@ export default function ChatBox({ chatId }: { chatId: string }) {
     ) {
       fetchImage(newMessage.sender.id);
     }
+  });
+
+  useSubscription(`/chat/${chatId}/info`, (message) => {
+    console.log('info', message);
+    const newMessage = JSON.parse(message.body);
+    setMessages([...messages, { is_system: true, ...newMessage }]);
+    console.log(newMessage);
   });
 
   const fetchImage = (userId: string) => {
@@ -76,20 +90,35 @@ export default function ChatBox({ chatId }: { chatId: string }) {
   return (
     <div className="flex flex-col h-full gap-2">
       <div className="flex flex-col gap-4 overflow-y-auto flex-grow overflow-x-hidden pe-10 mt-4">
-        {messages.map((message) => (
-          <div
-            key={`${message.sender.id}${message.time}`}
-            className={`flex ${message.sender.id === user?.id ? 'flex-row-reverse' : 'flex-row'} gap-2 items-end`}
-          >
-            <MessageBubble
-              image={
-                images.find((image) => image.user === message.sender.id)?.image
-              }
-              message={message}
-              isUser={message.sender.id === user?.id}
-            />
-          </div>
-        ))}
+        {messages.map((message, index) => {
+          if ('is_system' in message && message.is_system) {
+            return (
+              <div className="w-full text-center" key={index}>
+                <p>
+                  Se ha {message.has_joined ? 'unido' : 'ido'} el usuario @
+                  {message.username}
+                </p>
+              </div>
+            );
+          } else {
+            message = message as Message;
+            return (
+              <div
+                key={`${message.sender.id}${message.time}`}
+                className={`flex ${message.sender.id === user?.id ? 'flex-row-reverse' : 'flex-row'} gap-2 items-end`}
+              >
+                <MessageBubble
+                  image={
+                    images.find((image) => image.user === message.sender.id)
+                      ?.image
+                  }
+                  message={message}
+                  isUser={message.sender.id === user?.id}
+                />
+              </div>
+            );
+          }
+        })}
         <div ref={lastMessageRef}></div>
       </div>
       <form className="flex gap-2" onSubmit={handleSubmit}>

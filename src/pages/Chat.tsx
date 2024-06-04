@@ -38,7 +38,7 @@ export default function Chat() {
         const data = res.data;
         setChat(data);
       })
-      .then((err) => console.error(err));
+      .catch((err) => console.error(err));
   }, [id]);
 
   return (
