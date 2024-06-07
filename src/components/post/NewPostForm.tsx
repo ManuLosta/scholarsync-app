@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import ConfirmModal from './ConfirmModal.tsx';
 import { useCredit } from '../../hooks/useCredit.ts';
 import Group from '../../pages/Group.tsx';
-import GroupUserPicture from '../GroupPicture.tsx';
+import GroupUserPicture from '../groups/GroupPicture.tsx';
 
 type Group = {
   id: string;

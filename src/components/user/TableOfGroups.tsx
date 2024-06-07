@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckboxGroup } from '@nextui-org/react';
-import CustomCheckbox from './CustomCheckBox';
+import CustomCheckbox from './CustomCheckBox.tsx';
 
 interface Group {
   createdBy: string;

@@ -4,11 +4,11 @@ import api from '../api.ts';
 import { Avatar, Chip, CircularProgress } from '@nextui-org/react';
 
 import { useAuth } from '../hooks/useAuth.ts';
-import FriendStatusButton from '../components/FriendStatusButton.tsx';
+import FriendStatusButton from '../components/user/FriendStatusButton.tsx';
 
 import { Profile } from '../types/types';
-import AddToGroupButton from '../components/AddToGroupButton.tsx';
-import ChangeProfilePicture from '../components/ChangeProfilePicture.tsx';
+import AddToGroupButton from '../components/user/AddToGroupButton.tsx';
+import ChangeProfilePicture from '../components/user/ChangeProfilePicture.tsx';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -41,7 +41,7 @@ export default function UserProfile() {
       <div className="flex gap-8 align-center">
         <Avatar
           src={image || ''}
-          className="w-20 h-20 text-large"
+          className="w-[90px] h-[90px] text-large"
           alt="Profile picture"
         />
 

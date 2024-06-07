@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import api from '../api.ts';
+import api from '../../api.ts';
 import { Button, CircularProgress } from '@nextui-org/react';
 
-import { useNotifications } from './../hooks/useNotifications.ts';
+import { useNotifications } from '../../hooks/useNotifications.ts';
 
 export default function FriendStatusButton({
   userId,

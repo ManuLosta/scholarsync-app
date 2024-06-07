@@ -1,9 +1,9 @@
-import api from '../api';
+import api from '../../api.ts';
 
 import { Button } from '@nextui-org/react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth.ts';
 import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext.tsx';
 
 interface Props {
   groupId: string | undefined;

@@ -11,7 +11,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import api from '../../api.ts';
 import Carousel from '../question/Carousel.tsx';
 import UserTooltip from '../user/UserTooltip.tsx';
-import UserPicture from '../UserPicture.tsx';
+import UserPicture from '../user/UserPicture.tsx';
 
 type Image = {
   base64Encoding: string;

@@ -8,10 +8,10 @@ import {
   Button,
   useDisclosure,
 } from '@nextui-org/react';
-import TableOfGroups from './TableOfGroups';
-import api from '../api';
-import { useGroups } from '../hooks/useGroups';
-import { useAuth } from '../hooks/useAuth';
+import TableOfGroups from './TableOfGroups.tsx';
+import api from '../../api.ts';
+import { useGroups } from '../../hooks/useGroups.ts';
+import { useAuth } from '../../hooks/useAuth.ts';
 
 interface Invitation {
   group_id: string;

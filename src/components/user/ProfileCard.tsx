@@ -1,7 +1,7 @@
 import { Level, Profile } from '../../types/types';
 import { Chip, Progress } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
-import UserPicture from '../UserPicture';
+import UserPicture from './UserPicture.tsx';
 
 interface LevelStyle {
   color?:

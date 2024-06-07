@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
-import { Message } from '../../types/types';
+import { FileType, Message } from '../../types/types';
 import MessageBubble from './MessageBubble.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { Button, Input } from '@nextui-org/react';
-import { LuSend } from 'react-icons/lu';
+import { Button, Input, Tooltip } from '@nextui-org/react';
+import { LuFile, LuSend } from 'react-icons/lu';
 import api from '../../api.ts';
+import FileDownloader from '../question/FileDownloader.tsx';
 
 type ImageTable = {
   user: string;
@@ -20,12 +21,15 @@ interface SystemMessage {
 }
 
 export default function ChatBox({ chatId }: { chatId: string }) {
-  const [messages, setMessages] = useState<(Message | SystemMessage)[]>([]);
+  const [messages, setMessages] = useState<
+    (Message | SystemMessage | FileType)[]
+  >([]);
   const [message, setMessage] = useState('' as string);
   const [images, setImages] = useState<ImageTable[]>([]);
   const { user } = useAuth();
   const client = useStompClient();
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setMessages([]);
@@ -33,7 +37,7 @@ export default function ChatBox({ chatId }: { chatId: string }) {
 
   useSubscription(`/chat/${chatId}`, (message) => {
     const newMessage: Message = JSON.parse(message.body);
-    setMessages([...messages, newMessage]);
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     if (
       newMessage.sender.hasPicture &&
       !images.some((image) => image.user === newMessage.sender.id)
@@ -42,11 +46,20 @@ export default function ChatBox({ chatId }: { chatId: string }) {
     }
   });
 
+  useSubscription(`/chat/${chatId}/files`, (message) => {
+    const file: FileType = JSON.parse(message.body);
+    console.log('Received file: ', file);
+    setMessages((prevMessages) => [...prevMessages, file]);
+  });
+
   useSubscription(`/chat/${chatId}/info`, (message) => {
     console.log('info', message);
     const newMessage = JSON.parse(message.body);
-    setMessages([...messages, { is_system: true, ...newMessage }]);
     console.log(newMessage);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { is_system: true, ...newMessage },
+    ]);
   });
 
   const fetchImage = (userId: string) => {
@@ -73,13 +86,15 @@ export default function ChatBox({ chatId }: { chatId: string }) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (message != '') {
+    if (message !== '') {
       client?.publish({
         destination: '/app/chat/send-message',
         body: JSON.stringify({ message, sender_id: user?.id, chat_id: chatId }),
       });
       setMessage('');
     }
+
+    if (inputRef.current) inputRef.current.select();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,9 +102,27 @@ export default function ChatBox({ chatId }: { chatId: string }) {
     setMessage(e.target.value);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('userId', user?.id || '');
+      formData.append('chatId', chatId);
+
+      api
+        .post('/chat/upload-file', formData)
+        .then(() => {
+          console.log('File uploaded');
+        })
+        .catch((err) => console.error('Error uploading file: ', err));
+    }
+  };
+
   return (
     <div className="flex flex-col h-full gap-2">
-      <div className="flex flex-col gap-4 overflow-y-auto flex-grow overflow-x-hidden pe-10 mt-4">
+      <div className="flex flex-col gap-4 overflow-y-auto flex-grow pe-10 mt-4">
         {messages.map((message, index) => {
           if ('is_system' in message && message.is_system) {
             return (
@@ -100,11 +133,18 @@ export default function ChatBox({ chatId }: { chatId: string }) {
                 </p>
               </div>
             );
+          } else if ('file_type' in message) {
+            message = message as FileType;
+            return (
+              <div key={index}>
+                <FileDownloader files={[message]} />
+              </div>
+            );
           } else {
             message = message as Message;
             return (
               <div
-                key={`${message.sender.id}${message.time}`}
+                key={index}
                 className={`flex ${message.sender.id === user?.id ? 'flex-row-reverse' : 'flex-row'} gap-2 items-end`}
               >
                 <MessageBubble
@@ -123,10 +163,26 @@ export default function ChatBox({ chatId }: { chatId: string }) {
         <div ref={lastMessageRef}></div>
       </div>
       <form className="flex gap-2" onSubmit={handleSubmit}>
-        <Input value={message} onChange={handleChange} autoComplete="off" />
+        <Input
+          ref={inputRef}
+          value={message}
+          onChange={handleChange}
+          autoComplete="off"
+        />
+        <Tooltip content="Enviar archivo" placement="top">
+          <Button isIconOnly className="bg-background hover:bg-foreground-200">
+            <LuFile />
+            <input
+              type="file"
+              className="w-full h-full absolute opacity-0 hover:cursor-pointer"
+              title=""
+              onChange={handleFileChange}
+            />
+          </Button>
+        </Tooltip>
         <Button
           type="submit"
-          className="rounded-full focus:outline-none"
+          className="rounded-full outline-none"
           color="primary"
           isIconOnly
         >

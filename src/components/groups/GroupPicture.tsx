@@ -1,7 +1,7 @@
 import { User, UserProps } from '@nextui-org/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import useIntersectionObserver from '../hooks/useIntersectionObserver';
-import api from '../api';
+import useIntersectionObserver from '../../hooks/useIntersectionObserver.ts';
+import api from '../../api.ts';
 
 interface GroupPictureProps {
   groupId: string;

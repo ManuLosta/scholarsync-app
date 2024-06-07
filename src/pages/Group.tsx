@@ -10,7 +10,7 @@ import { useNotifications } from '../hooks/useNotifications.ts';
 import { Chat, GroupInvite, Profile } from '../types/types';
 import { useGroups } from '../hooks/useGroups.ts';
 import PostList from '../components/feed/PostList.tsx';
-import ChangeGroupPicture from '../components/ChangeGroupPicture.tsx';
+import ChangeGroupPicture from '../components/groups/ChangeGroupPicture.tsx';
 import ChatList from '../components/groups/ChatList.tsx';
 import CreateChat from '../components/chat/CreateChat.tsx';
 
@@ -205,13 +205,7 @@ export default function Group() {
       </div>
       {groups.some((group) => group.id == groupId) && (
         <div>
-          {chats.length > 0 && (
-            <ChatList
-              chats={chats}
-              userId={user?.id || ''}
-              groupId={groupId || ''}
-            />
-          )}
+          {chats.length > 0 && <ChatList chats={chats} />}
           <CreateChat groupId={groupId || ''} userId={user?.id || ''} />
           <PostList
             orders={postsOrder}

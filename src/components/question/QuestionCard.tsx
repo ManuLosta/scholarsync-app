@@ -15,7 +15,7 @@ import { useAuth } from '../../hooks/useAuth.ts';
 import FileDownloader from './FileDownloader.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 import UserTooltip from '../user/UserTooltip.tsx';
-import UserPicture from '../UserPicture.tsx';
+import UserPicture from '../user/UserPicture.tsx';
 
 type Image = {
   base64Encoding: string;

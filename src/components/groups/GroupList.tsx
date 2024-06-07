@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import CreateGroupModal from './CreateGroupModal.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
 import GroupListSkeleton from './GroupListSkeleton.tsx';
-import GroupUserPicture from '../GroupPicture.tsx';
+import GroupUserPicture from './GroupPicture.tsx';
 import { UserProps } from '@nextui-org/react';
 
 type Group = {

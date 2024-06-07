@@ -5,14 +5,10 @@ import { useAuth } from '../hooks/useAuth.ts';
 import { Button } from '@nextui-org/react';
 import api from '../api.ts';
 import ChatBox from '../components/chat/ChatBox.tsx';
-
-type Chat = {
-  id: string;
-  name: string;
-};
+import { Chat as ChatType } from '../types/types';
 
 export default function Chat() {
-  const [chat, setChat] = useState<Chat | null>(null); // [1
+  const [chat, setChat] = useState<ChatType | null>(null); // [1
   const { id } = useParams();
   const { user } = useAuth();
   const client = useStompClient();
@@ -48,14 +44,14 @@ export default function Chat() {
 
   return (
     chat && (
-      <div className="container p-8 flex h-[92vh] flex-col gap-2">
+      <div className="container p-8 flex h-[93vh] flex-col gap-2">
         <div className="flex justify-between items-center flex-none">
           <h1 className="font-bold text-2xl">{chat?.name}</h1>
           <Button onPress={() => navigate('/')} color="danger">
             Abandonar
           </Button>
         </div>
-        <div className="flex-grow overflow-hidden">
+        <div className="flex-grow overflow-auto p-2">
           <ChatBox chatId={chat?.id || ''} />
         </div>
       </div>

@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { LuUsers } from 'react-icons/lu';
-import UserPicture from '../UserPicture.tsx';
+import UserPicture from '../user/UserPicture.tsx';
 import { Profile } from '../../types/types';
 
 export default function MemberList({ users }: { users: Profile[] }) {

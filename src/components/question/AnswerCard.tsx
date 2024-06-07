@@ -13,7 +13,7 @@ import AnswerOptions from './AnswerOptions.tsx';
 import FileDownloader from './FileDownloader.tsx';
 import { Link } from 'react-router-dom';
 import UserTooltip from '../user/UserTooltip.tsx';
-import UserPicture from '../UserPicture.tsx';
+import UserPicture from '../user/UserPicture.tsx';
 
 type Image = {
   base64Encoding: string;
