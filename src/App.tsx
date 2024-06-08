@@ -12,6 +12,7 @@ import Question from './pages/Question.tsx';
 import { ThemeProvider } from 'next-themes';
 import EditQuestion from './pages/EditQuestion.tsx';
 import Chat from './pages/Chat.tsx';
+import Planner from './pages/Planner.tsx';
 
 export default function App() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/question/:id" element={<Question />} />
               <Route path="/question/:id/edit" element={<EditQuestion />} />
               <Route path="/chat/:id" element={<Chat />} />
+              <Route path="/planner" element={<Planner />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
