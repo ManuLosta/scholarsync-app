@@ -18,5 +18,5 @@ export default function ChatImage({ image }: { image: FileType }) {
       .catch((error) => console.error('Error fetching image: ', error));
   }, []);
 
-  return <Image className="my-3 border-foreground-200 border" src={file} />;
+  return <Image className="border-foreground-200 border" src={file} />;
 }

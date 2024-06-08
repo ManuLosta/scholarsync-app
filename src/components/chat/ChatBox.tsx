@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
-import { FileType, Message } from '../../types/types';
+import { FileMessage, Message } from '../../types/types';
 import MessageBubble from './MessageBubble.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { Button, Input, Tooltip } from '@nextui-org/react';
 import { LuFile, LuSend } from 'react-icons/lu';
 import api from '../../api.ts';
-import FileDownloader from '../question/FileDownloader.tsx';
-import ChatImage from './ChatImage.tsx';
 
 type ImageTable = {
   user: string;
@@ -29,7 +27,7 @@ export default function ChatBox({
   onUserJoin: () => void;
 }) {
   const [messages, setMessages] = useState<
-    (Message | SystemMessage | FileType)[]
+    (Message | SystemMessage | FileMessage)[]
   >([]);
   const [message, setMessage] = useState('' as string);
   const [images, setImages] = useState<ImageTable[]>([]);
@@ -54,7 +52,7 @@ export default function ChatBox({
   });
 
   useSubscription(`/chat/${chatId}/files`, (message) => {
-    const file: FileType = JSON.parse(message.body);
+    const file: FileMessage = JSON.parse(message.body);
     console.log('Received file: ', file);
     setMessages((prevMessages) => [...prevMessages, file]);
   });
@@ -141,18 +139,8 @@ export default function ChatBox({
                 </p>
               </div>
             );
-          } else if ('file_type' in message) {
-            message = message as FileType;
-            if (message.file_type.includes('image')) {
-              return <ChatImage image={message} key={index} />;
-            }
-            return (
-              <div key={index}>
-                <FileDownloader files={[message]} />
-              </div>
-            );
           } else {
-            message = message as Message;
+            message = message as Message | FileMessage;
             return (
               <div
                 key={index}
@@ -161,7 +149,9 @@ export default function ChatBox({
                 <MessageBubble
                   image={
                     images.find(
-                      (image) => image.user === (message as Message).sender.id,
+                      (image) =>
+                        image.user ===
+                        (message as Message | FileMessage).sender.id,
                     )?.image
                   }
                   message={message}

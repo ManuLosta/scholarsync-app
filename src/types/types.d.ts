@@ -128,3 +128,9 @@ export type Chat = {
   groupTitle: string;
   members: Profile[];
 };
+
+interface FileMessage {
+  file: FileType;
+  sender: Profile;
+  time: string;
+}
