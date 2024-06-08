@@ -49,6 +49,7 @@ export default function ChatBox({
     ) {
       fetchImage(newMessage.sender.id);
     }
+    onUserJoin();
   });
 
   useSubscription(`/chat/${chatId}/files`, (message) => {

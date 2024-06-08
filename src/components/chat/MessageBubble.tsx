@@ -45,7 +45,7 @@ export default function MessageBubble({
     if ('file' in message) {
       return 'text-foreground';
     } else {
-      return isUser ? 'text-foreground' : 'text-background';
+      return isUser ? 'text-foreground' : 'text-white';
     }
   };
 

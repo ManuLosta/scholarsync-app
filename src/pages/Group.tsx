@@ -8,7 +8,6 @@ import InviteToGroup from '../components/groups/InviteToGroup.tsx';
 import { LuCalendar, LuLock, LuStar } from 'react-icons/lu';
 import { useNotifications } from '../hooks/useNotifications.ts';
 import { Chat, GroupInvite, Profile } from '../types/types';
-import { useGroups } from '../hooks/useGroups.ts';
 import PostList from '../components/feed/PostList.tsx';
 import ChangeGroupPicture from '../components/groups/ChangeGroupPicture.tsx';
 import ChatList from '../components/groups/ChatList.tsx';
@@ -42,7 +41,6 @@ const postsOrder = [
 export default function Group() {
   const { groupId } = useParams();
   const [group, setGroup] = useState<Group | null>(null);
-  const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState<boolean>(false);
   const { user } = useAuth();
   const [image, setImage] = useState<string>('');
@@ -53,7 +51,6 @@ export default function Group() {
       return (notification as GroupInvite).group_id == groupId;
     }
   })?.notification_id;
-  const { groups } = useGroups();
   const [chats, setChats] = useState<Chat[]>([]);
 
   useEffect(() => {
@@ -78,8 +75,7 @@ export default function Group() {
         const data = res.data;
         setChats(data);
       })
-      .catch((err) => console.error('Error fetching chats: ', err))
-      .finally(() => setLoading(false));
+      .catch((err) => console.error('Error fetching chats: ', err));
   }, [groupId, user?.id]);
 
   const handleLeave = () => {
@@ -128,7 +124,7 @@ export default function Group() {
     getImg();
   }, [getImg]);
 
-  return loading ? (
+  return !group ? (
     <div className="container mt-8 px-8 mx-auto">
       <div className="flex gap-4 items-center">
         <Skeleton className="w-[80px] h-[80px] rounded-full" />
@@ -203,7 +199,7 @@ export default function Group() {
           )}
         </div>
       </div>
-      {groups.some((group) => group.id == groupId) && (
+      {isMember && (
         <div>
           {chats.length > 0 && <ChatList chats={chats} />}
           <CreateChat groupId={groupId || ''} userId={user?.id || ''} />
