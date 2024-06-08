@@ -7,6 +7,7 @@ import { Button, Input, Tooltip } from '@nextui-org/react';
 import { LuFile, LuSend } from 'react-icons/lu';
 import api from '../../api.ts';
 import FileDownloader from '../question/FileDownloader.tsx';
+import ChatImage from './ChatImage.tsx';
 
 type ImageTable = {
   user: string;
@@ -20,7 +21,13 @@ interface SystemMessage {
   is_system: boolean;
 }
 
-export default function ChatBox({ chatId }: { chatId: string }) {
+export default function ChatBox({
+  chatId,
+  onUserJoin,
+}: {
+  chatId: string;
+  onUserJoin: () => void;
+}) {
   const [messages, setMessages] = useState<
     (Message | SystemMessage | FileType)[]
   >([]);
@@ -55,6 +62,7 @@ export default function ChatBox({ chatId }: { chatId: string }) {
   useSubscription(`/chat/${chatId}/info`, (message) => {
     console.log('info', message);
     const newMessage = JSON.parse(message.body);
+    onUserJoin();
     console.log(newMessage);
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -135,6 +143,9 @@ export default function ChatBox({ chatId }: { chatId: string }) {
             );
           } else if ('file_type' in message) {
             message = message as FileType;
+            if (message.file_type.includes('image')) {
+              return <ChatImage image={message} key={index} />;
+            }
             return (
               <div key={index}>
                 <FileDownloader files={[message]} />
