@@ -2,7 +2,6 @@ import {
   Badge,
   Button,
   Image,
-  Input,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -10,11 +9,12 @@ import {
   Tooltip,
 } from '@nextui-org/react';
 import SSIcon from '../../assets/scholarsync.svg';
-import { LuBell, LuSearch } from 'react-icons/lu';
+import { LuBell } from 'react-icons/lu';
 import UserDropdown from '../user/UserDropdown.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
 import { RiCopperCoinFill } from 'react-icons/ri';
 import { useCredit } from '../../hooks/useCredit.ts';
+import SerchItem from '../search/SerchItem.tsx';
 
 export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
   const { notifications } = useNotifications();
@@ -27,10 +27,7 @@ export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
         <h1 className="font-bold text-2xl">ScholarSync</h1>
       </NavbarBrand>
       <NavbarContent className="min-w-[400px]" justify="center">
-        <Input
-          startContent={<LuSearch className="text-foreground-700" />}
-          placeholder="Buscar en ScholarSync"
-        />
+        <SerchItem></SerchItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
