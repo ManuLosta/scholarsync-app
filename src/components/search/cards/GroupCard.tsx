@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardBody, Divider } from '@nextui-org/react';
+import { Card, CardHeader, CardBody, Divider, Chip } from '@nextui-org/react';
 import { Group } from '../../../types/types';
 import GroupUserPicture from '../../groups/GroupPicture';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,8 @@ type GroupCardProps = {
 };
 
 const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
-  return group ? (
+  console.log(group);
+  return group != undefined && group != null ? (
     <Link to={`/group/${group.id}`}>
       <Card className="max-w-[400px]">
         <CardHeader className="flex gap-3">
@@ -25,8 +26,9 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
         </CardHeader>
         <Divider />
         <CardBody>
-          <p>Users: {group.users.length}</p>
-          <p>{group.isPrivate ? 'Privado ' : 'Publico'}</p>
+          <Chip>
+            <p>{group.isPrivate ? 'Privado ' : 'Publico'}</p>
+          </Chip>
         </CardBody>
         <Divider />
       </Card>

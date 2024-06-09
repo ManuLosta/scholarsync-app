@@ -14,7 +14,7 @@ import UserDropdown from '../user/UserDropdown.tsx';
 import { useNotifications } from '../../hooks/useNotifications.ts';
 import { RiCopperCoinFill } from 'react-icons/ri';
 import { useCredit } from '../../hooks/useCredit.ts';
-import SerchItem from '../search/SerchItem.tsx';
+import SerchItem from '../search/SearchPage.tsx';
 
 export default function Appbar({ handleOpen }: { handleOpen: () => void }) {
   const { notifications } = useNotifications();

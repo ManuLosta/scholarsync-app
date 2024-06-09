@@ -8,7 +8,7 @@ type UserCardProps = {
 };
 
 const UserCard: React.FC<UserCardProps> = ({ profile }) => {
-  return profile ? (
+  return profile != undefined && profile != null ? (
     <div>
       <Link href={`/user/${profile.id}`}>
         <Card className="min-w-[300px] ">

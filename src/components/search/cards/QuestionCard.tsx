@@ -8,7 +8,7 @@ type QuestionCardProps = {
 };
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
-  return (
+  return question != null && question != undefined ? (
     <Link href={`/question/${question.id}`}>
       <Card className="min-w-[300px]">
         <CardHeader className="flex gap-3">
@@ -26,11 +26,11 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
         </CardHeader>
         <Divider />
         <CardBody>
-          <p>{question.content}</p>
+          {question.content.substring(3, question.content.length - 4)}
         </CardBody>
       </Card>
     </Link>
-  );
+  ) : undefined;
 };
 
 export default QuestionCard;
