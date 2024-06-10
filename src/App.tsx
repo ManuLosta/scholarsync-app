@@ -12,6 +12,7 @@ import Question from './pages/Question.tsx';
 import { ThemeProvider } from 'next-themes';
 import EditQuestion from './pages/EditQuestion.tsx';
 import Chat from './pages/Chat.tsx';
+import SearchPage from './components/search/SearchPage.tsx';
 
 export default function App() {
   const navigate = useNavigate();
@@ -30,6 +31,10 @@ export default function App() {
               <Route path="/question/:id" element={<Question />} />
               <Route path="/question/:id/edit" element={<EditQuestion />} />
               <Route path="/chat/:id" element={<Chat />} />
+              <Route
+                path="/chat/:id"
+                element={<SearchPage searchString={''} />}
+              />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
