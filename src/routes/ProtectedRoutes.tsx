@@ -7,6 +7,7 @@ import { CreditProvider } from '../context/CreditContext.tsx';
 import { GroupProvider } from '../context/GroupContext.tsx';
 import { FeedProvider } from '../context/FeedContext.tsx';
 import { StompSessionProvider } from 'react-stomp-hooks';
+import EventModal from '../components/planner/EventModal.tsx';
 
 export default function ProtectedRoutes() {
   const auth = useAuth();
@@ -24,6 +25,7 @@ export default function ProtectedRoutes() {
               <CreditProvider>
                 <FeedProvider>
                   <Layout>
+                    <EventModal />
                     <Outlet />
                   </Layout>
                 </FeedProvider>

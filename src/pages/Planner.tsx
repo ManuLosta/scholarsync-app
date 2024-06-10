@@ -1,48 +1,59 @@
-import { Calendar, dayjsLocalizer } from 'react-big-calendar';
+import { Calendar, Views, dayjsLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from '../api.ts';
 import { useAuth } from '../hooks/useAuth.ts';
-import { Button } from '@nextui-org/react';
+import CreateEvent from '../components/planner/CreateEvent.tsx';
 
 const localizer = dayjsLocalizer(dayjs);
 
 export default function Planner() {
   const { user } = useAuth();
+  const [events, setEvents] = useState();
 
   useEffect(() => {
-    api.get(`events?userId=${user?.id}`).then((res) => {
-      console.log(res.data);
-    });
+    api
+      .get(`events?userId=${user?.id}`)
+      .then((res) => {
+        const data = res.data;
+        const newEvents = data.map((event) => {
+          const startDate = new Date(event.start);
+          const endDate = new Date(event.end);
+
+          const localStartDate = new Date(
+            startDate.getTime() - startDate.getTimezoneOffset() * 60 * 1000,
+          );
+          const localEndDate = new Date(
+            endDate.getTime() - endDate.getTimezoneOffset() * 60 * 1000,
+          );
+
+          return {
+            title: event.title,
+            start: localStartDate,
+            end: localEndDate,
+          };
+        });
+        console.log(newEvents);
+        setEvents(newEvents);
+      })
+      .catch((err) => console.error('Error fetching events: ', err));
   }, []);
 
-  const handleCreate = () => {
-    const data = {
-      userId: user?.id,
-      groupId: '52d25a0a-9903-453a-aead-fc4742b3d35f',
-      title: 'Nuevo Evento',
-      start: new Date(),
-      end: new Date(),
-    };
-
-    api
-      .post('/events/create', data)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => console.error(err));
-  };
+  const onSelectSlot = useCallback((range) => {
+    console.log(range);
+  }, []);
 
   return (
     <div className="container p-8">
-      <Button onPress={handleCreate}>Crear event</Button>
+      <CreateEvent />
       <Calendar
+        events={events}
+        defaultView={Views.WEEK}
+        onSelectSlot={onSelectSlot}
         localizer={localizer}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 800 }}
+        style={{ height: 700 }}
+        selectable
       />
     </div>
   );

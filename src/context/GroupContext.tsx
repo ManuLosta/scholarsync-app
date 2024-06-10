@@ -1,7 +1,15 @@
 import { createContext, useEffect, useState } from 'react';
-import { Group } from '../types/types';
 import api from '../api';
 import { useAuth } from '../hooks/useAuth';
+
+type Group = {
+  id: string;
+  title: string;
+  description: string;
+  isPrivate: boolean;
+  createdBy: string;
+  hasPicture: boolean;
+};
 
 interface groupContextType {
   groups: Group[];

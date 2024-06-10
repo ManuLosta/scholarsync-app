@@ -6,33 +6,29 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@nextui-org/react';
-import NewChatForm from './NewChatForm.tsx';
+import { LuPlus } from 'react-icons/lu';
+import EventForm from './EventForm';
 
-export default function CreateChat({
-  groupId,
-  userId,
-}: {
-  groupId: string;
-  userId: string;
-}) {
+export default function CreateEvent() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <>
-      <Button className="my-3" onPress={onOpen}>
-        Crear sessión en vivo
+      <Button
+        color="primary"
+        className="my-3"
+        onPress={onOpen}
+        startContent={<LuPlus />}
+      >
+        Crear evento
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Crear nueva sesión</ModalHeader>
+              <ModalHeader>Crear evento nuevo</ModalHeader>
               <ModalBody>
-                <NewChatForm
-                  groupId={groupId}
-                  userId={userId}
-                  onClose={onClose}
-                />
+                <EventForm onClose={onClose} />
               </ModalBody>
             </>
           )}

@@ -40,7 +40,7 @@ const ChangeProfilePicture: React.FC<Props> = ({ profile, setImage }) => {
   };
 
   const getImg = useCallback(async () => {
-    if (!profile) return;
+    if (!profile || !profile.hasPicture) return;
 
     try {
       const response = await api.get(`/users/get-profile-picture`, {
@@ -63,7 +63,7 @@ const ChangeProfilePicture: React.FC<Props> = ({ profile, setImage }) => {
   return (
     <>
       {currentId === profile?.id && (
-        <div className="className='hover:cursor-pointer'">
+        <div className="hover:cursor-pointer">
           <Button
             color="primary"
             variant="bordered"
