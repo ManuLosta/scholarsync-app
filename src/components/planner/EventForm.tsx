@@ -24,13 +24,21 @@ import { useAuth } from '../../hooks/useAuth';
 const formSchema = z
   .object({
     title: z.string(),
-    date: z.custom<CalendarDate>(),
-    start: z.custom<Time>(),
-    end: z.custom<Time>(),
+    date: z.custom<CalendarDate>((value) => value instanceof CalendarDate, {
+      message: 'Valor requerido',
+    }),
+    start: z.custom<Time>((value) => value instanceof Time, {
+      message: 'Valor requerido',
+    }),
+    end: z.custom<Time>((value) => value instanceof Time, {
+      message: 'Valor requerido',
+    }),
     groupId: z.string(),
   })
   .refine(
     (data) => {
+      if (!data.date) return;
+
       const startDateTime = new CalendarDateTime(
         data.date.year,
         data.date.month,
@@ -52,7 +60,7 @@ const formSchema = z
       return endDateTime.compare(startDateTime) > 0;
     },
     {
-      message: 'End time must be after start time',
+      message: 'El tiempo de fin debe ser después que el tiempo de inicio.',
       path: ['end'],
     },
   );
@@ -62,10 +70,13 @@ type InputType = z.infer<typeof formSchema>;
 export default function EventForm({ onClose }: { onClose: () => void }) {
   const { groups } = useGroups();
   const { user } = useAuth();
-  const { handleSubmit, control } = useForm<InputType>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<InputType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
       start: now(getLocalTimeZone()),
     },
   });
@@ -107,7 +118,13 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
         name="title"
         control={control}
         render={({ field }) => (
-          <Input {...field} label="Título del evento" type="text" />
+          <Input
+            {...field}
+            label="Título del evento"
+            type="text"
+            errorMessage={errors?.title?.message}
+            isInvalid={!!errors.title}
+          />
         )}
       />
       <Controller
@@ -123,6 +140,8 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
             className="mb-2"
             placeholder="Elige un grupo"
             labelPlacement="outside"
+            errorMessage={errors?.groupId?.message}
+            isInvalid={!!errors.groupId}
             aria-label="Select group"
             items={groups}
             renderValue={(items) => {
@@ -163,7 +182,13 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
         name="date"
         control={control}
         render={({ field: { onChange } }) => (
-          <DatePicker onChange={onChange} label="Fecha" hideTimeZone={true} />
+          <DatePicker
+            errorMessage={errors?.date?.message}
+            isInvalid={!!errors.date}
+            onChange={onChange}
+            label="Fecha"
+            hideTimeZone={true}
+          />
         )}
       />
       <div className="flex gap-2">
@@ -174,8 +199,10 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
             <TimeInput
               onChange={onChange}
               label="Inicio"
-              defaultValue={now(getLocalTimeZone())}
+              errorMessage={errors?.start?.message}
+              isInvalid={!!errors.start}
               hideTimeZone={true}
+              granularity="minute"
             />
           )}
         />
@@ -183,7 +210,13 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
           name="end"
           control={control}
           render={({ field: { onChange } }) => (
-            <TimeInput onChange={onChange} label="Fin" granularity="minute" />
+            <TimeInput
+              onChange={onChange}
+              label="Fin"
+              errorMessage={errors?.end?.message}
+              isInvalid={!!errors.end}
+              granularity="minute"
+            />
           )}
         />
       </div>
