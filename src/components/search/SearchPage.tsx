@@ -14,6 +14,7 @@ import { Group, Profile, Question } from '../../types/types';
 import CustomTabs from './CustomTabs';
 import SearchResult from './SearchResults';
 import api from '../../api';
+import useDebounce from '../../hooks/useDebounce';
 
 export default function SearchPage() {
   const [groupResult, setGroupResult] = useState<Group[]>([]);
@@ -21,21 +22,22 @@ export default function SearchPage() {
   const [questionResult, setQuestionResult] = useState<Question[]>([]);
   const [thingToSearch, setThingToSearch] = useState<string>('');
   const [categoryForSearch, setCategoryForSearch] = useState<string>('user');
+  const debouncedSearchTerm = useDebounce<string>(thingToSearch, 300);
 
   const serch = useCallback(async () => {
-    if (thingToSearch != '') {
+    if (debouncedSearchTerm !== '') {
       try {
         const response = await api.get(`/search/do-search`, {
-          params: { type: categoryForSearch, text: thingToSearch },
+          params: { type: categoryForSearch, text: debouncedSearchTerm },
         });
 
         const data = response.data;
         console.log('respuesta del serch:', response.data);
-        if (categoryForSearch == 'user') {
+        if (categoryForSearch === 'user') {
           setUserResult(data);
           setQuestionResult([]);
           setGroupResult([]);
-        } else if (categoryForSearch == 'question') {
+        } else if (categoryForSearch === 'question') {
           setQuestionResult(data);
           setGroupResult([]);
           setUserResult([]);
@@ -48,21 +50,23 @@ export default function SearchPage() {
         console.error('Error in serch:', error);
       }
     }
-  }, [categoryForSearch, thingToSearch]);
+  }, [categoryForSearch, debouncedSearchTerm]);
 
   useEffect(() => {
     serch();
-  }, [serch, thingToSearch]);
+  }, [serch, debouncedSearchTerm]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <Input
+      <Button
+        className="grow"
         startContent={<LuSearch className="text-foreground-700" />}
-        placeholder="Buscar en ScholarSync"
         onClick={() => onOpen()}
-      />
+      >
+        Buscar en ScholarSync
+      </Button>
 
       <Modal
         size={'5xl'}

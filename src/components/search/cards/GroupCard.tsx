@@ -11,8 +11,8 @@ type GroupCardProps = {
 const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
   console.log(group);
   return group != undefined && group != null ? (
-    <Link to={`/group/${group.id}`}>
-      <Card className="max-w-[400px]">
+    <Link to={`/group/${group.id}`} className="min-w-[30%]">
+      <Card className="min-w-1/3">
         <CardHeader className="flex gap-3">
           <GroupUserPicture
             groupId={group.id}
