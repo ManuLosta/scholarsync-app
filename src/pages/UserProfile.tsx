@@ -9,6 +9,7 @@ import FriendStatusButton from '../components/user/FriendStatusButton.tsx';
 import { Profile } from '../types/types';
 import AddToGroupButton from '../components/user/AddToGroupButton.tsx';
 import ChangeProfilePicture from '../components/user/ChangeProfilePicture.tsx';
+import UserPlanner from '../components/planner/UserPlanner.tsx';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -79,6 +80,10 @@ export default function UserProfile() {
           <FriendStatusButton userId={UserProfile?.id} myId={currentId} />
           <AddToGroupButton hisId={UserProfile?.id} />
         </div>
+      )}
+
+      {UserProfile?.friends.find((friend) => friend.id == auth.user?.id) && (
+        <UserPlanner userId={UserProfile?.id} />
       )}
     </div>
   );

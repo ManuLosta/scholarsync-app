@@ -17,12 +17,14 @@ export default function EventInfo({
   onClose,
   onDelete,
   onEdit,
+  isOwner = true,
 }: {
   event?: Event;
   isOpen: boolean;
   onClose: () => void;
   onDelete: (event: Event) => void;
   onEdit: (event: Event) => void;
+  isOwner: boolean;
 }) {
   const [edit, setEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
@@ -87,15 +89,19 @@ export default function EventInfo({
                     </ModalBody>
                   </ModalContent>
                 </Modal>
-                <Button isIconOnly={true} onPress={() => setIsDelete(true)}>
-                  <LuTrash2 />
-                </Button>
-                <Button
-                  startContent={<LuPencil />}
-                  onPress={() => setEdit(true)}
-                >
-                  Edit
-                </Button>
+                {isOwner && (
+                  <>
+                    <Button isIconOnly={true} onPress={() => setIsDelete(true)}>
+                      <LuTrash2 />
+                    </Button>
+                    <Button
+                      startContent={<LuPencil />}
+                      onPress={() => setEdit(true)}
+                    >
+                      Edit
+                    </Button>
+                  </>
+                )}
                 <Button color="danger" variant="flat" onPress={onClose}>
                   Cerrar
                 </Button>
