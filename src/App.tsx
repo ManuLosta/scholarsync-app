@@ -12,6 +12,7 @@ import Question from './pages/Question.tsx';
 import { ThemeProvider } from 'next-themes';
 import EditQuestion from './pages/EditQuestion.tsx';
 import Chat from './pages/Chat.tsx';
+import Planner from './pages/Planner.tsx';
 import SearchPage from './components/search/SearchPage.tsx';
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
                 path="/chat/:id"
                 element={<SearchPage searchString={''} />}
               />
+              <Route path="/planner" element={<Planner />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

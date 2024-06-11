@@ -105,7 +105,6 @@ export default function Group() {
         const response = await api.get(`/groups/get-picture`, {
           params: { group_id: groupId },
         });
-        console.log('respuesta foto:', response);
 
         const base64 = response.data;
         const fileType = 'image/jpeg';

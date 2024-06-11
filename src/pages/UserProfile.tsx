@@ -46,10 +46,10 @@ export default function UserProfile() {
         />
 
         <div className="flex gap-4 flex-col">
-          <p className="text-2xl flex  gap-4 ">
+          <div className="text-2xl flex gap-4">
             {UserProfile?.firstName} {UserProfile?.lastName}
             <ChangeProfilePicture profile={UserProfile} setImage={setImage} />
-          </p>
+          </div>
           <p className="text-xl text-foreground-400">
             {`@${UserProfile?.username}`}{' '}
           </p>

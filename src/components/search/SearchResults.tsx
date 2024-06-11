@@ -37,8 +37,8 @@ const SearchResult: React.FC<SearchResultProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2>Search Results</h2>
+    <div className="flex flex-row gap-4 flex-wrap justify-around">
+      <h2 className="w-full">Search Results</h2>
       {renderCards()}
     </div>
   );
