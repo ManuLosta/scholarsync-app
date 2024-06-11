@@ -44,22 +44,25 @@ const GroupCheckboxes: React.FC<GroupCheckboxesProps> = ({
           base: 'w-full',
         }}
       >
-        {groups.map((group) => (
-          <CustomCheckbox
-            key={group.id}
-            value={group.id}
-            user={{
-              name: group.title,
-              avatar:
-                'https://t4.ftcdn.net/jpg/02/01/10/87/360_F_201108775_UMAoFXBAsSKNcr53Ip5CTSy52Ajuk1E4.jpg',
-              username: group.title.substring(0, 20) + '...',
-              url: 'http://localhost:5173/group/' + group.id,
-              role: group.description.substring(0, 20) + '...',
-              status: group.isPrivate ? 'Private' : 'Public',
-            }}
-            statusColor={group.isPrivate ? 'danger' : 'secondary'}
-          />
-        ))}
+        {' '}
+        <div className="flex gap-5 flex-col">
+          {groups.map((group) => (
+            <CustomCheckbox
+              key={group.id}
+              value={group.id}
+              user={{
+                name: group.title,
+                avatar:
+                  'https://t4.ftcdn.net/jpg/02/01/10/87/360_F_201108775_UMAoFXBAsSKNcr53Ip5CTSy52Ajuk1E4.jpg',
+                username: group.title.substring(0, 20) + '...',
+                url: 'http://localhost:5173/group/' + group.id,
+                role: group.description.substring(0, 20) + '...',
+                status: group.isPrivate ? 'Private' : 'Public',
+              }}
+              statusColor={group.isPrivate ? 'danger' : 'secondary'}
+            />
+          ))}
+        </div>
       </CheckboxGroup>
       <p className="mt-4 ml-1 text-default-500">
         Selected: {getSelectedGroupTitles(groupSelected, groups).join(', ')}

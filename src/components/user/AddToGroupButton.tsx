@@ -118,7 +118,11 @@ export default function AddToGroupButton({
       <Button onPress={handleClick} color="secondary">
         Invitar a grupo
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior={'inside'}
+      >
         <ModalContent>
           {(onClose) => (
             <>
