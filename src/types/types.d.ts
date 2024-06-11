@@ -64,6 +64,7 @@ export type Level =
   | 'Legend';
 
 export type Group = {
+  hasPicture: boolean;
   createdBy: string;
   invitations: Array<{
     user_id: string;
