@@ -11,7 +11,6 @@ import {
   TimeInput,
 } from '@nextui-org/react';
 import {
-  now,
   getLocalTimeZone,
   Time,
   CalendarDate,
@@ -20,6 +19,8 @@ import {
 import GroupUserPicture from '../groups/GroupPicture';
 import api from '../../api';
 import { useAuth } from '../../hooks/useAuth';
+import { Event } from '../../types/types';
+import { I18nProvider } from '@react-aria/i18n';
 
 const formSchema = z
   .object({
@@ -67,7 +68,15 @@ const formSchema = z
 
 type InputType = z.infer<typeof formSchema>;
 
-export default function EventForm({ onClose }: { onClose: () => void }) {
+export default function EventForm({
+  onClose,
+  onCreate,
+  event,
+}: {
+  onClose: () => void;
+  onCreate: (event: Event) => void;
+  event?: Event;
+}) {
   const { groups } = useGroups();
   const { user } = useAuth();
   const {
@@ -76,9 +85,19 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
     formState: { errors },
   } = useForm<InputType>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      start: now(getLocalTimeZone()),
-    },
+    defaultValues: event
+      ? {
+          title: event?.title,
+          groupId: event?.groupId,
+          date: new CalendarDate(
+            event.start.getFullYear(),
+            event.start.getMonth() + 1,
+            event.start.getDate(),
+          ),
+          start: new Time(event.start.getHours(), event.start.getMinutes()),
+          end: new Time(event.end.getHours(), event.start.getMinutes()),
+        }
+      : undefined,
   });
 
   const onSubmit: SubmitHandler<InputType> = (data) => {
@@ -97,23 +116,41 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
       data.end.minute,
     );
 
-    api
-      .post('events/create', {
-        title: data.title,
-        start: startTime.toDate(getLocalTimeZone()),
-        end: endTime.toDate(getLocalTimeZone()),
-        userId: user?.id,
-        groupId: data.groupId,
-      })
-      .then((res) => {
-        console.log(res.data);
-        onClose();
-      })
-      .catch((err) => console.error('Error posting event: ', err));
+    if (event) {
+      api
+        .post('events/update', {
+          id: event.id,
+          title: data.title,
+          start: startTime.toDate(getLocalTimeZone()),
+          end: endTime.toDate(getLocalTimeZone()),
+          groupId: data.groupId,
+          userId: user?.id,
+        })
+        .then((res) => {
+          const event: Event = res.data;
+          onCreate(event);
+          onClose();
+        });
+    } else {
+      api
+        .post('events/create', {
+          title: data.title,
+          start: startTime.toDate(getLocalTimeZone()),
+          end: endTime.toDate(getLocalTimeZone()),
+          userId: user?.id,
+          groupId: data.groupId,
+        })
+        .then((res) => {
+          const event: Event = res.data;
+          onCreate(event);
+          onClose();
+        })
+        .catch((err) => console.error('Error posting event: ', err));
+    }
   };
 
   return (
-    <form className="flex gap-3 flex-col" onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex gap-3 flex-col p-3" onSubmit={handleSubmit(onSubmit)}>
       <Controller
         name="title"
         control={control}
@@ -137,7 +174,8 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
               trigger: 'h-14',
             }}
             onChange={onChange}
-            className="mb-2"
+            isDisabled={!!event}
+            defaultSelectedKeys={event && [event?.groupId]}
             placeholder="Elige un grupo"
             labelPlacement="outside"
             errorMessage={errors?.groupId?.message}
@@ -152,7 +190,7 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
                   propForUser={{
                     name: item.data?.title,
                     description: item.data?.description,
-                    className: 'm-2',
+
                     avatarProps: { color: 'primary' },
                     key: item.data?.id,
                   }}
@@ -182,13 +220,23 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
         name="date"
         control={control}
         render={({ field: { onChange } }) => (
-          <DatePicker
-            errorMessage={errors?.date?.message}
-            isInvalid={!!errors.date}
-            onChange={onChange}
-            label="Fecha"
-            hideTimeZone={true}
-          />
+          <I18nProvider locale="es-ES">
+            <DatePicker
+              errorMessage={errors?.date?.message}
+              isInvalid={!!errors.date}
+              onChange={onChange}
+              label="Fecha"
+              hideTimeZone={true}
+              defaultValue={
+                event &&
+                new CalendarDate(
+                  event.start.getFullYear(),
+                  event.start.getMonth() + 1,
+                  event.start.getDate(),
+                )
+              }
+            />
+          </I18nProvider>
         )}
       />
       <div className="flex gap-2">
@@ -203,6 +251,10 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
               isInvalid={!!errors.start}
               hideTimeZone={true}
               granularity="minute"
+              defaultValue={
+                event &&
+                new Time(event.start.getHours(), event.start.getMinutes())
+              }
             />
           )}
         />
@@ -216,13 +268,32 @@ export default function EventForm({ onClose }: { onClose: () => void }) {
               errorMessage={errors?.end?.message}
               isInvalid={!!errors.end}
               granularity="minute"
+              defaultValue={
+                event && new Time(event.end.getHours(), event.end.getMinutes())
+              }
             />
           )}
         />
       </div>
-      <Button color="primary" type="submit">
-        Crear
-      </Button>
+      {event ? (
+        <div className="w-full flex gap-2">
+          <Button
+            color="danger"
+            variant="flat"
+            className="grow"
+            onPress={onClose}
+          >
+            Cerrar
+          </Button>
+          <Button color="primary" type="submit" className="grow">
+            Editar
+          </Button>
+        </div>
+      ) : (
+        <Button color="primary" type="submit">
+          Crear
+        </Button>
+      )}
     </form>
   );
 }

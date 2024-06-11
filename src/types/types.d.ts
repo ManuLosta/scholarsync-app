@@ -134,3 +134,12 @@ interface FileMessage {
   sender: Profile;
   time: string;
 }
+
+export type Event = {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  groupId: string;
+  groupName: string;
+};

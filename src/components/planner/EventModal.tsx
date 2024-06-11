@@ -19,7 +19,6 @@ export default function EventModal() {
 
   useSubscription(`/individual/${user?.id}/calendar`, (message) => {
     const data = JSON.parse(message.body);
-    console.log(data);
     setGroupId(data.groupId);
     setEventTitle(data.title);
     setIsOpen(true);

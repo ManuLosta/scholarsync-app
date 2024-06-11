@@ -8,8 +8,13 @@ import {
 } from '@nextui-org/react';
 import { LuPlus } from 'react-icons/lu';
 import EventForm from './EventForm';
+import { Event } from '../../types/types';
 
-export default function CreateEvent() {
+export default function CreateEvent({
+  onCreate,
+}: {
+  onCreate: (event: Event) => void;
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -28,7 +33,7 @@ export default function CreateEvent() {
             <>
               <ModalHeader>Crear evento nuevo</ModalHeader>
               <ModalBody>
-                <EventForm onClose={onClose} />
+                <EventForm onClose={onClose} onCreate={onCreate} />
               </ModalBody>
             </>
           )}
