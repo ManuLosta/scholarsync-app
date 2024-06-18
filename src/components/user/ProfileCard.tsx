@@ -1,58 +1,10 @@
-import { Level, Profile } from '../../types/types';
-import { Chip, Progress } from '@nextui-org/react';
+import { Profile } from '../../types/types';
+import { Progress } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
 import UserPicture from './UserPicture.tsx';
-
-interface LevelStyle {
-  color?:
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'danger';
-  classNames?: { base: string };
-}
+import LevelChip from './LevelChip.tsx';
 
 export default function ProfileCard({ user }: { user: Profile }) {
-  const levelStyles: Record<Level, LevelStyle> = {
-    Newbie: { color: 'default' },
-    Learner: { color: 'primary' },
-    Initiate: { color: 'secondary' },
-    Contender: { color: 'success' },
-    Skilled: { color: 'warning' },
-    Veteran: { color: 'danger' },
-    Master: {
-      classNames: {
-        base: 'bg-gradient-to-br from-primary to-secondary text-white',
-      },
-    },
-    Grand_Master: {
-      classNames: {
-        base: 'bg-gradient-to-br from-secondary to-success text-white',
-      },
-    },
-    Champion: {
-      classNames: {
-        base: 'bg-gradient-to-br from-success to-warning text-white',
-      },
-    },
-    Legend: {
-      classNames: {
-        base: 'bg-gradient-to-br from-warning to-danger text-white',
-      },
-    },
-  };
-
-  const getLevelChip = (level: Level) => {
-    const style = levelStyles[level];
-    if (!style) {
-      return <Chip>Unknown</Chip>;
-    }
-
-    return <Chip {...style}>{level}</Chip>;
-  };
-
   return (
     <Link
       to={`/user/${user.id}`}
@@ -67,7 +19,7 @@ export default function ProfileCard({ user }: { user: Profile }) {
         }}
         hasPicture={user.hasPicture}
       />
-      {getLevelChip(user.level as Level)}
+      <LevelChip level={user.level} />
       <div className="w-full">
         {user.xp}
         {user.nextLevel != 0 && `/${user.nextLevel}`}xp

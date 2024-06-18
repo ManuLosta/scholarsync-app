@@ -6,15 +6,12 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth.ts';
 import { LuUsers } from 'react-icons/lu';
 import UserPicture from '../user/UserPicture.tsx';
 import { Profile } from '../../types/types';
 
 export default function MemberList({ users }: { users: Profile[] }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { user } = useAuth();
-  const myId = user?.id;
 
   return (
     <>
@@ -37,10 +34,7 @@ export default function MemberList({ users }: { users: Profile[] }) {
           <ModalBody>
             <div className="flex gap-3 flex-col">
               {users?.map((user) => (
-                <Link
-                  to={`/user/${user.id == myId ? 'me' : user.id}`}
-                  key={user.id}
-                >
+                <Link to={`/user/${user.id}`} key={user.id}>
                   <UserPicture
                     userId={user.id}
                     propForUser={{

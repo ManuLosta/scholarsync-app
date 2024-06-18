@@ -170,7 +170,7 @@ export default function EventForm({
         render={({ field: { onChange } }) => (
           <Select
             classNames={{
-              base: 'max-w-xs',
+              base: 'max-w-xs min-w-full',
               trigger: 'h-14',
             }}
             onChange={onChange}
