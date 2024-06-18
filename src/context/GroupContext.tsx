@@ -38,7 +38,6 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
         const data = res.data;
         setGroups(data);
       })
-
       .catch((err) => {
         console.error('Error fetching groups', err);
       });

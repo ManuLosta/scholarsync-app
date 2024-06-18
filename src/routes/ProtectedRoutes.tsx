@@ -20,8 +20,8 @@ export default function ProtectedRoutes() {
         </div>
       ) : (
         <StompSessionProvider url={'ws://localhost:8080/message-broker'}>
-          <NotificationProvider>
-            <GroupProvider>
+          <GroupProvider>
+            <NotificationProvider>
               <CreditProvider>
                 <FeedProvider>
                   <Layout>
@@ -30,8 +30,8 @@ export default function ProtectedRoutes() {
                   </Layout>
                 </FeedProvider>
               </CreditProvider>
-            </GroupProvider>
-          </NotificationProvider>
+            </NotificationProvider>
+          </GroupProvider>
         </StompSessionProvider>
       )}
     </>

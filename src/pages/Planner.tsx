@@ -33,7 +33,7 @@ export default function Planner() {
         );
       })
       .catch((err) => console.error('Error fetching events: ', err));
-  }, []);
+  }, [user?.id]);
 
   const onSelectSlot = useCallback((range) => {
     console.log(range);
@@ -76,6 +76,7 @@ export default function Planner() {
     <div className="container p-8">
       <CreateEvent onCreate={onNewEvent} />
       <EventInfo
+        isOwner={true}
         event={focusedEvent}
         isOpen={!!focusedEvent}
         onClose={() => setFocusedEvent(undefined)}

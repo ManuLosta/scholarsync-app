@@ -4,6 +4,7 @@ import api from '../api.ts';
 import { ChatNotification, FriendRequest, GroupInvite } from '../types/types';
 import { useSubscription } from 'react-stomp-hooks';
 import { v4 as uuidv4 } from 'uuid';
+import { useGroups } from '../hooks/useGroups.ts';
 
 interface NotificationContext {
   notifications: (FriendRequest | GroupInvite | ChatNotification)[];
@@ -35,6 +36,7 @@ export function NotificationProvider({
   const [notifications, setNotifications] = useState<
     (GroupInvite | FriendRequest | ChatNotification)[]
   >([]);
+  const { fetchGroupsforProfile } = useGroups();
 
   useSubscription(`/individual/${sessionId}/notification`, (message) => {
     const notification = JSON.parse(message.body);
@@ -89,6 +91,7 @@ export function NotificationProvider({
       })
       .then(() => {
         removeNotification(id);
+        fetchGroupsforProfile();
       })
       .catch((err) => {
         console.error('Error accepting invitation: ', err);
@@ -112,7 +115,6 @@ export function NotificationProvider({
     const filteredNotifications = notifications.filter(
       (notification) => notification.notification_id != id,
     );
-    console.log(filteredNotifications);
     setNotifications(filteredNotifications);
   };
 
