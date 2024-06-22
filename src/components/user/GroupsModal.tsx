@@ -20,7 +20,7 @@ export default function GroupsModal({
     <>
       <p
         onClick={onOpen}
-        className="hover:font-bold hover:cursor-pointer text-lg"
+        className="hover:font-bold hover:cursor-pointer hover:text-primary text-lg"
       >
         {groups.length} grupos
       </p>

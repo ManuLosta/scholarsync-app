@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.rbc-header {
+  color: theme('colors.foreground');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px !important;
+  font-size: 1em !important;
+  backgorund: theme('colors.background');
+  border-bottom: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-allday-cell {
+  display: none;
+  border: none;
+}
+
+.rbc-time-header-content {
+  border-left: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-time-view {
+  border: 1px solid theme('colors.foreground-200');
+  border-radius: 10px;
+}
+
+.rbc-time-header-cell .rbc-today {
+  background-color: theme('colors.foreground-100');
+}
+
+.rbc-time-slot {
+  color: theme('colors.foreground');
+  background: theme('colors.foreground-100');
+  outline: none;
+  border: none;
+}
+
+.rbc-time-content {
+  border-top: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-time-content > * + * > * {
+  border-left: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-timeslot-group {
+  border-bottom: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-time-view-resources .rbc-time-gutter,
+.rbc-time-view-resources .rbc-time-header-gutter {
+  border-right: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-top: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-time-slot:not(.rbc-today .rbc-time-slot) {
+  background-color: theme('colors.background');
+}
+
+.rbc-event,
+.rbc-background-event {
+  z-index: 2;
+  padding: 0px !important;
+  border: none !important;
+}
+
+.rbc-event-label {
+  display: none;
+}
+
+.rbc-month-row + .rbc-month-row {
+  border-top: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-off-range-bg {
+  background: theme('colors.foreground-100');
+}
+
+.rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid theme('colors.foreground-200');
+}
+
+.rbc-date-cell.rbc-now,
+.rbc-today {
+  background: theme('colors.foreground-100');
+}
+
+.rbc-month-view {
+  border: 1px solid theme('colors.foreground-200');
+}

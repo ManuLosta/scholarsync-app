@@ -1,5 +1,6 @@
-import { Calendar, Views, dayjsLocalizer } from 'react-big-calendar';
+import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import '../assets/calendar.css';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
 import api from '../api.ts';
@@ -7,6 +8,7 @@ import { useAuth } from '../hooks/useAuth.ts';
 import CreateEvent from '../components/planner/CreateEvent.tsx';
 import { Event } from '../types/types';
 import EventInfo from '../components/planner/EventInfo.tsx';
+import CustomEvent from '../components/planner/CustomEvent.tsx';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -72,6 +74,10 @@ export default function Planner() {
     }
   };
 
+  const components = {
+    event: ({ event }: { event: Event }) => <CustomEvent event={event} />,
+  };
+
   return (
     <div className="container p-8">
       <CreateEvent onCreate={onNewEvent} />
@@ -85,12 +91,13 @@ export default function Planner() {
       />
       <Calendar
         events={events}
-        defaultView={Views.WEEK}
         onSelectSlot={onSelectSlot}
         onSelectEvent={onSelectEvent}
         localizer={localizer}
         style={{ height: 700 }}
         selectable
+        components={components}
+        views={['month', 'week', 'day']}
       />
     </div>
   );
