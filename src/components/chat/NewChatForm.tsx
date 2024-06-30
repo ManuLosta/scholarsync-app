@@ -15,10 +15,14 @@ export default function NewChatForm({
   groupId,
   userId,
   onClose,
+  isPublic,
+  invitedUsers,
 }: {
   groupId: string;
   userId: string;
   onClose: () => void;
+  isPublic: boolean;
+  invitedUsers: string[];
 }) {
   const navigate = useNavigate();
   const {
@@ -33,8 +37,10 @@ export default function NewChatForm({
     api
       .post('chat/create-chat', {
         name: data.name,
-        groupId,
-        userId,
+        groupId: groupId,
+        userId: userId,
+        isPublic: isPublic.toString(),
+        invitedUsers: invitedUsers,
       })
       .then((res) => {
         const chat = res.data;
