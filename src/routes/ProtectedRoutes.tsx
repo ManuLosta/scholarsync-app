@@ -8,9 +8,11 @@ import { GroupProvider } from '../context/GroupContext.tsx';
 import { FeedProvider } from '../context/FeedContext.tsx';
 import { StompSessionProvider } from 'react-stomp-hooks';
 import EventModal from '../components/planner/EventModal.tsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export default function ProtectedRoutes() {
   const auth = useAuth();
+  console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID);
 
   return auth?.sessionId ? (
     <>
@@ -19,20 +21,22 @@ export default function ProtectedRoutes() {
           <CircularProgress />
         </div>
       ) : (
-        <StompSessionProvider url={'ws://localhost:8080/message-broker'}>
-          <GroupProvider>
-            <NotificationProvider>
-              <CreditProvider>
-                <FeedProvider>
-                  <Layout>
-                    <EventModal />
-                    <Outlet />
-                  </Layout>
-                </FeedProvider>
-              </CreditProvider>
-            </NotificationProvider>
-          </GroupProvider>
-        </StompSessionProvider>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <StompSessionProvider url={'ws://localhost:8080/message-broker'}>
+            <GroupProvider>
+              <NotificationProvider>
+                <CreditProvider>
+                  <FeedProvider>
+                    <Layout>
+                      <EventModal />
+                      <Outlet />
+                    </Layout>
+                  </FeedProvider>
+                </CreditProvider>
+              </NotificationProvider>
+            </GroupProvider>
+          </StompSessionProvider>
+        </GoogleOAuthProvider>
       )}
     </>
   ) : (

@@ -11,6 +11,7 @@ import ProfileCard from './ProfileCard.tsx';
 import { LuArrowLeftToLine } from 'react-icons/lu';
 import { useCallback, useEffect, useState } from 'react';
 import api from '../../api.ts';
+import GoogleLogin from './GoogleLogin.tsx';
 
 export default function UserDropdown() {
   const auth = useAuth();
@@ -68,6 +69,9 @@ export default function UserDropdown() {
           startContent={<LuArrowLeftToLine />}
         >
           Cerrar sesión
+        </DropdownItem>
+        <DropdownItem>
+          <GoogleLogin />
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
