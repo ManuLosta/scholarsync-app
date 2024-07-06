@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
+  Checkbox,
   DatePicker,
   Input,
   Select,
@@ -35,6 +36,7 @@ const formSchema = z
       message: 'Valor requerido',
     }),
     groupId: z.string(),
+    saveGoogle: z.boolean(),
   })
   .refine(
     (data) => {
@@ -101,6 +103,8 @@ export default function EventForm({
   });
 
   const onSubmit: SubmitHandler<InputType> = (data) => {
+    console.log(data);
+
     const startTime = new CalendarDateTime(
       data.date.year,
       data.date.month,
@@ -275,6 +279,15 @@ export default function EventForm({
           )}
         />
       </div>
+      <Controller
+        name="saveGoogle"
+        control={control}
+        render={({ field: { onChange } }) => (
+          <Checkbox onChange={onChange}>
+            Guardar en Calendario de Google
+          </Checkbox>
+        )}
+      />
       {event ? (
         <div className="w-full flex gap-2">
           <Button

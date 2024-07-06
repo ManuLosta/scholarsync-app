@@ -1,6 +1,12 @@
 import React, { createContext, useEffect, useState } from 'react';
 import api from '../api.ts';
 import { Profile } from '../types/types';
+import axios from 'axios';
+
+type User = {
+  profile: Profile;
+  refresh_token: string;
+};
 
 interface AuthContextType {
   sessionId: string | null;
@@ -9,6 +15,7 @@ interface AuthContextType {
   logOut: () => void;
   loading: boolean;
   updateHasPicture: (hasPicture: boolean) => void;
+  googleToken: string | null;
 }
 
 const defaultContext: AuthContextType = {
@@ -18,6 +25,7 @@ const defaultContext: AuthContextType = {
   logOut: () => {},
   loading: true,
   updateHasPicture: () => {},
+  googleToken: null,
 };
 
 export const AuthContext = createContext<AuthContextType>(defaultContext);
@@ -28,11 +36,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [user, setUser] = useState<Profile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [googleToken, setGoogleToken] = useState<string | null>(null);
 
   const updateHasPicture = (hasPicture: boolean) => {
     if (user) {
       setUser({ ...user, hasPicture });
     }
+  };
+
+  const getGoogleToken = (refresh: string) => {
+    axios
+      .post('https://oauth2.googleapis.com/token', {
+        refresh_token: refresh,
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        grant_type: 'refresh_token',
+        client_secret: import.meta.env.VITE_GOOGLE_SECRET,
+      })
+      .then((res) => {
+        const data = res.data;
+        setGoogleToken(data.access_token);
+      });
   };
 
   useEffect(() => {
@@ -42,8 +65,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         sessionId,
       })
       .then((res) => {
-        const fetchUser = res.data;
-        setUser(fetchUser);
+        const fetchUser: User = res.data;
+        getGoogleToken(fetchUser.refresh_token);
+        setUser(fetchUser.profile);
       })
       .catch((err) => {
         localStorage.removeItem('sessionId');
@@ -74,6 +98,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         logOut,
         loading,
         updateHasPicture,
+        googleToken,
       }}
     >
       {children}

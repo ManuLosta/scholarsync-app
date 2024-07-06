@@ -12,7 +12,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export default function ProtectedRoutes() {
   const auth = useAuth();
-  console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID);
 
   return auth?.sessionId ? (
     <>
