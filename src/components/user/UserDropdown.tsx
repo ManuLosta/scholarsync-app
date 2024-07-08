@@ -2,6 +2,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
+  DropdownSection,
   DropdownTrigger,
   User,
 } from '@nextui-org/react';
@@ -59,14 +60,19 @@ export default function UserDropdown() {
         >
           {auth?.user && <ProfileCard user={auth?.user} />}
         </DropdownItem>
-        <DropdownItem
-          key="theme"
-          textValue="theme"
-          closeOnSelect={false}
-          isReadOnly
-        >
-          <ThemeSwitcher />
-        </DropdownItem>
+        <DropdownSection title="Configuración" showDivider>
+          <DropdownItem
+            key="theme"
+            textValue="theme"
+            closeOnSelect={false}
+            isReadOnly
+          >
+            <ThemeSwitcher />
+          </DropdownItem>
+          <DropdownItem isReadOnly>
+            <GoogleLogin />
+          </DropdownItem>
+        </DropdownSection>
         <DropdownItem
           key="logout"
           className="text-danger"
@@ -75,9 +81,6 @@ export default function UserDropdown() {
           startContent={<LuArrowLeftToLine />}
         >
           Cerrar sesión
-        </DropdownItem>
-        <DropdownItem isReadOnly>
-          <GoogleLogin />
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

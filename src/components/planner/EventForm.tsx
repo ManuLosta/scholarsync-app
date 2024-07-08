@@ -23,6 +23,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Event } from '../../types/types';
 import { I18nProvider } from '@react-aria/i18n';
 import { saveEvent, updateEvent } from '../../services/googleCalendar';
+import GoogleLogin from '../user/GoogleLogin';
 
 const formSchema = z
   .object({
@@ -280,16 +281,20 @@ export default function EventForm({
           )}
         />
       </div>
-      <Controller
-        name="saveGoogle"
-        control={control}
-        defaultValue={false}
-        render={({ field: { onChange } }) => (
-          <Checkbox onChange={onChange}>
-            Guardar en Calendario de Google
-          </Checkbox>
-        )}
-      />
+      {googleToken ? (
+        <Controller
+          name="saveGoogle"
+          control={control}
+          defaultValue={false}
+          render={({ field: { onChange } }) => (
+            <Checkbox onChange={onChange}>
+              Guardar en Calendario de Google
+            </Checkbox>
+          )}
+        />
+      ) : (
+        <GoogleLogin />
+      )}
       {event ? (
         <div className="w-full flex gap-2">
           <Button

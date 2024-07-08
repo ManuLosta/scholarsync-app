@@ -16,6 +16,8 @@ interface AuthContextType {
   loading: boolean;
   updateHasPicture: (hasPicture: boolean) => void;
   googleToken: string | null;
+  getGoogleToken: (refresh: string) => void;
+  removeGoogleToken: () => void;
 }
 
 const defaultContext: AuthContextType = {
@@ -26,6 +28,8 @@ const defaultContext: AuthContextType = {
   loading: true,
   updateHasPicture: () => {},
   googleToken: null,
+  getGoogleToken: () => {},
+  removeGoogleToken: () => {},
 };
 
 export const AuthContext = createContext<AuthContextType>(defaultContext);
@@ -56,6 +60,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const data = res.data;
         setGoogleToken(data.access_token);
       });
+  };
+
+  const removeGoogleToken = () => {
+    setGoogleToken(null);
   };
 
   useEffect(() => {
@@ -99,6 +107,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loading,
         updateHasPicture,
         googleToken,
+        getGoogleToken,
+        removeGoogleToken,
       }}
     >
       {children}
