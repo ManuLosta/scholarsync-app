@@ -138,6 +138,7 @@ interface FileMessage {
 
 export type Event = {
   id: string;
+  googleId: string | undefined;
   title: string;
   start: Date;
   end: Date;

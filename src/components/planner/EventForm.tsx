@@ -22,6 +22,7 @@ import api from '../../api';
 import { useAuth } from '../../hooks/useAuth';
 import { Event } from '../../types/types';
 import { I18nProvider } from '@react-aria/i18n';
+import { saveEvent, updateEvent } from '../../services/googleCalendar';
 
 const formSchema = z
   .object({
@@ -101,9 +102,10 @@ export default function EventForm({
         }
       : undefined,
   });
+  const { googleToken } = useAuth();
 
   const onSubmit: SubmitHandler<InputType> = (data) => {
-    console.log(data);
+    const isUpdate = !!event;
 
     const startTime = new CalendarDateTime(
       data.date.year,
@@ -120,37 +122,34 @@ export default function EventForm({
       data.end.minute,
     );
 
-    if (event) {
-      api
-        .post('events/update', {
-          id: event.id,
-          title: data.title,
-          start: startTime.toDate(getLocalTimeZone()),
-          end: endTime.toDate(getLocalTimeZone()),
-          groupId: data.groupId,
-          userId: user?.id,
-        })
-        .then((res) => {
-          const event: Event = res.data;
-          onCreate(event);
-          onClose();
-        });
-    } else {
-      api
-        .post('events/create', {
-          title: data.title,
-          start: startTime.toDate(getLocalTimeZone()),
-          end: endTime.toDate(getLocalTimeZone()),
-          userId: user?.id,
-          groupId: data.groupId,
-        })
-        .then((res) => {
-          const event: Event = res.data;
-          onCreate(event);
-          onClose();
-        })
-        .catch((err) => console.error('Error posting event: ', err));
-    }
+    const newEvent = {
+      title: data.title,
+      start: startTime.toDate(getLocalTimeZone()),
+      end: endTime.toDate(getLocalTimeZone()),
+      groupId: data.groupId,
+    };
+
+    api
+      .post(event ? 'events/update' : 'events/create', {
+        ...newEvent,
+        id: event && event.id,
+        userId: user?.id,
+      })
+      .then((res) => {
+        const event: Event = res.data;
+
+        if (data.saveGoogle) {
+          if (!googleToken) console.error('Must be loged with google');
+          if (isUpdate) {
+            updateEvent(googleToken || '', event);
+          } else {
+            saveEvent(googleToken || '', event);
+          }
+        }
+
+        onCreate(event);
+        onClose();
+      });
   };
 
   return (
@@ -255,6 +254,7 @@ export default function EventForm({
               isInvalid={!!errors.start}
               hideTimeZone={true}
               granularity="minute"
+              hourCycle={24}
               defaultValue={
                 event &&
                 new Time(event.start.getHours(), event.start.getMinutes())
@@ -272,6 +272,7 @@ export default function EventForm({
               errorMessage={errors?.end?.message}
               isInvalid={!!errors.end}
               granularity="minute"
+              hourCycle={24}
               defaultValue={
                 event && new Time(event.end.getHours(), event.end.getMinutes())
               }
@@ -282,6 +283,7 @@ export default function EventForm({
       <Controller
         name="saveGoogle"
         control={control}
+        defaultValue={false}
         render={({ field: { onChange } }) => (
           <Checkbox onChange={onChange}>
             Guardar en Calendario de Google

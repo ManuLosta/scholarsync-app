@@ -51,6 +51,7 @@ export default function UserDropdown() {
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
         <DropdownItem
+          isReadOnly
           classNames={{ base: 'hover:bg-background' }}
           key="user"
           textValue="user"
@@ -58,7 +59,12 @@ export default function UserDropdown() {
         >
           {auth?.user && <ProfileCard user={auth?.user} />}
         </DropdownItem>
-        <DropdownItem key="theme" textValue="theme" closeOnSelect={false}>
+        <DropdownItem
+          key="theme"
+          textValue="theme"
+          closeOnSelect={false}
+          isReadOnly
+        >
           <ThemeSwitcher />
         </DropdownItem>
         <DropdownItem
@@ -70,7 +76,7 @@ export default function UserDropdown() {
         >
           Cerrar sesión
         </DropdownItem>
-        <DropdownItem>
+        <DropdownItem isReadOnly>
           <GoogleLogin />
         </DropdownItem>
       </DropdownMenu>
