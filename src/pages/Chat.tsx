@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useStompClient } from 'react-stomp-hooks';
 import { useAuth } from '../hooks/useAuth.ts';
 import { Button } from '@nextui-org/react';
@@ -8,8 +8,14 @@ import ChatBox from '../components/chat/ChatBox.tsx';
 import { Chat as ChatType } from '../types/types';
 import MemberList from '../components/groups/MemberList.tsx';
 
-export default function Chat() {
-  const [chat, setChat] = useState<ChatType | null>(null); // [1
+export default function Chat({
+  getChat = 'chat/get-chat',
+  chatId = '',
+}: {
+  getChat?: string;
+  chatId?: string;
+}) {
+  const [chat, setChat] = useState<ChatType | null>(null);
   const { id } = useParams();
   const { user } = useAuth();
   const client = useStompClient();
@@ -18,7 +24,7 @@ export default function Chat() {
   useEffect(() => {
     client?.publish({
       destination: '/app/chat/join',
-      body: JSON.stringify({ chat_id: id, user_id: user?.id }),
+      body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
     });
 
     return () => {
@@ -27,26 +33,25 @@ export default function Chat() {
       if (isLeaving) {
         client?.publish({
           destination: '/app/chat/leave',
-          body: JSON.stringify({ chat_id: id, user_id: user?.id }),
+          body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
         });
       }
     };
-  }, [id, user?.id, client]);
+  }, [id, user?.id, client, chatId]);
 
-  useEffect(() => {
-    fetchChat();
-  }, [id]);
-
-  const fetchChat = () => {
+  const fetchChat = useCallback(() => {
     api
-      .get(`chat/get-chat?chatId=${id}`)
+      .get(`${getChat}?chatId=${id || chatId}`)
       .then((res) => {
         const data = res.data;
-        console.log(chat);
+        console.log(data);
         setChat(data);
       })
       .catch((err) => console.error(err));
-  };
+  }, [chatId, getChat, id]);
+  useEffect(() => {
+    fetchChat();
+  }, [fetchChat]);
 
   return (
     chat && (
