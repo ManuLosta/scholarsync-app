@@ -21,7 +21,7 @@ export default function AnonymousChat({
   const [chat, setChat] = useState<ChatType>(emptyChat);
   const client = useStompClient();
   const navigate = useNavigate();
-
+  console.log('chatid', chatId);
   useEffect(() => {
     return () => {
       const isLeaving = true;

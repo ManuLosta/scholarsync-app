@@ -85,7 +85,7 @@ const WaitToJoinPageAnonymous: React.FC = () => {
   return (
     <>
       {canAccess ? (
-        <AnonymusChat />
+        <AnonymusChat name={name} chatId={id || ''} />
       ) : (
         <>
           {chat !== emptyChat && (

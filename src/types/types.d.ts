@@ -117,6 +117,7 @@ export type FileType = {
 };
 
 export type Message = {
+  senderUsername: string;
   sender: Profile;
   message: string;
   time: string;
@@ -134,6 +135,7 @@ interface FileMessage {
   file: FileType;
   sender: Profile;
   time: string;
+  senderUsername: string;
 }
 
 export type Event = {

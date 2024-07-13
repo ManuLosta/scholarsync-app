@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FileMessage, Message } from '../types/types';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
-import { useAuth } from '../hooks/useAuth';
 import api from '../api';
 import MessageBubble from '../components/chat/MessageBubble';
 import { Button, Input, Tooltip } from '@nextui-org/react';
@@ -33,7 +32,6 @@ export default function AnonymousChatBox({
   >([]);
   const [message, setMessage] = useState('' as string);
   const [images, setImages] = useState<ImageTable[]>([]);
-  const { user } = useAuth();
   const client = useStompClient();
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -102,6 +100,7 @@ export default function AnonymousChatBox({
           message: message,
           username: anonymousName,
           chat_id: chatId,
+          senderUsername: anonymousName,
         }),
       });
       setMessage('');
@@ -148,10 +147,12 @@ export default function AnonymousChatBox({
             );
           } else {
             message = message as Message | FileMessage;
+            const isAnonymousUserMessage =
+              message.senderUsername === anonymousName;
             return (
               <div
                 key={index}
-                className={`flex ${message.sender.id === user?.id ? 'flex-row-reverse' : 'flex-row'} gap-2 items-end`}
+                className={`flex ${isAnonymousUserMessage ? 'flex-row-reverse' : 'flex-row'} gap-2 items-end`}
               >
                 <MessageBubble
                   image={
@@ -162,7 +163,7 @@ export default function AnonymousChatBox({
                     )?.image
                   }
                   message={message}
-                  isUser={message.sender.id === user?.id}
+                  isUser={isAnonymousUserMessage}
                 />
               </div>
             );
