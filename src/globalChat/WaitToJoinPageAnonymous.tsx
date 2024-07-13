@@ -12,7 +12,7 @@ import {
 import api from '../api';
 import { emptyChat } from '../types/emptyChat';
 import { Chat } from '../types/types';
-import { useStompClient } from 'react-stomp-hooks';
+import { useStompClient, useSubscription } from 'react-stomp-hooks';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import AnonymusChat from './AnonymusChat';
@@ -23,50 +23,68 @@ const WaitToJoinPageAnonymous: React.FC = () => {
   const client = useStompClient();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [name, setNameInput] = useState('');
+  const [questionName, setQuestionName] = useState('Elije un nombre');
   const [chat, setChat] = useState<Chat>(emptyChat);
   const auth = useAuth();
   const navigate = useNavigate();
-  const [canAcces, SetCanAcces] = useState(false);
+  const [canAccess, setCanAccess] = useState(false);
 
-  if (auth.user !== null || auth.user !== undefined) {
-    navigate('/global-chat/' + id);
-  }
+  useEffect(() => {
+    if (auth.user?.id !== undefined) {
+      navigate('/global-chat/' + id);
+    }
+  }, [auth.user, id, navigate]);
 
-  api
-    .get(`global-chat/get-chat?chatId=${id}`)
-    .then((res) => {
-      const data = res.data;
-      if (data === 'chat/not-found') {
+  useEffect(() => {
+    api
+      .get(`global-chat/get-chat?chatId=${id}`)
+      .then((res) => {
+        const data = res.data;
+        if (data === 'chat/not-found') {
+          setChat(emptyChat);
+        } else {
+          setChat(data);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
         setChat(emptyChat);
-        return;
-      } else setChat(data);
-    })
-    .catch((err) => {
-      console.error(err);
-      setChat(emptyChat);
-    });
+      });
+  }, [id]);
+
+  useEffect(() => {
+    setCanAccess(false);
+  }, [chat, auth.user]);
 
   function handleSave(onClose: () => void) {
     console.log('Anonimus join');
     client?.publish({
-      destination: '/chat/request-anonymous-access',
-      body: JSON.stringify({ username: name, chat_id: chat.id }),
+      destination: '/app/chat/request-anonymous-access',
+      body: JSON.stringify({ chat_id: chat.id, username: name }),
     });
     onClose();
     setRequestStatus('request send');
   }
 
-  useEffect(() => {
-    function checkCanAccess() {
-      SetCanAcces(false);
-    }
+  function userNameTaken() {
+    setRequestStatus('request access');
+    setQuestionName('Elije otro Nombre, ese ya esta en uso');
+    onOpen();
+  }
 
-    checkCanAccess();
-  }, []);
+  useSubscription(`/individual/${name}/error`, (message) => {
+    userNameTaken();
+    console.log(message);
+  });
+
+  useSubscription(`/individual/${name}/chat-request-accepted`, (message) => {
+    setCanAccess(true);
+    console.log('se acepto', message);
+  });
 
   return (
     <>
-      {canAcces ? (
+      {canAccess ? (
         <AnonymusChat />
       ) : (
         <>
@@ -74,13 +92,17 @@ const WaitToJoinPageAnonymous: React.FC = () => {
             <div>
               <h1>Welcome to {chat.name}</h1>
               <div></div>
-              <Button
-                onPress={() => {
-                  onOpen();
-                }}
-              >
-                {requestStatus}
-              </Button>
+              {requestStatus !== 'request send' ? (
+                <Button
+                  onPress={() => {
+                    onOpen();
+                  }}
+                >
+                  {requestStatus}
+                </Button>
+              ) : (
+                <Button isDisabled>{requestStatus}</Button>
+              )}
               <Modal
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
@@ -90,7 +112,7 @@ const WaitToJoinPageAnonymous: React.FC = () => {
                   {(onClose) => (
                     <>
                       <ModalHeader className="flex flex-col gap-1">
-                        Enter Your Name
+                        {questionName}
                       </ModalHeader>
                       <ModalBody>
                         <Input
@@ -104,13 +126,13 @@ const WaitToJoinPageAnonymous: React.FC = () => {
                       </ModalBody>
                       <ModalFooter>
                         <Button color="danger" variant="flat" onPress={onClose}>
-                          Cancelar
+                          Cancel
                         </Button>
                         <Button
                           color="primary"
                           onPress={() => handleSave(onClose)}
                         >
-                          Solicitar unirse
+                          Request to join
                         </Button>
                       </ModalFooter>
                     </>
@@ -119,7 +141,7 @@ const WaitToJoinPageAnonymous: React.FC = () => {
               </Modal>
             </div>
           )}
-          {!chat && <div>Chat not found</div>}
+          {chat === emptyChat && <div>Chat not found</div>}
         </>
       )}
     </>

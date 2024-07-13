@@ -7,6 +7,7 @@ import api from '../api.ts';
 import ChatBox from '../components/chat/ChatBox.tsx';
 import { Chat as ChatType } from '../types/types';
 import MemberList from '../components/groups/MemberList.tsx';
+import CanEnterToChatModal from '../globalChat/CanEnterToChatModal.tsx';
 
 export default function Chat({
   getChat = 'chat/get-chat',
@@ -56,6 +57,7 @@ export default function Chat({
   return (
     chat && (
       <div className="container p-8 flex h-[93vh] flex-col gap-2">
+        <CanEnterToChatModal chatId={chat.id}></CanEnterToChatModal>
         <div className="flex justify-between items-center flex-none">
           <div>
             <h1 className="font-bold text-2xl">{chat?.name}</h1>

@@ -6,7 +6,6 @@ import { CircularProgress } from '@nextui-org/react';
 import { CreditProvider } from '../context/CreditContext.tsx';
 import { GroupProvider } from '../context/GroupContext.tsx';
 import { FeedProvider } from '../context/FeedContext.tsx';
-
 import EventModal from '../components/planner/EventModal.tsx';
 
 export default function ProtectedRoutes() {
