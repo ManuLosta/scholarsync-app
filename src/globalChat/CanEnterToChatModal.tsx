@@ -37,6 +37,7 @@ export default function CanEnterToChatModal({ chatId }: { chatId: string }) {
     if (newMessage.username == undefined) {
       SetChatIdAndUserId(newMessage);
       setName(undefined);
+      onOpen();
     } else {
       SetChatIdAndUserId(undefined);
       setName(newMessage.username);
