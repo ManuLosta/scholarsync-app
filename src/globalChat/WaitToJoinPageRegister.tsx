@@ -19,6 +19,7 @@ const WaitToJoinPageRegister: React.FC = () => {
 
   useEffect(() => {
     if (auth.user?.id === null || auth.user?.id === undefined) {
+      console.log('redireccion');
       navigate('/global-chat-external/' + id);
     }
   }, [auth.user, id, navigate]);
@@ -70,16 +71,30 @@ const WaitToJoinPageRegister: React.FC = () => {
         <>
           {chat !== emptyChat ? (
             <div>
-              <h1>Welcome to {chat.name}</h1>
-              <div></div>
-              <Button
-                onPress={() => {
-                  handleSave();
-                  setRequestStatus('request send');
-                }}
-              >
-                {requestStatus}
-              </Button>
+              <div className="flex flex-col items-center justify-center gap-10 mt-20">
+                <h1 className="font-bold text-2xl">
+                  Welcome to{' '}
+                  <b style={{ color: `hsl(var(--nextui-primary))` }}>
+                    {chat.name}
+                  </b>
+                </h1>
+
+                {requestStatus !== 'request send' ? (
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      handleSave();
+                      setRequestStatus('request send');
+                    }}
+                  >
+                    {requestStatus}
+                  </Button>
+                ) : (
+                  <Button isDisabled color="primary">
+                    {requestStatus}
+                  </Button>
+                )}
+              </div>
             </div>
           ) : (
             <div>Chat not found</div>

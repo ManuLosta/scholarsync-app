@@ -8,6 +8,7 @@ import ChatBox from '../components/chat/ChatBox.tsx';
 import { Chat as ChatType } from '../types/types';
 import MemberList from '../components/groups/MemberList.tsx';
 import CanEnterToChatModal from '../globalChat/CanEnterToChatModal.tsx';
+import ListAnonymousMembers from '../globalChat/ListAnonymousMembers.tsx';
 
 export default function Chat({
   getChat = 'chat/get-chat',
@@ -45,7 +46,7 @@ export default function Chat({
       .get(`${getChat}?chatId=${id || chatId}`)
       .then((res) => {
         const data = res.data;
-        console.log(data);
+        console.log('El chat en Chat:', data);
         setChat(data);
       })
       .catch((err) => console.error(err));
@@ -57,6 +58,11 @@ export default function Chat({
   return (
     chat && (
       <div className="container p-8 flex h-[93vh] flex-col gap-2">
+        <ListAnonymousMembers
+          getChat={chat}
+          setChat={setChat}
+          chatId={chatId}
+        ></ListAnonymousMembers>
         <CanEnterToChatModal chatId={chat.id}></CanEnterToChatModal>
         <div className="flex justify-between items-center flex-none">
           <div>

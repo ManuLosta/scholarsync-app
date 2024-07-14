@@ -90,19 +90,30 @@ const WaitToJoinPageAnonymous: React.FC = () => {
         <>
           {chat !== emptyChat && (
             <div>
-              <h1>Welcome to {chat.name}</h1>
-              <div></div>
-              {requestStatus !== 'request send' ? (
-                <Button
-                  onPress={() => {
-                    onOpen();
-                  }}
-                >
-                  {requestStatus}
-                </Button>
-              ) : (
-                <Button isDisabled>{requestStatus}</Button>
-              )}
+              <div className="flex flex-col items-center justify-center gap-10 mt-20">
+                <h1 className="font-bold text-2xl">
+                  Welcome to{' '}
+                  <b style={{ color: `hsl(var(--nextui-primary))` }}>
+                    {chat.name}
+                  </b>
+                </h1>
+
+                {requestStatus !== 'request send' ? (
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      onOpen();
+                    }}
+                  >
+                    {requestStatus}
+                  </Button>
+                ) : (
+                  <Button isDisabled color="primary">
+                    {requestStatus}
+                  </Button>
+                )}
+              </div>
+
               <Modal
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}

@@ -11,7 +11,7 @@ import {
 } from '@nextui-org/react';
 
 import CustomUser from './CustomUser';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Profile } from '../types/types';
 import api from '../api';
 type Message = {
@@ -45,20 +45,27 @@ export default function CanEnterToChatModal({ chatId }: { chatId: string }) {
       });
   }
 
+  useEffect(() => {
+    if (profile !== undefined) {
+      onOpen();
+    }
+  }, [onOpen, profile]);
+
   useSubscription(`/individual/${user?.id}/chat-access-request`, (message) => {
     console.log('lo que llego', message.body);
     const newMessage: Message = JSON.parse(message.body);
     if (newMessage.username == undefined) {
+      console.log('user coso');
       setIsId(true);
-      console.log(newMessage);
       SetChatIdAndUserId(newMessage);
       getProfile();
+      console.log(profile);
     } else {
       setIsId(false);
       setProfile(undefined);
       setName(newMessage.username);
+      onOpen();
     }
-    onOpen();
   });
 
   function handleAcces() {

@@ -1,7 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { useStompClient } from 'react-stomp-hooks';
-
 import { Button } from '@nextui-org/react';
 import api from '../api.ts';
 
@@ -19,21 +17,18 @@ export default function AnonymousChat({
   chatId: string;
 }) {
   const [chat, setChat] = useState<ChatType>(emptyChat);
-  const client = useStompClient();
   const navigate = useNavigate();
   console.log('chatid', chatId);
-  useEffect(() => {
-    return () => {
-      const isLeaving = true;
 
-      if (isLeaving) {
-        client?.publish({
-          destination: '/app/global-chat/leave',
-          body: JSON.stringify({ chatId: chatId, userId: name }),
-        });
-      }
+  function leaving() {
+    api.post('global-chat/leave', { chatId: chatId, userId: name });
+  }
+  useEffect(() => {
+    // This function is called when the component mounts
+    return () => {
+      leaving();
     };
-  }, [chatId, client, name]);
+  }, []);
 
   const fetchChat = useCallback(() => {
     api
@@ -58,7 +53,13 @@ export default function AnonymousChat({
             <h1 className="font-bold text-2xl">{chat?.name}</h1>
             <MemberList users={chat.members} />
           </div>
-          <Button onPress={() => navigate('/login')} color="danger">
+          <Button
+            onPress={() => {
+              navigate('/login');
+              leaving();
+            }}
+            color="danger"
+          >
             Abandonar
           </Button>
         </div>
