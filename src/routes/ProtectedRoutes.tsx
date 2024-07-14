@@ -7,6 +7,7 @@ import { CreditProvider } from '../context/CreditContext.tsx';
 import { GroupProvider } from '../context/GroupContext.tsx';
 import { FeedProvider } from '../context/FeedContext.tsx';
 import EventModal from '../components/planner/EventModal.tsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export default function ProtectedRoutes() {
   const auth = useAuth();
@@ -18,18 +19,20 @@ export default function ProtectedRoutes() {
           <CircularProgress />
         </div>
       ) : (
-        <GroupProvider>
-          <NotificationProvider>
-            <CreditProvider>
-              <FeedProvider>
-                <Layout>
-                  <EventModal />
-                  <Outlet />
-                </Layout>
-              </FeedProvider>
-            </CreditProvider>
-          </NotificationProvider>
-        </GroupProvider>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GroupProvider>
+              <NotificationProvider>
+                <CreditProvider>
+                  <FeedProvider>
+                    <Layout>
+                      <EventModal />
+                      <Outlet />
+                    </Layout>
+                  </FeedProvider>
+                </CreditProvider>
+              </NotificationProvider>
+            </GroupProvider>
+        </GoogleOAuthProvider>
       )}
     </>
   ) : (

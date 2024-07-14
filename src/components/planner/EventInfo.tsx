@@ -10,6 +10,8 @@ import EventForm from './EventForm';
 import { useState } from 'react';
 import { LuPencil, LuTrash2 } from 'react-icons/lu';
 import api from '../../api';
+import { deleteEvent } from '../../services/googleCalendar';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function EventInfo({
   event,
@@ -28,6 +30,7 @@ export default function EventInfo({
 }) {
   const [edit, setEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+  const { googleToken } = useAuth();
 
   const handleDelete = () => {
     if (event) {
@@ -35,6 +38,7 @@ export default function EventInfo({
         .post('events/delete', event?.id)
         .then(() => {
           setIsDelete(false);
+          deleteEvent(googleToken || '', event?.id);
           onClose();
           onDelete(event);
         })

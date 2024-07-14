@@ -17,6 +17,7 @@
     "@internationalized/date": "^3.5.2",
     "@nextui-org/react": "^2.3.5",
     "@react-aria/i18n": "^3.10.2",
+    "@react-oauth/google": "^0.12.1",
     "@tiptap/extension-underline": "^2.3.0",
     "@tiptap/pm": "^2.3.0",
     "@tiptap/react": "^2.3.0",
@@ -69,6 +70,6 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": "eslint --cache --fix",
-    "*": "prettier --write"
+    "*.{ts, tsx, js, jsx, json, css}": "prettier --write"
   }
 }

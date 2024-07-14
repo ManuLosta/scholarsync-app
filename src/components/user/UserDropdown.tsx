@@ -2,6 +2,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
+  DropdownSection,
   DropdownTrigger,
   User,
 } from '@nextui-org/react';
@@ -11,6 +12,7 @@ import ProfileCard from './ProfileCard.tsx';
 import { LuArrowLeftToLine } from 'react-icons/lu';
 import { useCallback, useEffect, useState } from 'react';
 import api from '../../api.ts';
+import GoogleLogin from './GoogleLogin.tsx';
 
 export default function UserDropdown() {
   const auth = useAuth();
@@ -50,6 +52,7 @@ export default function UserDropdown() {
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
         <DropdownItem
+          isReadOnly
           classNames={{ base: 'hover:bg-background' }}
           key="user"
           textValue="user"
@@ -57,9 +60,19 @@ export default function UserDropdown() {
         >
           {auth?.user && <ProfileCard user={auth?.user} />}
         </DropdownItem>
-        <DropdownItem key="theme" textValue="theme" closeOnSelect={false}>
-          <ThemeSwitcher />
-        </DropdownItem>
+        <DropdownSection title="Configuración" showDivider>
+          <DropdownItem
+            key="theme"
+            textValue="theme"
+            closeOnSelect={false}
+            isReadOnly
+          >
+            <ThemeSwitcher />
+          </DropdownItem>
+          <DropdownItem isReadOnly>
+            <GoogleLogin />
+          </DropdownItem>
+        </DropdownSection>
         <DropdownItem
           key="logout"
           className="text-danger"
