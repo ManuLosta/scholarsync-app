@@ -1,11 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { Button } from '@nextui-org/react';
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Snippet,
+  useDisclosure,
+} from '@nextui-org/react';
 import api from '../api.ts';
 
 import { Chat as ChatType } from '../types/types';
 import MemberList from '../components/groups/MemberList.tsx';
-import CanEnterToChatModal from '../globalChat/CanEnterToChatModal.tsx';
 import { emptyChat } from '../types/emptyChat.tsx';
 import AnonymousChatBox from './AnonymusChatBox.tsx';
 
@@ -19,16 +27,21 @@ export default function AnonymousChat({
   const [chat, setChat] = useState<ChatType>(emptyChat);
   const navigate = useNavigate();
   console.log('chatid', chatId);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  function leaving() {
-    api.post('global-chat/leave', { chatId: chatId, userId: name });
-  }
   useEffect(() => {
+    onOpen();
+  }, [onOpen]);
+
+  useEffect(() => {
+    function leaving() {
+      api.post('global-chat/leave', { chatId: chatId, userId: name });
+    }
     // This function is called when the component mounts
     return () => {
       leaving();
     };
-  }, []);
+  }, [chatId, name]);
 
   const fetchChat = useCallback(() => {
     api
@@ -47,7 +60,26 @@ export default function AnonymousChat({
   return (
     chat && (
       <div className="container p-8 flex h-[93vh] flex-col gap-2">
-        <CanEnterToChatModal chatId={chat.id}></CanEnterToChatModal>
+        <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Comparti la sesion!
+                </ModalHeader>
+                <ModalBody>
+                  <Snippet color="primary">{`http://localhost:5173/global-chat-external/${chatId}`}</Snippet>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" onPress={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+
         <div className="flex justify-between items-center flex-none">
           <div>
             <h1 className="font-bold text-2xl">{chat?.name}</h1>
@@ -56,7 +88,6 @@ export default function AnonymousChat({
           <Button
             onPress={() => {
               navigate('/login');
-              leaving();
             }}
             color="danger"
           >

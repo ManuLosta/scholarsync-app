@@ -2,13 +2,21 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { useStompClient } from 'react-stomp-hooks';
 import { useAuth } from '../hooks/useAuth.ts';
-import { Button } from '@nextui-org/react';
 import api from '../api.ts';
 import ChatBox from '../components/chat/ChatBox.tsx';
 import { Chat as ChatType } from '../types/types';
 import MemberList from '../components/groups/MemberList.tsx';
 import CanEnterToChatModal from '../globalChat/CanEnterToChatModal.tsx';
-import ListAnonymousMembers from '../globalChat/ListAnonymousMembers.tsx';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Snippet,
+  useDisclosure,
+} from '@nextui-org/react';
 
 export default function Chat({
   getChat = 'chat/get-chat',
@@ -22,6 +30,11 @@ export default function Chat({
   const { user } = useAuth();
   const client = useStompClient();
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    onOpen();
+  }, [onOpen]);
 
   useEffect(() => {
     client?.publish({
@@ -58,11 +71,25 @@ export default function Chat({
   return (
     chat && (
       <div className="container p-8 flex h-[93vh] flex-col gap-2">
-        <ListAnonymousMembers
-          getChat={chat}
-          setChat={setChat}
-          chatId={chatId}
-        ></ListAnonymousMembers>
+        <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Comparti la sesion!
+                </ModalHeader>
+                <ModalBody>
+                  <Snippet color="primary">{`http://localhost:5173/global-chat-external/${chatId}`}</Snippet>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" onPress={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
         <CanEnterToChatModal chatId={chat.id}></CanEnterToChatModal>
         <div className="flex justify-between items-center flex-none">
           <div>
