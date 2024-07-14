@@ -1,35 +1,32 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { useStompClient } from 'react-stomp-hooks';
-import { useAuth } from '../hooks/useAuth.ts';
-import api from '../api.ts';
-import ChatBox from '../components/chat/ChatBox.tsx';
-import { Chat as ChatType } from '../types/types';
-import MemberList from '../components/groups/MemberList.tsx';
-import CanEnterToChatModal from '../globalChat/CanEnterToChatModal.tsx';
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Snippet,
   useDisclosure,
 } from '@nextui-org/react';
+import api from '../api.ts';
 
-export default function Chat({
-  getChat = 'chat/get-chat',
-  chatId = '',
+import { Chat as ChatType } from '../types/types';
+import MemberList from '../components/groups/MemberList.tsx';
+import { emptyChat } from '../types/emptyChat.tsx';
+import AnonymousChatBox from './AnonymusChatBox.tsx';
+
+export default function AnonymousChat({
+  name,
+  chatId,
 }: {
-  getChat?: string;
-  chatId?: string;
+  name: string;
+  chatId: string;
 }) {
-  const [chat, setChat] = useState<ChatType | null>(null);
-  const { id } = useParams();
-  const { user } = useAuth();
-  const client = useStompClient();
+  const [chat, setChat] = useState<ChatType>(emptyChat);
   const navigate = useNavigate();
+  console.log('chatid', chatId);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -37,33 +34,25 @@ export default function Chat({
   }, [onOpen]);
 
   useEffect(() => {
-    client?.publish({
-      destination: '/app/chat/join',
-      body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
-    });
-
+    function leaving() {
+      api.post('global-chat/leave', { chatId: chatId, userId: name });
+    }
+    // This function is called when the component mounts
     return () => {
-      const isLeaving = true;
-
-      if (isLeaving) {
-        client?.publish({
-          destination: '/app/chat/leave',
-          body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
-        });
-      }
+      leaving();
     };
-  }, [id, user?.id, client, chatId]);
+  }, [chatId, name]);
 
   const fetchChat = useCallback(() => {
     api
-      .get(`${getChat}?chatId=${id || chatId}`)
+      .get(`global-chat/get-chat?chatId=${chatId}`)
       .then((res) => {
         const data = res.data;
-        console.log('El chat en Chat:', data);
+        console.log(data);
         setChat(data);
       })
       .catch((err) => console.error(err));
-  }, [chatId, getChat, id]);
+  }, [chatId]);
   useEffect(() => {
     fetchChat();
   }, [fetchChat]);
@@ -90,18 +79,27 @@ export default function Chat({
             )}
           </ModalContent>
         </Modal>
-        <CanEnterToChatModal chatId={chat.id}></CanEnterToChatModal>
+
         <div className="flex justify-between items-center flex-none">
           <div>
             <h1 className="font-bold text-2xl">{chat?.name}</h1>
             <MemberList users={chat.members} />
           </div>
-          <Button onPress={() => navigate('/')} color="danger">
+          <Button
+            onPress={() => {
+              navigate('/login');
+            }}
+            color="danger"
+          >
             Abandonar
           </Button>
         </div>
         <div className="flex-grow overflow-auto p-2">
-          <ChatBox chatId={chat?.id || ''} onUserJoin={fetchChat} />
+          <AnonymousChatBox
+            anonymousName={name}
+            chatId={chatId}
+            onUserJoin={fetchChat}
+          />
         </div>
       </div>
     )

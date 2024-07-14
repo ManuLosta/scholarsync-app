@@ -13,7 +13,9 @@ import { ThemeProvider } from 'next-themes';
 import EditQuestion from './pages/EditQuestion.tsx';
 import Chat from './pages/Chat.tsx';
 import Planner from './pages/Planner.tsx';
-import SearchPage from './components/search/SearchPage.tsx';
+import WaitToJoinPageRegister from './globalChat/WaitToJoinPageRegister.tsx';
+import WaitToJoinPageAnonymous from './globalChat/WaitToJoinPageAnonymous.tsx';
+import { StompSessionProvider } from 'react-stomp-hooks';
 
 export default function App() {
   const navigate = useNavigate();
@@ -22,25 +24,31 @@ export default function App() {
     <NextUIProvider navigate={navigate}>
       <ThemeProvider attribute="class" defaultTheme="light">
         <AuthProvider>
-          <Routes>
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/user/:id" element={<User />} />
-              <Route path="/group/:groupId" element={<Group />} />
-              <Route path="/:groupId/new-post" element={<NewPost />} />
-              <Route path="/new-post" element={<NewPost />} />
-              <Route path="/question/:id" element={<Question />} />
-              <Route path="/question/:id/edit" element={<EditQuestion />} />
-              <Route path="/chat/:id" element={<Chat />} />
+          <StompSessionProvider url={'ws://localhost:8080/message-broker'}>
+            <Routes>
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/user/:id" element={<User />} />
+                <Route path="/group/:groupId" element={<Group />} />
+                <Route path="/:groupId/new-post" element={<NewPost />} />
+                <Route path="/new-post" element={<NewPost />} />
+                <Route path="/question/:id" element={<Question />} />
+                <Route path="/question/:id/edit" element={<EditQuestion />} />
+                <Route path="/chat/:id" element={<Chat />} />
+                <Route path="/planner" element={<Planner />} />
+                <Route
+                  path="global-chat/:id"
+                  element={<WaitToJoinPageRegister />}
+                ></Route>
+              </Route>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route
-                path="/chat/:id"
-                element={<SearchPage searchString={''} />}
-              />
-              <Route path="/planner" element={<Planner />} />
-            </Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
+                path="/global-chat-external/:id"
+                element={<WaitToJoinPageAnonymous />}
+              ></Route>
+            </Routes>
+          </StompSessionProvider>
         </AuthProvider>
       </ThemeProvider>
     </NextUIProvider>

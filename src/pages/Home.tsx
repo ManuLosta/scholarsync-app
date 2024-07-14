@@ -2,6 +2,7 @@ import PostList from '../components/feed/PostList.tsx';
 import { LuCalendar, LuStar } from 'react-icons/lu';
 import { OrderType } from '../context/feedReducer.ts';
 import { useAuth } from '../hooks/useAuth.ts';
+import CreateGlobalChatButton from '../globalChat/CreateGlobalChatButton.tsx';
 
 const postsOrder = [
   {
@@ -21,6 +22,7 @@ export default function Home() {
 
   return (
     <div className="container p-8">
+      <CreateGlobalChatButton></CreateGlobalChatButton>
       <PostList
         orders={postsOrder}
         defaultOrder={postsOrder[0].key as OrderType}
