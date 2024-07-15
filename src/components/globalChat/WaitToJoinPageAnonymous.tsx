@@ -9,12 +9,12 @@ import {
   useDisclosure,
   Modal,
 } from '@nextui-org/react';
-import api from '../api';
-import { emptyChat } from '../types/emptyChat';
-import { Chat } from '../types/types';
+import api from '../../api';
+import { emptyChat } from '../../types/emptyChat';
+import { Chat } from '../../types/types';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import AnonymusChat from './AnonymusChat';
 
 const WaitToJoinPageAnonymous: React.FC = () => {
@@ -92,7 +92,7 @@ const WaitToJoinPageAnonymous: React.FC = () => {
             <div>
               <div className="flex flex-col items-center justify-center gap-10 mt-20">
                 <h1 className="font-bold text-2xl">
-                  Welcome to{' '}
+                  Te han invitado a la sesión{' '}
                   <b style={{ color: `hsl(var(--nextui-primary))` }}>
                     {chat.name}
                   </b>
@@ -105,11 +105,11 @@ const WaitToJoinPageAnonymous: React.FC = () => {
                       onOpen();
                     }}
                   >
-                    {requestStatus}
+                    Solicitar acceso
                   </Button>
                 ) : (
                   <Button isDisabled color="primary">
-                    {requestStatus}
+                    Solicitud enviada
                   </Button>
                 )}
               </div>

@@ -10,11 +10,11 @@ import {
   Snippet,
   useDisclosure,
 } from '@nextui-org/react';
-import api from '../api.ts';
+import api from '../../api.ts';
 
-import { Chat as ChatType } from '../types/types';
-import MemberList from '../components/groups/MemberList.tsx';
-import { emptyChat } from '../types/emptyChat.tsx';
+import { Chat as ChatType } from '../../types/types';
+import MemberList from '../groups/MemberList.tsx';
+import { emptyChat } from '../../types/emptyChat.tsx';
 import AnonymousChatBox from './AnonymusChatBox.tsx';
 
 export default function AnonymousChat({
@@ -26,7 +26,6 @@ export default function AnonymousChat({
 }) {
   const [chat, setChat] = useState<ChatType>(emptyChat);
   const navigate = useNavigate();
-  console.log('chatid', chatId);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -48,7 +47,7 @@ export default function AnonymousChat({
       .get(`global-chat/get-chat?chatId=${chatId}`)
       .then((res) => {
         const data = res.data;
-        console.log(data);
+        console.log(data)
         setChat(data);
       })
       .catch((err) => console.error(err));
@@ -59,7 +58,7 @@ export default function AnonymousChat({
 
   return (
     chat && (
-      <div className="container p-8 flex h-[93vh] flex-col gap-2">
+      <div className="container p-8 flex h-[93vh] flex-col gap-2 mx-auto">
         <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
           <ModalContent>
             {(onClose) => (

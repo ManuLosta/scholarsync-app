@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import api from '../api';
-import { Chat } from '../types/types';
+import api from '../../api';
+import { Chat } from '../../types/types';
 
 interface Props {
   getChat: Chat;

@@ -13,8 +13,8 @@ import { ThemeProvider } from 'next-themes';
 import EditQuestion from './pages/EditQuestion.tsx';
 import Chat from './pages/Chat.tsx';
 import Planner from './pages/Planner.tsx';
-import WaitToJoinPageRegister from './globalChat/WaitToJoinPageRegister.tsx';
-import WaitToJoinPageAnonymous from './globalChat/WaitToJoinPageAnonymous.tsx';
+import WaitToJoinPageRegister from './components/globalChat/WaitToJoinPageRegister.tsx';
+import WaitToJoinPageAnonymous from './components/globalChat/WaitToJoinPageAnonymous.tsx';
 import { StompSessionProvider } from 'react-stomp-hooks';
 
 export default function App() {

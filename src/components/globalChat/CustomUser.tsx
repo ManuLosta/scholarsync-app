@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chip, cn, Link, User } from '@nextui-org/react';
-import { Profile } from '../types/types';
-import UserPicture from '../components/user/UserPicture';
+import { Profile } from '../../types/types';
+import UserPicture from '../user/UserPicture';
 
 interface CustomUserProps {
   user: Profile;
@@ -33,7 +33,7 @@ const CustomUser: React.FC<CustomUserProps> = ({
         {isAnonymous ? (
           <User
             name={user.username}
-            description={'Es un usuario anonimo'}
+            description={'Es un usuario anónimo'}
             key={123}
             avatarProps={{
               src: 'https://static.vecteezy.com/system/resources/previews/032/330/617/original/anonymous-icon-in-trendy-outline-style-isolated-on-white-background-anonymous-silhouette-symbol-for-your-website-design-logo-app-ui-illustration-eps10-free-vector.jpg',
@@ -63,7 +63,7 @@ const CustomUser: React.FC<CustomUserProps> = ({
           <div className="flex flex-col items-end gap-1">
             <span className="text-tiny text-default-500"></span>
             <Chip color={statusColor} size="sm" variant="flat">
-              {isAnonymous ? 'Anonymous' : user.level}
+              {isAnonymous ? 'Anónimo' : user.level}
             </Chip>
           </div>
         }

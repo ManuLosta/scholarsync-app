@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api';
-import { emptyChat } from '../types/emptyChat';
-import { Chat as ChaType } from '../types/types';
+import api from '../../api';
+import { emptyChat } from '../../types/emptyChat';
+import { Chat as ChaType } from '../../types/types';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { Button } from '@nextui-org/react';
-import Chat from '../pages/Chat';
+import Chat from '../../pages/Chat';
 
 const WaitToJoinPageRegister: React.FC = () => {
   const { id } = useParams();
@@ -14,7 +14,7 @@ const WaitToJoinPageRegister: React.FC = () => {
   const [chat, setChat] = useState<ChaType>(emptyChat);
   const auth = useAuth();
   const navigate = useNavigate();
-  const [requestStatus, setRequestStatus] = useState<string>('request access');
+  const [requestStatus, setRequestStatus] = useState<string>('Solicitar acceso');
   const [canAccess, setCanAccess] = useState(false);
 
   useEffect(() => {
@@ -33,6 +33,7 @@ const WaitToJoinPageRegister: React.FC = () => {
           setChat(emptyChat);
         } else {
           setChat(data);
+          console.log(data)
         }
       })
       .catch((err) => {
@@ -57,9 +58,8 @@ const WaitToJoinPageRegister: React.FC = () => {
 
   useSubscription(
     `/individual/${auth.user?.id}/chat-request-accepted`,
-    (message) => {
+    () => {
       setCanAccess(true);
-      console.log(message);
     },
   );
 
@@ -73,26 +73,26 @@ const WaitToJoinPageRegister: React.FC = () => {
             <div>
               <div className="flex flex-col items-center justify-center gap-10 mt-20">
                 <h1 className="font-bold text-2xl">
-                  Welcome to{' '}
+                  Te han invitado a la sesión{' '}
                   <b style={{ color: `hsl(var(--nextui-primary))` }}>
                     {chat.name}
                   </b>
                 </h1>
 
-                {requestStatus !== 'request send' ? (
+                {requestStatus !== 'Solicitud enviada' ? (
                   <Button
                     color="primary"
                     onPress={() => {
                       handleSave();
-                      setRequestStatus('request send');
+                      setRequestStatus('Solicitud enviada');
                     }}
                   >
                     {requestStatus}
                   </Button>
                 ) : (
-                  <Button isDisabled color="primary">
-                    {requestStatus}
-                  </Button>
+                    <Button isLoading isDisabled color="primary">
+                      {requestStatus}
+                    </Button>
                 )}
               </div>
             </div>

@@ -2,7 +2,7 @@ import PostList from '../components/feed/PostList.tsx';
 import { LuCalendar, LuStar } from 'react-icons/lu';
 import { OrderType } from '../context/feedReducer.ts';
 import { useAuth } from '../hooks/useAuth.ts';
-import CreateGlobalChatButton from '../globalChat/CreateGlobalChatButton.tsx';
+import CreateGlobalChatButton from '../components/globalChat/CreateGlobalChatButton.tsx';
 
 const postsOrder = [
   {

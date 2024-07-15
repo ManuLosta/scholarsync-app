@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Chip, cn, Link, User } from '@nextui-org/react';
-import { Profile } from '../types/types';
-import UserPicture from '../components/user/UserPicture';
-import api from '../api';
+import { Profile } from '../../types/types';
+import UserPicture from '../user/UserPicture';
+import api from '../../api';
 
 interface CustomUserProps {
   chatIdAndUserId: ChatIdAndUserId | undefined;
@@ -89,7 +89,7 @@ const CustomUser: React.FC<CustomUserProps> = ({
           <div className="flex flex-col items-end gap-1">
             <span className="text-tiny text-default-500"></span>
             <Chip color={statusColor} size="sm" variant="flat">
-              {chatIdAndUserId == undefined ? 'Anonymous' : profile?.level}
+              {chatIdAndUserId == undefined ? 'Anónimo' : profile?.level}
             </Chip>
           </div>
         }

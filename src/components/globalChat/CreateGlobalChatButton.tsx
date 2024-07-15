@@ -11,8 +11,8 @@ import {
 
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import api from '../api';
+import { useAuth } from '../../hooks/useAuth';
+import api from '../../api';
 
 export default function CreateGlobalChatButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -51,7 +51,7 @@ export default function CreateGlobalChatButton() {
     <>
       <Button color="secondary" onPress={onOpen}>
         <LuPlus />
-        Crear session Global
+        Crear sesión global 
       </Button>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -62,10 +62,10 @@ export default function CreateGlobalChatButton() {
               <ModalBody>
                 <Input
                   isInvalid={!validity}
-                  errorMessage="Escribi un nombre valido"
+                  errorMessage="Escribí un nombre valido"
                   className="max-w-xs"
-                  label="Nombre session"
-                  placeholder="Nombre de session"
+                  label="Nombre sesión"
+                  placeholder="Nombre de sesión"
                   value={nameChat}
                   onValueChange={setNameChat}
                 />

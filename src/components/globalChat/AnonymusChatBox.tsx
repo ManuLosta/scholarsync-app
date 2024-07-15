@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileMessage, Message } from '../types/types';
+import { FileMessage, Message } from '../../types/types';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
-import api from '../api';
-import MessageBubble from '../components/chat/MessageBubble';
+import api from '../../api';
+import MessageBubble from '../chat/MessageBubble';
 import { Button, Input, Tooltip } from '@nextui-org/react';
 import { LuFile, LuSend } from 'react-icons/lu';
 
@@ -50,19 +50,17 @@ export default function AnonymousChatBox({
       fetchImage(newMessage.sender.id);
     }
     onUserJoin();
+    console.log(newMessage.sender.username, anonymousName);
   });
 
   useSubscription(`/chat/${chatId}/files`, (message) => {
     const file: FileMessage = JSON.parse(message.body);
-    console.log('Received file: ', file);
     setMessages((prevMessages) => [...prevMessages, file]);
   });
 
   useSubscription(`/chat/${chatId}/info`, (message) => {
-    console.log('info', message);
     const newMessage = JSON.parse(message.body);
     onUserJoin();
-    console.log(newMessage);
     setMessages((prevMessages) => [
       ...prevMessages,
       { is_system: true, ...newMessage },
@@ -148,7 +146,7 @@ export default function AnonymousChatBox({
           } else {
             message = message as Message | FileMessage;
             const isAnonymousUserMessage =
-              message.senderUsername === anonymousName;
+              message.sender.username === anonymousName;
             return (
               <div
                 key={index}

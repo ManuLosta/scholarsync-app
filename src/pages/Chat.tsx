@@ -6,7 +6,7 @@ import api from '../api.ts';
 import ChatBox from '../components/chat/ChatBox.tsx';
 import { Chat as ChatType } from '../types/types';
 import MemberList from '../components/groups/MemberList.tsx';
-import CanEnterToChatModal from '../globalChat/CanEnterToChatModal.tsx';
+import CanEnterToChatModal from '../components/globalChat/CanEnterToChatModal.tsx';
 import {
   Modal,
   ModalContent,
