@@ -7,34 +7,24 @@ import ChatBox from '../components/chat/ChatBox.tsx';
 import { Chat as ChatType } from '../types/types';
 import MemberList from '../components/groups/MemberList.tsx';
 import CanEnterToChatModal from '../components/globalChat/CanEnterToChatModal.tsx';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  Snippet,
-  useDisclosure,
-} from '@nextui-org/react';
+import { Button } from '@nextui-org/react';
+import ShareChat from '../components/globalChat/ShareChat.tsx';
+
 
 export default function Chat({
   getChat = 'chat/get-chat',
   chatId = '',
+  isGlobal = false,
 }: {
   getChat?: string;
   chatId?: string;
+  isGlobal: boolean;
 }) {
   const [chat, setChat] = useState<ChatType | null>(null);
   const { id } = useParams();
   const { user } = useAuth();
   const client = useStompClient();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  useEffect(() => {
-    onOpen();
-  }, [onOpen]);
 
   useEffect(() => {
     client?.publish({
@@ -64,6 +54,7 @@ export default function Chat({
       })
       .catch((err) => console.error(err));
   }, [chatId, getChat, id]);
+
   useEffect(() => {
     fetchChat();
   }, [fetchChat]);
@@ -71,34 +62,20 @@ export default function Chat({
   return (
     chat && (
       <div className="container p-8 flex h-[93vh] flex-col gap-2">
-        <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  Comparti la sesion!
-                </ModalHeader>
-                <ModalBody>
-                  <Snippet color="primary">{`http://localhost:5173/global-chat-external/${chatId}`}</Snippet>
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="primary" onPress={onClose}>
-                    Close
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-        <CanEnterToChatModal chatId={chat.id}></CanEnterToChatModal>
+        {isGlobal && (
+          <CanEnterToChatModal chatId={chat.id} />
+        )}
         <div className="flex justify-between items-center flex-none">
           <div>
             <h1 className="font-bold text-2xl">{chat?.name}</h1>
             <MemberList users={chat.members} />
           </div>
-          <Button onPress={() => navigate('/')} color="danger">
-            Abandonar
-          </Button>
+          <div className='flex gap-2'>
+            {isGlobal && <ShareChat chatId={id || ""} chatName={chat.name} />}
+            <Button onPress={() => navigate('/')} color="danger">
+              Abandonar
+            </Button>
+          </div>
         </div>
         <div className="flex-grow overflow-auto p-2">
           <ChatBox chatId={chat?.id || ''} onUserJoin={fetchChat} />

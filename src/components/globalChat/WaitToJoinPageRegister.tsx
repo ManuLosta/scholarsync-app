@@ -66,7 +66,7 @@ const WaitToJoinPageRegister: React.FC = () => {
   return (
     <>
       {canAccess ? (
-        <Chat chatId={id?.toString() || ''} getChat={'global-chat/get-chat'} />
+        <Chat chatId={id?.toString() || ''} getChat={'global-chat/get-chat'} isGlobal={true} />
       ) : (
         <>
           {chat !== emptyChat ? (

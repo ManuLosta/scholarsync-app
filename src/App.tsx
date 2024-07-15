@@ -34,7 +34,7 @@ export default function App() {
                 <Route path="/new-post" element={<NewPost />} />
                 <Route path="/question/:id" element={<Question />} />
                 <Route path="/question/:id/edit" element={<EditQuestion />} />
-                <Route path="/chat/:id" element={<Chat />} />
+                <Route path="/chat/:id" element={<Chat isGlobal={false} />} />
                 <Route path="/planner" element={<Planner />} />
                 <Route
                   path="global-chat/:id"
