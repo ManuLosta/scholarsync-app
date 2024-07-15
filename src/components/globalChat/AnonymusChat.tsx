@@ -18,16 +18,6 @@ export default function AnonymousChat({
   const [chat, setChat] = useState<ChatType>(emptyChat);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    function leaving() {
-      api.post('global-chat/leave', { chatId: chatId, userId: name });
-    }
-    // This function is called when the component mounts
-    return () => {
-      leaving();
-    };
-  }, [chatId, name]);
-
   const fetchChat = useCallback(() => {
     api
       .get(`global-chat/get-chat?chatId=${chatId}`)
@@ -42,6 +32,11 @@ export default function AnonymousChat({
     fetchChat();
   }, [fetchChat]);
 
+  const handleLeave = () => {
+    api.post('global-chat/leave', { chatId: chatId, userId: name });
+    navigate("/")
+  }
+
   return (
     chat && (
       <div className="container p-8 flex h-screen w-screen flex-col gap-2 mx-auto">
@@ -53,9 +48,7 @@ export default function AnonymousChat({
           <div className='flex gap-2'>
           <ShareChat chatId={chatId}  chatName={chat.name} />
           <Button
-            onPress={() => {
-              navigate('/login');
-            }}
+            onPress={handleLeave}
             color="danger"
           >
             Abandonar

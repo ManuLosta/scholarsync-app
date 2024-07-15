@@ -10,7 +10,6 @@ import CanEnterToChatModal from '../components/globalChat/CanEnterToChatModal.ts
 import { Button } from '@nextui-org/react';
 import ShareChat from '../components/globalChat/ShareChat.tsx';
 
-
 export default function Chat({
   getChat = 'chat/get-chat',
   chatId = '',
@@ -27,21 +26,11 @@ export default function Chat({
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('joinin');
     client?.publish({
       destination: '/app/chat/join',
       body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
     });
-
-    return () => {
-      const isLeaving = true;
-
-      if (isLeaving) {
-        client?.publish({
-          destination: '/app/chat/leave',
-          body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
-        });
-      }
-    };
   }, [id, user?.id, client, chatId]);
 
   const fetchChat = useCallback(() => {
@@ -59,20 +48,26 @@ export default function Chat({
     fetchChat();
   }, [fetchChat]);
 
+  const handleLeave = () => {
+    client?.publish({
+      destination: '/app/chat/leave',
+      body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
+    });
+    navigate("/");
+  };
+
   return (
     chat && (
       <div className="container p-8 flex h-[93vh] flex-col gap-2">
-        {isGlobal && (
-          <CanEnterToChatModal chatId={chat.id} />
-        )}
+        {isGlobal && <CanEnterToChatModal chatId={chat.id} />}
         <div className="flex justify-between items-center flex-none">
           <div>
             <h1 className="font-bold text-2xl">{chat?.name}</h1>
             <MemberList users={chat.members} />
           </div>
-          <div className='flex gap-2'>
-            {isGlobal && <ShareChat chatId={id || ""} chatName={chat.name} />}
-            <Button onPress={() => navigate('/')} color="danger">
+          <div className="flex gap-2">
+            {isGlobal && <ShareChat chatId={id || ''} chatName={chat.name} />}
+            <Button onPress={handleLeave} color="danger">
               Abandonar
             </Button>
           </div>
