@@ -8,10 +8,11 @@ import {
 import { Event } from '../../types/types';
 import EventForm from './EventForm';
 import { useState } from 'react';
-import { LuPencil, LuTrash2 } from 'react-icons/lu';
+import { LuCalendar, LuClock, LuPencil, LuTrash2, LuUsers } from 'react-icons/lu';
 import api from '../../api';
 import { deleteEvent } from '../../services/googleCalendar';
 import { useAuth } from '../../hooks/useAuth';
+import dayjs from 'dayjs';
 
 export default function EventInfo({
   event,
@@ -73,7 +74,18 @@ export default function EventInfo({
           ) : (
             <div className="p-3 flex flex-col gap-2">
               <p className="font-bold text-lg">{event?.title}</p>
-              <p>{event?.groupName}</p>
+              <div className="flex items-center gap-2">
+                <LuUsers />
+                <p>{event?.groupName}</p>
+              </div>
+              <div className='flex items-center gap-2'>
+                <LuCalendar />
+                {dayjs(event?.start).format("dd DD MMMM YYYY")}
+              </div>
+              <div className='flex items-center gap-2'>
+                <LuClock />
+                {dayjs(event?.start).format("HH:mm")} - {dayjs(event?.end).format("HH:mm")}
+              </div>
               <div className="flex gap-2 ms-auto">
                 <Modal
                   isOpen={isDelete}

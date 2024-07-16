@@ -46,7 +46,7 @@ export default function App() {
               <Route
                 path="/global-chat-external/:id"
                 element={<WaitToJoinPageAnonymous />}
-              ></Route>
+              />
             </Routes>
           </StompSessionProvider>
         </AuthProvider>

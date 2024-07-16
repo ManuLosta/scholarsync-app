@@ -28,6 +28,7 @@ export default function AnonymousChat({
       })
       .catch((err) => console.error(err));
   }, [chatId]);
+
   useEffect(() => {
     fetchChat();
   }, [fetchChat]);

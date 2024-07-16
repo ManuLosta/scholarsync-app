@@ -100,8 +100,11 @@ export default function EventForm({
           ),
           start: new Time(event.start.getHours(), event.start.getMinutes()),
           end: new Time(event.end.getHours(), event.start.getMinutes()),
+          saveGoogle: false
         }
-      : undefined,
+      : {
+        saveGoogle: false
+      },
   });
   const { googleToken } = useAuth();
 
