@@ -53,7 +53,7 @@ export default function Chat({
       destination: '/app/chat/leave',
       body: JSON.stringify({ chat_id: id || chatId, user_id: user?.id }),
     });
-    navigate("/");
+    navigate('/');
   };
 
   return (

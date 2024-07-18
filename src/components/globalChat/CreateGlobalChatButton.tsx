@@ -51,7 +51,7 @@ export default function CreateGlobalChatButton() {
     <>
       <Button color="secondary" onPress={onOpen}>
         <LuPlus />
-        Crear sesión global 
+        Crear sesión global
       </Button>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>

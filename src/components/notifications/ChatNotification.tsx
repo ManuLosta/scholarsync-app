@@ -35,7 +35,7 @@ export default function ChatNotification({
             </div>
             <div>
               <p>
-                Se ha iniciado una sessión nueva {notification.name} en el grupo{' '}
+                Se ha iniciado una sesión nueva {notification.name} en el grupo{' '}
                 {notification.group}
               </p>
             </div>

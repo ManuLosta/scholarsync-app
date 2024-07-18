@@ -64,7 +64,7 @@ export default function NewChatForm({
           Cancelar
         </Button>
         <Button color="primary" type="submit">
-          Crear sessión
+          Crear sesión
         </Button>
       </div>
     </form>

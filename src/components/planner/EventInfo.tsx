@@ -8,7 +8,13 @@ import {
 import { Event } from '../../types/types';
 import EventForm from './EventForm';
 import { useState } from 'react';
-import { LuCalendar, LuClock, LuPencil, LuTrash2, LuUsers } from 'react-icons/lu';
+import {
+  LuCalendar,
+  LuClock,
+  LuPencil,
+  LuTrash2,
+  LuUsers,
+} from 'react-icons/lu';
 import api from '../../api';
 import { deleteEvent } from '../../services/googleCalendar';
 import { useAuth } from '../../hooks/useAuth';
@@ -78,13 +84,14 @@ export default function EventInfo({
                 <LuUsers />
                 <p>{event?.groupName}</p>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className="flex items-center gap-2">
                 <LuCalendar />
-                {dayjs(event?.start).format("dd DD MMMM YYYY")}
+                {dayjs(event?.start).format('dd DD MMMM YYYY')}
               </div>
-              <div className='flex items-center gap-2'>
+              <div className="flex items-center gap-2">
                 <LuClock />
-                {dayjs(event?.start).format("HH:mm")} - {dayjs(event?.end).format("HH:mm")}
+                {dayjs(event?.start).format('HH:mm')} -{' '}
+                {dayjs(event?.end).format('HH:mm')}
               </div>
               <div className="flex gap-2 ms-auto">
                 <Modal

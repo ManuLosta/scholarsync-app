@@ -14,7 +14,8 @@ const WaitToJoinPageRegister: React.FC = () => {
   const [chat, setChat] = useState<ChaType>(emptyChat);
   const auth = useAuth();
   const navigate = useNavigate();
-  const [requestStatus, setRequestStatus] = useState<string>('Solicitar acceso');
+  const [requestStatus, setRequestStatus] =
+    useState<string>('Solicitar acceso');
   const [canAccess, setCanAccess] = useState(false);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const WaitToJoinPageRegister: React.FC = () => {
           setChat(emptyChat);
         } else {
           setChat(data);
-          console.log(data)
+          console.log(data);
         }
       })
       .catch((err) => {
@@ -56,17 +57,18 @@ const WaitToJoinPageRegister: React.FC = () => {
     });
   }
 
-  useSubscription(
-    `/individual/${auth.user?.id}/chat-request-accepted`,
-    () => {
-      setCanAccess(true);
-    },
-  );
+  useSubscription(`/individual/${auth.user?.id}/chat-request-accepted`, () => {
+    setCanAccess(true);
+  });
 
   return (
     <>
       {canAccess ? (
-        <Chat chatId={id?.toString() || ''} getChat={'global-chat/get-chat'} isGlobal={true} />
+        <Chat
+          chatId={id?.toString() || ''}
+          getChat={'global-chat/get-chat'}
+          isGlobal={true}
+        />
       ) : (
         <>
           {chat !== emptyChat ? (
@@ -90,9 +92,9 @@ const WaitToJoinPageRegister: React.FC = () => {
                     {requestStatus}
                   </Button>
                 ) : (
-                    <Button isLoading isDisabled color="primary">
-                      {requestStatus}
-                    </Button>
+                  <Button isLoading isDisabled color="primary">
+                    {requestStatus}
+                  </Button>
                 )}
               </div>
             </div>

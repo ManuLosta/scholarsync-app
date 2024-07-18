@@ -23,7 +23,7 @@ export default function AnonymousChat({
       .get(`global-chat/get-chat?chatId=${chatId}`)
       .then((res) => {
         const data = res.data;
-        console.log(data)
+        console.log(data);
         setChat(data);
       })
       .catch((err) => console.error(err));
@@ -35,8 +35,8 @@ export default function AnonymousChat({
 
   const handleLeave = () => {
     api.post('global-chat/leave', { chatId: chatId, userId: name });
-    navigate("/")
-  }
+    navigate('/');
+  };
 
   return (
     chat && (
@@ -46,14 +46,11 @@ export default function AnonymousChat({
             <h1 className="font-bold text-2xl">{chat?.name}</h1>
             <MemberList users={chat.members} />
           </div>
-          <div className='flex gap-2'>
-          <ShareChat chatId={chatId}  chatName={chat.name} />
-          <Button
-            onPress={handleLeave}
-            color="danger"
-          >
-            Abandonar
-          </Button>
+          <div className="flex gap-2">
+            <ShareChat chatId={chatId} chatName={chat.name} />
+            <Button onPress={handleLeave} color="danger">
+              Abandonar
+            </Button>
           </div>
         </div>
         <div className="flex-grow overflow-auto p-2">

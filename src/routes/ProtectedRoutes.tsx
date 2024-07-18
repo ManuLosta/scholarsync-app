@@ -20,18 +20,18 @@ export default function ProtectedRoutes() {
         </div>
       ) : (
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-            <GroupProvider>
-              <NotificationProvider>
-                <CreditProvider>
-                  <FeedProvider>
-                    <Layout>
-                      <EventModal />
-                      <Outlet />
-                    </Layout>
-                  </FeedProvider>
-                </CreditProvider>
-              </NotificationProvider>
-            </GroupProvider>
+          <GroupProvider>
+            <NotificationProvider>
+              <CreditProvider>
+                <FeedProvider>
+                  <Layout>
+                    <EventModal />
+                    <Outlet />
+                  </Layout>
+                </FeedProvider>
+              </CreditProvider>
+            </NotificationProvider>
+          </GroupProvider>
         </GoogleOAuthProvider>
       )}
     </>

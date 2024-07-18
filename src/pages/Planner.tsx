@@ -37,10 +37,6 @@ export default function Planner() {
       .catch((err) => console.error('Error fetching events: ', err));
   }, [user?.id]);
 
-  const onSelectSlot = useCallback((range) => {
-    console.log(range);
-  }, []);
-
   const onSelectEvent = useCallback((event: Event) => {
     setFocusedEvent(event);
   }, []);
@@ -91,7 +87,6 @@ export default function Planner() {
       />
       <Calendar
         events={events}
-        onSelectSlot={onSelectSlot}
         onSelectEvent={onSelectEvent}
         localizer={localizer}
         style={{ height: 700 }}

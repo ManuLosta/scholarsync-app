@@ -20,7 +20,7 @@ export default function CreateChat({
   return (
     <>
       <Button className="my-3" onPress={onOpen}>
-        Crear sessión en vivo
+        Crear sesión en vivo
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
